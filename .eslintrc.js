@@ -1,6 +1,6 @@
 module.exports = {
-    extends: [ 'standard', 'prettier' ],
-    plugins: [ 'prettier' ],
+    extends: ['standard', 'prettier', 'react-app', 'plugin:jsx-a11y/recommended' ],
+    plugins: ['prettier', 'react', 'jsx-a11y' ],
     rules: {
         semi: [ 'error', 'never' ]
     },
