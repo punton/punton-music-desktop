@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dotenv": "^4.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-scripts": "1.0.14"
@@ -11,13 +12,11 @@
   "main": "src/electron-starter.js",
   "scripts": {
     "precommit": "lint-staged",
-    "start": "nf start -p 3000",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "electron": "electron .",
-    "electron-start": "node src/electron-wait-react",
-    "react-start": "react-scripts start"
+    "electron-dev": "electron .",
+    "react-dev": "react-scripts start"
   },
   "lint-staged": {
     "*.js": [
