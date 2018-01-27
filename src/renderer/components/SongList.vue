@@ -35,7 +35,9 @@ export default {
 
 <style scoped>
   .dropzone {
-    border: 5px dashed skyblue;
-    height: 95vh;
+    border: 5px dashed rgb(0, 17, 255);
+    height: auto;
+    min-height: 100%;
+    width: 100%;
   }
 </style>
