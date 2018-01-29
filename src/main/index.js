@@ -1,6 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
+import './songList'
 
 /**
  * Set `__static` path to static files in production
@@ -20,9 +21,12 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    minWidth: 800,
+    minHeight: 600,
+    height: 768,
     useContentSize: true,
-    width: 1000
+    width: 1024,
+    backgroundThrottling: false
   })
 
   mainWindow.loadURL(winURL)

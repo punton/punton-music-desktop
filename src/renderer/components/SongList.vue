@@ -10,6 +10,7 @@
 
 <script>
 import _ from 'lodash'
+import { ipcRenderer } from 'electron'
 
 export default {
   data () {
@@ -21,10 +22,19 @@ export default {
     onDrop: function (e) {
       e.stopPropagation()
       e.preventDefault()
-      console.log(e.dataTransfer.files)
+      const songList = []
       _.values(e.dataTransfer.files).forEach(song => {
-        this.songs.push(song)
+        songList.push({ name: song.name, path: song.path })
       })
+      songList.sort((a, b) => {
+        let nameA = a.name.toUpperCase()
+        let nameB = b.name.toUpperCase()
+        if (nameA < nameB) return -1
+        else if (nameA > nameB) return 1
+        else return 0
+      })
+      this.songs = this.songs.concat(songList)
+      ipcRenderer.send('songList:save', songList)
     },
     onDragover: function (e) {
       e.preventDefault()
