@@ -11,6 +11,7 @@
 <script>
 import _ from 'lodash'
 import { ipcRenderer } from 'electron'
+import Meyda from 'meyda'
 
 export default {
   data () {
@@ -35,6 +36,32 @@ export default {
       })
       this.songs = this.songs.concat(songList)
       ipcRenderer.send('songList:save', songList)
+      ipcRenderer.on('song:requestMfcc', async (event, song) => {
+        try {
+          const { data, duration, sampleRate } = song
+          const audioCtx = new AudioContext()
+          const offlineCtx = new OfflineAudioContext(2, duration * sampleRate, sampleRate)
+          let source = offlineCtx.createBufferSource()
+
+          const buffer = await audioCtx.decodeAudioData(data.buffer)
+          source.buffer = buffer
+          source.connect(offlineCtx.destination)
+          source.start()
+
+          const slicingWindowSize = 1024
+          const rendereredBuffer = await offlineCtx.startRendering()
+          const channelData = rendereredBuffer.getChannelData(0)
+          const results = []
+          for (let i = 0; i < channelData.length - slicingWindowSize; i += slicingWindowSize) {
+            const r = Meyda.extract('mfcc', channelData.slice(i, i + slicingWindowSize))
+            results.push(r)
+          }
+
+          ipcRenderer.send('song:resultMfcc', results)
+        } catch (err) {
+          console.log(err)
+        }
+      })
     },
     onDragover: function (e) {
       e.preventDefault()
