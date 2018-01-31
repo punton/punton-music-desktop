@@ -49,7 +49,7 @@
   import SongList from './SongList'
 
   export default {
-    name: 'landing-page',
+    name: 'main-panel',
     components: { SongList }
   }
 </script>
