@@ -1,22 +1,24 @@
-const SongSchema = {
-  name: 'Song',
-  primaryKey: 'id',
-  properties: {
-    id: 'string',
-    name: 'string',
-    title: 'string',
-    path: 'string',
-    duration: 'int',
-    track: 'int?',
-    disk: 'string?',
-    album: 'string?',
-    year: 'string?',
-    date: 'string?',
-    artist: 'string?',
-    artists: 'Artist[]?',
-    picture: 'data?',
-    mfcc: 'Mfcc[]'
-  }
-}
+import Sequelize from 'sequelize'
 
-export default SongSchema
+const Song = global.db.define('song', {
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey: true
+  },
+  name: { type: Sequelize.STRING, allowNull: false },
+  title: { type: Sequelize.STRING, allowNull: false },
+  path: { type: Sequelize.TEXT, allowNull: false },
+  duration: { type: Sequelize.INTEGER, defaultValue: 0, allowNull: false },
+  track: Sequelize.INTEGER,
+  disk: Sequelize.STRING,
+  album: Sequelize.STRING,
+  year: Sequelize.STRING,
+  date: Sequelize.STRING,
+  artist: Sequelize.STRING,
+  artists: Sequelize.JSON,
+  picture: Sequelize.BLOB,
+  mfcc: Sequelize.JSON
+})
+
+export default Song

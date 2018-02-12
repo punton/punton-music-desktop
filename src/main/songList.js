@@ -3,20 +3,19 @@ import {
 } from 'electron'
 import 'util'
 import fs from 'fs'
-// import uniqid from 'uniqid'
+import { Op } from 'Sequelize'
+import {Song} from './models'
 const mm = require('music-metadata')
 
-ipcMain.on('songList:save', async (event, songs) => {
-  // console.log('song:', songs)
-  songs.map(async song => {
+ipcMain.on('songList:save', (event, songs) => {
+  songs.forEach(async song => {
     try {
       const metadata = await mm.parseFile(song.path, {
         native: true
       })
-      const songMetadata = {
-        // id: uniqid('song'),
+      const newSong = await Song.create({
         name: song.name,
-        title: metadata.common.title,
+        title: metadata.common.title || song.name,
         path: song.path,
         duration: metadata.format.duration,
         track: metadata.common.track.no,
@@ -27,25 +26,47 @@ ipcMain.on('songList:save', async (event, songs) => {
         artist: metadata.common.artist,
         artists: metadata.common.artists,
         picture: metadata.common.picture
-      }
+      })
       fs.readFile(song.path, (err, data) => {
         if (err) console.log(err)
-
         event.sender.send('song:requestMfcc', {
           name: song.name,
-          songMetadata,
+          songMetadata: {
+            id: newSong.dataValues.id,
+            title: newSong.dataValues.title,
+            path: newSong.dataValues.path
+          },
           data,
           duration: metadata.format.duration,
           sampleRate: metadata.format.sampleRate
         })
       })
-      // console.log('metadata: ', metadata)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   })
 })
 
-ipcMain.on('song:resultMfcc', (event, results) => {
-  console.log(results)
+ipcMain.on('song:resultMfcc', (event, { id, extractedMfcc }) => {
+  Song.update({
+    mfcc: extractedMfcc
+  }, {
+    where: {
+      id: {
+        [Op.eq]: id
+      }
+    }
+  })
+})
+
+ipcMain.on('playlist:find', async (event, playlist) => {
+  // TODO: Check playlist and query data
+  try {
+    const songs = await Song.findAll({
+      attributes: ['id', 'title', 'path']
+    })
+    event.sender.send('song:retrieve', songs)
+  } catch (err) {
+    console.error(err)
+  }
 })

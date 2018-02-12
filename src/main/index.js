@@ -1,8 +1,12 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
-import './songList'
 import path from 'path'
+require('dotenv').config()
+const db = require('./datastore')
+global.db = db.default
+global.db.sync()
+require('./songList')
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html

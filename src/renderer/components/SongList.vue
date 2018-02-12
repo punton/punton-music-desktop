@@ -1,20 +1,24 @@
 <template>
-  <div class="dropzone" @dragover="onDragover" @drop="onDrop">
-    <ul>
-      <li v-for="(song, index) in songs" :key="index">
-        {{ song.name }}
-      </li>
-    </ul>
+  <div class="dropzone" @dragover.prevent @drop="onDrop">
+    <draggable v-model="songs">
+      <div v-for="song in songs" :key="song.id">
+        {{song.title}}
+      </div>
+    </draggable>
   </div>
 </template>
 
 <script>
-import _ from 'lodash'
 import { ipcRenderer } from 'electron'
+import _ from 'lodash'
 import Meyda from 'meyda'
+import draggable from 'vuedraggable'
 
 const audioCtx = new AudioContext()
 export default {
+  components: {
+    draggable
+  },
   data () {
     return {
       songs: []
@@ -24,67 +28,51 @@ export default {
     onDrop: function (e) {
       e.stopPropagation()
       e.preventDefault()
-      const songList = []
+      const songs = []
       _.values(e.dataTransfer.files).forEach(song => {
-        songList.push({ name: song.name, path: song.path })
+        songs.push({ name: song.name, path: song.path })
       })
-      songList.sort((a, b) => {
-        let nameA = a.name.toUpperCase()
-        let nameB = b.name.toUpperCase()
-        if (nameA < nameB) return -1
-        else if (nameA > nameB) return 1
-        else return 0
-      })
-      this.songs = this.songs.concat(songList)
-      ipcRenderer.send('songList:save', songList)
+      ipcRenderer.send('songList:save', songs)
       ipcRenderer.on('song:requestMfcc', async (event, song) => {
         try {
-          const { data, duration, sampleRate, songMetadata } = song
-          const offlineCtx = new OfflineAudioContext(
+          let { data, duration, sampleRate, songMetadata } = song
+          let offlineCtx = new OfflineAudioContext(
             2,
             duration * sampleRate,
             sampleRate
           )
           let source = offlineCtx.createBufferSource()
 
-          const buffer = await audioCtx.decodeAudioData(data.buffer)
+          let buffer = await audioCtx.decodeAudioData(data.buffer)
           source.buffer = buffer
           source.connect(offlineCtx.destination)
           source.start()
 
-          const slicingWindowSize = 1024
-          const rendereredBuffer = await offlineCtx.startRendering()
-          const channelData = rendereredBuffer.getChannelData(0)
-          const results = []
-          for (let i = 0; i < channelData.length - slicingWindowSize; i += slicingWindowSize) {
+          const SLICING_WINDOW_SIZE = 1024
+          let rendereredBuffer = await offlineCtx.startRendering()
+          let channelData = rendereredBuffer.getChannelData(0)
+          let results = []
+          for (let i = 0; i < channelData.length - SLICING_WINDOW_SIZE; i += SLICING_WINDOW_SIZE) {
             const r = Meyda.extract(
               'mfcc',
-              channelData.slice(i, i + slicingWindowSize)
+              channelData.slice(i, i + SLICING_WINDOW_SIZE)
             )
-            results.push(r)
+            const reducer = (accumulator, currentValue) => accumulator + currentValue
+            results.push(r.reduce(reducer) / r.length)
           }
-          songMetadata['mfcc'] = results
-          songMetadata['type'] = 'song'
-          this.$db.insert(songMetadata, (err, insertedSong) => {
-            if (err) console.log(err)
-            console.dir(insertedSong)
-          })
-          // ipcRenderer.send('song:resultMfcc', results)
+          this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path })
+          ipcRenderer.send('song:resultMfcc', { id: songMetadata.id, extractedMfcc: results })
         } catch (err) {
           console.log(err)
         }
       })
-    },
-    onDragover: function (e) {
-      e.preventDefault()
     }
   },
-  beforeMount () {
-    this.$db.find({ type: /song/ }, (err, songs) => {
-      if (err) console.error(err)
-      console.dir(songs)
-      songs.forEach((song) => {
-        this.songs.push({name: song.title})
+  mounted () {
+    ipcRenderer.send('playlist:find', 'ml')
+    ipcRenderer.on('song:retrieve', (event, songs) => {
+      songs.forEach(song => {
+        this.songs.push(song.dataValues)
       })
     })
   },
