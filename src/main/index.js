@@ -15,7 +15,6 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -24,7 +23,7 @@ function createWindow () {
   /**
    * Initial window options
    */
-  mainWindow = new BrowserWindow({
+  global.mainWindow = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
     height: 768,
@@ -33,10 +32,10 @@ function createWindow () {
     backgroundThrottling: false
   })
 
-  mainWindow.loadURL(winURL)
+  global.mainWindow.loadURL(winURL)
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  global.mainWindow.on('closed', () => {
+    global.mainWindow = null
   })
 }
 
@@ -49,7 +48,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  if (mainWindow === null) {
+  if (global.mainWindow === null) {
     createWindow()
   }
 })

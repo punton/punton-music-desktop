@@ -11,5 +11,6 @@ export default new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.e
     acquire: 30000,
     idle: 10000
   },
-  storage: path.join(app.getPath('userData'), `${process.env.DB_NAME}.sqlite`)
+  storage: path.join(app.getPath('userData'), `${process.env.DB_NAME}.sqlite`),
+  logging: false
 })

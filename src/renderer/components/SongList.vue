@@ -32,10 +32,12 @@ export default {
       _.values(e.dataTransfer.files).forEach(song => {
         songs.push({ name: song.name, path: song.path })
       })
+      console.table(songs)
       ipcRenderer.send('songList:save', songs)
       ipcRenderer.on('song:requestMfcc', async (event, song) => {
         try {
-          let { data, duration, sampleRate, songMetadata } = song
+          console.log(song.total)
+          let { songData, duration, sampleRate, songMetadata } = song
           let offlineCtx = new OfflineAudioContext(
             2,
             duration * sampleRate,
@@ -43,7 +45,7 @@ export default {
           )
           let source = offlineCtx.createBufferSource()
 
-          let buffer = await audioCtx.decodeAudioData(data.buffer)
+          let buffer = await audioCtx.decodeAudioData(songData.buffer)
           source.buffer = buffer
           source.connect(offlineCtx.destination)
           source.start()

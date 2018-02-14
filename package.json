@@ -59,6 +59,8 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
+    "better-queue": "^3.8.6",
+    "bluebird": "^3.5.1",
     "bootstrap-vue": "^2.0.0-rc.1",
     "dotenv": "^5.0.0",
     "lodash": "^4.17.4",

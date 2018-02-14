@@ -18,7 +18,8 @@ const Song = global.db.define('song', {
   artist: Sequelize.STRING,
   artists: Sequelize.JSON,
   picture: Sequelize.BLOB,
-  mfcc: Sequelize.JSON
+  mfcc: Sequelize.JSON,
+  sampleRate: Sequelize.INTEGER
 })
 
 export default Song
