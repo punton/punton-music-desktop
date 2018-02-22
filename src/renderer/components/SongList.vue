@@ -11,10 +11,20 @@
 <script>
 import { ipcRenderer } from 'electron'
 import _ from 'lodash'
-import Meyda from 'meyda'
+// import Meyda from 'meyda'
+import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 
 const audioCtx = new AudioContext()
+const getWaveform = (songData) => {
+  return new Promise((resolve, reject) => {
+    webAudioBuilder(audioCtx, songData.buffer.slice(0), (err, waveform) => {
+      if (err) reject(err)
+      resolve(waveform)
+    })
+  })
+}
+
 export default {
   components: {
     draggable
@@ -34,49 +44,26 @@ export default {
       })
       console.table(songs)
       ipcRenderer.send('songList:save', songs)
-      ipcRenderer.on('song:requestMfcc', async (event, song) => {
-        try {
-          console.log(song.total)
-          let { songData, duration, sampleRate, songMetadata } = song
-          let offlineCtx = new OfflineAudioContext(
-            2,
-            duration * sampleRate,
-            sampleRate
-          )
-          let source = offlineCtx.createBufferSource()
-
-          let buffer = await audioCtx.decodeAudioData(songData.buffer)
-          source.buffer = buffer
-          source.connect(offlineCtx.destination)
-          source.start()
-
-          const SLICING_WINDOW_SIZE = 1024
-          let rendereredBuffer = await offlineCtx.startRendering()
-          let channelData = rendereredBuffer.getChannelData(0)
-          let results = []
-          for (let i = 0; i < channelData.length - SLICING_WINDOW_SIZE; i += SLICING_WINDOW_SIZE) {
-            const r = Meyda.extract(
-              'mfcc',
-              channelData.slice(i, i + SLICING_WINDOW_SIZE)
-            )
-            const reducer = (accumulator, currentValue) => accumulator + currentValue
-            results.push(r.reduce(reducer) / r.length)
-          }
-          this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path })
-          ipcRenderer.send('song:resultMfcc', { id: songMetadata.id, extractedMfcc: results })
-        } catch (err) {
-          console.log(err)
-        }
-      })
     }
   },
-  mounted () {
-    ipcRenderer.send('playlist:find', 'ml')
+  beforeCreate () {
     ipcRenderer.on('song:retrieve', (event, songs) => {
       songs.forEach(song => {
         this.songs.push(song.dataValues)
       })
     })
+    ipcRenderer.on('song:requestWaveform', (event, song) => {
+      let { songData, songMetadata, total } = song
+      console.log(total)
+      getWaveform(songData)
+        .then(waveform => {
+          ipcRenderer.send('song:result', { id: songMetadata.id, waveMax: waveform.max, waveMin: waveform.min })
+        })
+      this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path })
+    })
+  },
+  mounted () {
+    ipcRenderer.send('playlist:find', 'ml')
   },
   beforeDestroy () {
     audioCtx.close()

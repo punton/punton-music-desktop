@@ -8691,6 +8691,10 @@ wav@^1.0.0:
     readable-stream "^1.1.14"
     stream-parser "^0.3.1"
 
+waveform-data@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/waveform-data/-/waveform-data-2.0.1.tgz#306cedc9a02465e94277b213bbe0d03c7c5c989a"
+
 wbuf@^1.1.0, wbuf@^1.7.2:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/wbuf/-/wbuf-1.7.2.tgz#d697b99f1f59512df2751be42769c1580b5801fe"

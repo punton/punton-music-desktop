@@ -9,27 +9,29 @@ import Queue from 'better-queue'
 const fs = Promise.promisifyAll(require('fs'))
 const mm = require('music-metadata')
 
-let q = new Queue(({ song, songData }, cb) => {
-  global.mainWindow.webContents.send('song:requestMfcc', {
+let q = new Queue(({ event, song, songData }, cb) => {
+  event.sender.send('song:requestWaveform', {
     songMetadata: {
       id: song.dataValues.id,
       title: song.dataValues.title,
       path: song.dataValues.path
     },
-    songData,
     duration: song.dataValues.duration,
+    songData,
     sampleRate: song.dataValues.sampleRate,
     total: q.getStats().total
   })
-  cb()
+  cb(null, true)
 })
 
 ipcMain.on('songList:save', (event, songs) => {
   songs.forEach(async song => {
+    console.dir(song)
     try {
       const metadata = await mm.parseFile(song.path, {
         native: true
       })
+      const songData = await fs.readFileAsync(song.path)
       const newSong = await Song.create({
         name: song.name,
         title: metadata.common.title || song.name,
@@ -45,19 +47,19 @@ ipcMain.on('songList:save', (event, songs) => {
         picture: metadata.common.picture,
         sampleRate: metadata.format.sampleRate
       })
-      let data = await fs.readFileAsync(song.path)
       console.log(newSong.title)
-      q.push({ song: newSong, songData: data })
+      q.push({ event, song: newSong, songData })
     } catch (err) {
       console.error(err)
     }
   })
 })
 
-ipcMain.on('song:resultMfcc', (event, { id, extractedMfcc }) => {
-  console.log(id)
+ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
+  console.log('Succeed')
   Song.update({
-    mfcc: extractedMfcc
+    wave_max: waveMax,
+    wave_min: waveMin
   }, {
     where: {
       id: {
@@ -65,9 +67,6 @@ ipcMain.on('song:resultMfcc', (event, { id, extractedMfcc }) => {
       }
     }
   })
-  const stats = q.getStats()
-  console.log(stats.total)
-  console.log(stats.average)
 })
 
 ipcMain.on('playlist:find', async (event, playlist) => {

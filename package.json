@@ -73,7 +73,8 @@
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
     "vuedraggable": "^2.16.0",
-    "vuex": "^2.3.1"
+    "vuex": "^2.3.1",
+    "waveform-data": "^2.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
