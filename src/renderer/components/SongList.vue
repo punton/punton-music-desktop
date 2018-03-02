@@ -1,5 +1,5 @@
 <template>
-  <div class="dropzone" @dragover.prevent @drop="onDrop">
+  <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
     <draggable v-model="songs">
       <div v-for="song in songs" :key="song.id">
         {{song.title}}
@@ -78,4 +78,9 @@ export default {
   min-height: 100%;
   width: 100%;
 }
+
+.scrollable {
+    overflow-y: scroll;
+    height: 85vh;
+  }
 </style>

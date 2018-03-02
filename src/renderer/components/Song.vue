@@ -1,4 +1,5 @@
 <template>
+  <div>
     <b-container v-if="songInfo" fluid v-on:click="play(songInfo.path)">
       <b-row>
         <!-- <b-col>{{songId}}</b-col> -->

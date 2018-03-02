@@ -2,7 +2,7 @@
   <div>
     <!-- <p>{{collection}}</p> -->
     <!-- <p>Is playing: {{state.isPlaying}}</p> -->
-    <div v-if="state.tab == 0">
+    <!-- <div v-if="state.tab == 0">
       <playlists key="ml" :playlists=collection.mlPlaylists :state="state"></playlists>
     </div>
     <div v-else-if="state.tab == 1">
@@ -10,16 +10,18 @@
     </div>
     <div v-else-if="state.tab == 2">
       <playlists key="all" :playlists=collection.allSongs :state="state"></playlists>
-    </div>
+    </div> -->
+    <song-list></song-list>
   </div>
 </template>
 
 <script>
 // import {ipcRenderer} from 'electron'
 import Playlists from './Playlists'
+import SongList from './SongList'
 
 export default {
-  components: { Playlists },
+  components: { Playlists, SongList },
   props: ['state', 'collection']
   // data () {
   //   return {
