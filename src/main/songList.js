@@ -9,7 +9,8 @@ import Queue from 'better-queue'
 const fs = Promise.promisifyAll(require('fs'))
 const mm = require('music-metadata')
 
-let q = new Queue(({ event, song, songData }, cb) => {
+let q = new Queue(async ({ event, song }, cb) => {
+  const songData = await fs.readFileAsync(song.path)
   event.sender.send('song:requestWaveform', {
     songMetadata: {
       id: song.dataValues.id,
@@ -17,7 +18,7 @@ let q = new Queue(({ event, song, songData }, cb) => {
       path: song.dataValues.path
     },
     duration: song.dataValues.duration,
-    songData,
+    songData: songData,
     sampleRate: song.dataValues.sampleRate,
     total: q.getStats().total
   })
@@ -31,7 +32,6 @@ ipcMain.on('songList:save', (event, songs) => {
       const metadata = await mm.parseFile(song.path, {
         native: true
       })
-      const songData = await fs.readFileAsync(song.path)
       const newSong = await Song.create({
         name: song.name,
         title: metadata.common.title || song.name,
@@ -48,7 +48,7 @@ ipcMain.on('songList:save', (event, songs) => {
         sampleRate: metadata.format.sampleRate
       })
       console.log(newSong.title)
-      q.push({ event, song: newSong, songData })
+      q.push({ event, song: newSong })
     } catch (err) {
       console.error(err)
     }
