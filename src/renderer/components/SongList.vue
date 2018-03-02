@@ -2,7 +2,10 @@
   <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
     <draggable v-model="songs">
       <div v-for="song in songs" :key="song.id">
-        {{song.title}}
+        <b-row v-on:click="selectSong(song)">
+          <b-col cols="3">{{song.title}}</b-col>
+          <b-col cols="9">{{song.path}}</b-col>
+        </b-row>
       </div>
     </draggable>
   </div>
@@ -11,7 +14,6 @@
 <script>
 import { ipcRenderer } from 'electron'
 import _ from 'lodash'
-// import Meyda from 'meyda'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 
@@ -44,6 +46,10 @@ export default {
       })
       console.table(songs)
       ipcRenderer.send('songList:save', songs)
+    },
+    selectSong: function (song) {
+      console.log(song.path)
+      ipcRenderer.send('selectSong', song)
     }
   },
   beforeCreate () {

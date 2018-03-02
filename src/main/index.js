@@ -115,10 +115,10 @@ ipcMain.on('getCollection', (event, arg) => {
   event.sender.send('getCollection-reply', collection)
 })
 
-ipcMain.on('selectSong', (event, arg) => {
+ipcMain.on('selectSong', (event, song) => {
   console.log('Selected song: ')
-  console.log(arg)
-  fs.readFile(arg.path, (err, data) => {
+  console.log(song)
+  fs.readFile(song.path, (err, data) => {
     if (err) throw err
     console.log(data)
     currentState.isPlaying = true
