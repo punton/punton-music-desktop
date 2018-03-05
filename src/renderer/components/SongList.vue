@@ -1,17 +1,26 @@
 <template>
   <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
-    <draggable v-model="songs">
-      <div v-for="song in songs" :key="song.id">
-        {{song.title}}
-      </div>
-    </draggable>
+    <table class="table">
+      <thead class="table-header">
+        <tr>
+          <th scope="col" v-for="(field, index) in fields" :key="index">{{ field }}</th>
+        </tr>
+      </thead>
+      <draggable v-model="songs" :element="'tbody'">
+        <tr v-for="(song, index) in songs" :key="index">
+          <td>Play icon</td>
+          <td>{{ song.title }}</td>
+          <td>{{ song.artist }}</td>
+          <td>{{ durationFormat(song.duration) }}</td>
+        </tr>
+      </draggable>
+    </table>
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron'
 import _ from 'lodash'
-// import Meyda from 'meyda'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 
@@ -31,7 +40,13 @@ export default {
   },
   data () {
     return {
-      songs: []
+      songs: [],
+      fields: [
+        '⯈',
+        'title',
+        'artist',
+        'duration'
+      ]
     }
   },
   methods: {
@@ -44,6 +59,9 @@ export default {
       })
       console.table(songs)
       ipcRenderer.send('songList:save', songs)
+    },
+    durationFormat: function (duration) {
+      return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
     }
   },
   beforeCreate () {
@@ -59,7 +77,7 @@ export default {
         .then(waveform => {
           ipcRenderer.send('song:result', { id: songMetadata.id, waveMax: waveform.max, waveMin: waveform.min })
         })
-      this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path })
+      this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path, duration: songMetadata.duration, artist: songMetadata.artist })
     })
   },
   mounted () {
@@ -80,7 +98,7 @@ export default {
 }
 
 .scrollable {
-    overflow-y: scroll;
-    height: 85vh;
-  }
+  overflow-y: auto;
+  height: 85vh;
+}
 </style>
