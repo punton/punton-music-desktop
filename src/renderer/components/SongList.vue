@@ -1,20 +1,10 @@
 <template>
   <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
-    <table class="table">
-      <thead class="table-header">
-        <tr>
-          <th scope="col" v-for="(field, index) in fields" :key="index">{{ field }}</th>
-        </tr>
-      </thead>
-      <draggable v-model="songs" :element="'tbody'">
-        <tr v-for="(song, index) in songs" :key="index">
-          <td>Play icon</td>
-          <td>{{ song.title }}</td>
-          <td>{{ song.artist }}</td>
-          <td>{{ durationFormat(song.duration) }}</td>
-        </tr>
-      </draggable>
-    </table>
+    <b-table striped hover :items="songs" :fields="fields">
+      <template slot="duration" slot-scope="data">
+        {{ durationFormat(data.item.duration) }}
+      </template>
+    </b-table>
   </div>
 </template>
 
@@ -43,9 +33,9 @@ export default {
       songs: [],
       fields: [
         '⯈',
-        'title',
-        'artist',
-        'duration'
+        { key: 'title', sortable: true },
+        { key: 'artist', sortable: true },
+        { key: 'duration', sortable: true }
       ]
     }
   },
@@ -92,7 +82,7 @@ export default {
 <style scoped>
 .dropzone {
   border: 5px dashed rgb(0, 17, 255);
-  height: auto;
+  height: 85vh;
   min-height: 100%;
   width: 100%;
 }
