@@ -32,10 +32,10 @@ export default {
     return {
       songs: [],
       fields: [
-        '⯈',
+        { key: 'playing', label: '⯈', class: 'text-center' },
         { key: 'title', sortable: true },
         { key: 'artist', sortable: true },
-        { key: 'duration', sortable: true }
+        { key: 'duration', sortable: true, class: 'text-center' }
       ]
     }
   },
