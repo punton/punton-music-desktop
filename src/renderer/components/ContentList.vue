@@ -11,7 +11,7 @@
     <div v-else-if="state.tab == 2">
       <playlists key="all" :playlists=collection.allSongs :state="state"></playlists>
     </div> -->
-    <song-list></song-list>
+    <song-list :songs="songs"></song-list>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ import SongList from './SongList'
 
 export default {
   components: { Playlists, SongList },
-  props: ['state', 'collection']
+  props: ['state', 'collection', 'songs']
   // data () {
   //   return {
   //   }

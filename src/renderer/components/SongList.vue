@@ -4,7 +4,8 @@
       <div v-for="song in songs" :key="song.id">
         <b-row v-on:click="selectSong(song)">
           <b-col cols="3">{{song.title}}</b-col>
-          <b-col cols="9">{{song.path}}</b-col>
+          <b-col cols="6">{{song.path}}</b-col>
+          <b-col cols="3">{{song.duration}}</b-col>
         </b-row>
       </div>
     </draggable>
@@ -31,11 +32,12 @@ export default {
   components: {
     draggable
   },
-  data () {
-    return {
-      songs: []
-    }
-  },
+  props: ['songs'],
+  // data () {
+  //   return {
+  //     songs: []
+  //   }
+  // },
   methods: {
     onDrop: function (e) {
       e.stopPropagation()
@@ -53,11 +55,11 @@ export default {
     }
   },
   beforeCreate () {
-    ipcRenderer.on('song:retrieve', (event, songs) => {
-      songs.forEach(song => {
-        this.songs.push(song.dataValues)
-      })
-    })
+    // ipcRenderer.on('song:retrieve', (event, songs) => {
+    //   songs.forEach(song => {
+    //     this.songs.push(song.dataValues)
+    //   })
+    // })
     ipcRenderer.on('song:requestWaveform', (event, song) => {
       let { songData, songMetadata, total } = song
       console.log(total)
@@ -68,9 +70,9 @@ export default {
       this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path })
     })
   },
-  mounted () {
-    ipcRenderer.send('playlist:find', 'ml')
-  },
+  // mounted () {
+  //   ipcRenderer.send('playlist:find', 'ml')
+  // },
   beforeDestroy () {
     audioCtx.close()
   }

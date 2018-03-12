@@ -13,7 +13,9 @@
             <step-backward-icon></step-backward-icon>
           </div>
           <div class="col" v-on:mouseenter="highlight" v-on:mouseleave="unhighlight" v-b-tooltip.hover.top="'Play'">
-            <play-icon></play-icon>
+            <play-icon v-if="!state.isPlaying"></play-icon>
+            <div v-else>Stop</div>
+            <!-- <pause-icon v-else></pause-icon> -->
           </div>
           <!-- TODO: Add Pause -->
           <div class="col" v-on:mouseenter="highlight" v-on:mouseleave="unhighlight" v-b-tooltip.hover.top="'Next'">
@@ -23,18 +25,12 @@
             <repeat-icon></repeat-icon>
           </div>
         </div>
-        <!-- <div class="row">
-          <canvas id="bar" height="10vh" ></canvas>
-        </div> -->
         <div class="row">
-          <!-- TODO: better format string -->
-          <!-- TODO: inline components -->
-          <!-- <div class="col">{{parseInt(currentTime)/60}}.{{parseInt(currentTime)%60}}</div> -->
-          <div class="col">{{formatTime(currentTime)}}</div>
+          <div class="col">{{formatTime(state.player.time)}}</div>
           <div class="col">
-            <b-progress :value="mockSong.currentTime" :max="mockSong.duration" animated show-progress></b-progress>
+            <b-progress :value="currentTime" :max=" this.state.song ? this.state.song.duration : 100 " animated></b-progress>
           </div>
-          <div class="col">{{parseInt(mockSong.duration/60)}}.{{mockSong.duration%60}}</div>
+          <div class="col">{{formatTime(this.state.song ? this.state.song.duration : 100)}}</div>
         </div>
       </div>
       <div class="col">
@@ -50,19 +46,16 @@
   import StepForwardIcon from 'vue-material-design-icons/step-forward.vue'
   import PlayIcon from 'vue-material-design-icons/play-circle-outline.vue'
   import RepeatIcon from 'vue-material-design-icons/repeat.vue'
+  import PauseIcon from 'vue-material-design-icons/pause-circle-outline.vue'
   // import {ipcRenderer} from 'electron'
 
   export default {
-    props: ['currentTime'],
+    props: ['currentTime', 'state'],
     data () {
       return {
-        mockSong: {
-          currentTime: 75,
-          duration: 100
-        }
       }
     },
-    components: { ShuffleIcon, StepBackwardIcon, StepForwardIcon, PlayIcon, RepeatIcon },
+    components: { ShuffleIcon, StepBackwardIcon, StepForwardIcon, PlayIcon, RepeatIcon, PauseIcon },
     methods: {
       highlight: function (e) {
         // console.log('Highlighted.')
@@ -79,6 +72,9 @@
         let min = parseInt(second / 60)
         let sec = (parseInt(second) % 60) / 100
         return (min + sec).toFixed(2)
+      },
+      maxValue: function () {
+        return (this.state.selectedSong) ? this.state.selectedSong.duration : 100
       }
     }
   }

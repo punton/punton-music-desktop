@@ -73,7 +73,7 @@ ipcMain.on('playlist:find', async (event, playlist) => {
   // TODO: Check playlist and query data
   try {
     const songs = await Song.findAll({
-      attributes: ['id', 'title', 'path']
+      attributes: ['id', 'title', 'path', 'duration']
     })
     event.sender.send('song:retrieve', songs)
   } catch (err) {
