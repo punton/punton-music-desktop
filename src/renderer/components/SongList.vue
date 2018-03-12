@@ -33,11 +33,6 @@ export default {
     draggable
   },
   props: ['songs'],
-  // data () {
-  //   return {
-  //     songs: []
-  //   }
-  // },
   methods: {
     onDrop: function (e) {
       e.stopPropagation()
@@ -51,7 +46,7 @@ export default {
     },
     selectSong: function (song) {
       console.log(song.path)
-      ipcRenderer.send('selectSong', song)
+      ipcRenderer.send('select:song', song)
     }
   },
   beforeCreate () {

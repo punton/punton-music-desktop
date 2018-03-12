@@ -26,11 +26,11 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">{{formatTime(state.player.time)}}</div>
+          <div class="col">{{formatTime(this.player.context ? this.player.context.currentTime : 0)}}</div>
           <div class="col">
-            <b-progress :value="currentTime" :max=" this.state.song ? this.state.song.duration : 100 " animated></b-progress>
+            <b-progress :value="this.state.song ? this.player.context.currentTime : 0" :max=" this.state.song ? this.state.song.duration : 100 " animated></b-progress>
           </div>
-          <div class="col">{{formatTime(this.state.song ? this.state.song.duration : 100)}}</div>
+          <div class="col">{{formatTime(this.state.song ? this.state.song.duration : 0)}}</div>
         </div>
       </div>
       <div class="col">
@@ -50,7 +50,7 @@
   // import {ipcRenderer} from 'electron'
 
   export default {
-    props: ['currentTime', 'state'],
+    props: ['player', 'state'],
     data () {
       return {
       }
@@ -80,7 +80,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   #player-box {
     height: 14vh;
   }  

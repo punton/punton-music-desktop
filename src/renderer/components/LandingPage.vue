@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="row framed">
-      <player :state="state"></player>
+      <player :state="state" :player="player"></player>
     </div>
   </div>
 </template>
@@ -24,40 +24,30 @@
     components: { Sidebar, Player, ContentList },
     data () {
       return {
-        // state: {
-        //   isPlaying: false,
-        //   tab: 0,
-        //   selectedSong: null
-        // },
-        // collection: {
-        //   mlPlaylists: [],
-        //   userPlaylists: [],
-        //   allSongs: []
-        // },
         state: null,
-        // currentSong: {
-        //   context: null,
-        //   source: null,
-        //   gainNode: null,
-        //   time: 0,
-        //   duration: 0
-        // },
+        player: {
+          isPlaying: false,
+          context: null,
+          source: null,
+          gainNode: null
+        },
         songs: []
       }
     },
     created: function () {
       // Listen to state:reply
       ipcRenderer.on('state:reply', (event, arg) => {
-        console.log('Before: ' + JSON.stringify(this.state))
+        // console.log('Before: ' + JSON.stringify(this.state))
         this.state = arg
-        console.log('After: ' + JSON.stringify(this.state))
+        // console.log('After: ' + JSON.stringify(this.state))
       })
+
       // Get initial state
       ipcRenderer.send('get:state')
       // Listen to song:retrieve
       ipcRenderer.on('song:retrieve', (event, songs) => {
         this.songs = []
-        console.log(songs)
+        // console.log(songs)
         songs.forEach(song => {
           this.songs.push(song.dataValues)
         })
@@ -80,7 +70,7 @@
       //   this.state.tab = arg
       // })
 
-      ipcRenderer.on('playSong', (event, song) => {
+      ipcRenderer.on('play:song', (event, song) => {
         console.log('Playing song . . .')
         // if (this.currentSong.context) {
         //   if (this.currentSong.context.state === 'running') {
@@ -88,11 +78,10 @@
         //   }
         // }
 
-        let currentCtx = this.state.player.context
-
-        if (currentCtx) {
-          if (currentCtx.state === 'running') {
-            currentCtx.source.stop(0)
+        // let player = this.state.player
+        if (this.player.context) {
+          if (this.player.context.state === 'running') {
+            this.player.source.stop(0)
           }
         }
 
@@ -107,13 +96,14 @@
         // this.playSong(audioData)
 
         let newCtx = new AudioContext()
-        this.state.player.context = newCtx
-        this.state.player.source = newCtx.context.createBufferSource()
-        this.state.player.gainNode = newCtx.context.createGain()
+        this.player.context = newCtx
+        this.player.source = newCtx.createBufferSource()
+        this.player.gainNode = newCtx.createGain()
         // Change volume to 50%
-        this.state.player.gainNode.gain.value = 0.5
+        this.player.gainNode.gain.value = 0.3
         let audioData = song.buffer
-        this.playerSong(audioData)
+        // ipcRenderer.send('set:player', this.state.player)
+        this.playSong(audioData)
       })
     },
     methods: {
@@ -123,9 +113,9 @@
         // let gainNode = this.currentSong.gainNode
         let updateTime = this.updateTime
 
-        let source = this.state.player.source
-        let audioCtx = this.state.player.context
-        let gainNode = this.state.player.gainNode
+        let source = this.player.source
+        let audioCtx = this.player.context
+        let gainNode = this.player.gainNode
 
         source.start(0)
         audioCtx.decodeAudioData(audioData, function (buffer) {
@@ -136,7 +126,9 @@
         })
       },
       updateTime: function () {
-        if (this.currentSong.context) {
+        if (this.player.context) {
+          // console.log('Context:' + JSON.stringify(this.player.context))
+          console.log('Time: ' + this.player.context.currentTime)
           ipcRenderer.send('set:time', this.player.context.currentTime)
           // this.currentSong.time = this.currentSong.context.currentTime
           window.requestAnimationFrame(this.updateTime)
@@ -146,7 +138,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 
   body { font-family: 'Source Sans Pro', sans-serif; }
