@@ -12,6 +12,7 @@ let initialState = {
   tab: tabs.user,
   // Selected song to play
   song: null,
+  isPlaying: false
 }
 
 let currentState = initialState
@@ -68,6 +69,7 @@ ipcMain.on('select:song', (event, song) => {
     if (err) throw err
     // currentState = cloneState()
     currentState.song = song
+    currentState.isPlaying = true
     // event.sender.send('update:state', cloneState())
     event.sender.send('state:reply', currentState)
     event.sender.send('play:song', data)
@@ -85,6 +87,17 @@ ipcMain.on('set:player', (event, player) => {
 ipcMain.on('set:time', (event, time) => {
   // currentState = cloneState()
   // console.log(time)
-  currentState.player.time = time
   event.sender.send('state:reply', currentState)
+})
+
+// Set playing state
+ipcMain.on('set:state-isPlaying', (event, isPlaying) => {
+  currentState.isPlaying = isPlaying
+  console.log(JSON.stringify(currentState))
+  // if(isPlaying) {
+  //   event.sender.send('player:resume')
+  // } else {
+  //   event.sender.send('player:suspend')
+  // }
+  event.sender.send('player:switchState', isPlaying)
 })

@@ -2,7 +2,7 @@
   <div class="container-fluid" id="player-box">
     <div class="row" id="main-panel">
       <div class="col">
-        1
+        {{this.state.isPlaying}}
       </div>
       <div class="col" id="panel">
         <div class="row" id="icons">
@@ -12,10 +12,10 @@
           <div class="col" v-on:mouseenter="highlight" v-on:mouseleave="unhighlight" v-b-tooltip.hover.top="'Previous'">
             <step-backward-icon></step-backward-icon>
           </div>
-          <div class="col" v-on:mouseenter="highlight" v-on:mouseleave="unhighlight" v-b-tooltip.hover.top="'Play'">
+          <div class="col" v-on:mouseenter="highlight" v-on:mouseleave="unhighlight" v-b-tooltip.hover.top="this.state.isPlaying ? 'Resume' : 'Play'" v-on:click="switchState">
             <play-icon v-if="!state.isPlaying"></play-icon>
-            <div v-else>Stop</div>
-            <!-- <pause-icon v-else></pause-icon> -->
+            <!-- <div v-else>Stop</div> -->
+            <pause-icon v-else></pause-icon>
           </div>
           <!-- TODO: Add Pause -->
           <div class="col" v-on:mouseenter="highlight" v-on:mouseleave="unhighlight" v-b-tooltip.hover.top="'Next'">
@@ -28,7 +28,7 @@
         <div class="row">
           <div class="col">{{formatTime(this.player.context ? this.player.context.currentTime : 0)}}</div>
           <div class="col">
-            <b-progress :value="this.state.song ? this.player.context.currentTime : 0" :max=" this.state.song ? this.state.song.duration : 100 " animated></b-progress>
+            <b-progress :value="this.state.context ? this.player.context.currentTime : 0" :max=" this.state.song ? this.state.song.duration : 100 " animated></b-progress>
           </div>
           <div class="col">{{formatTime(this.state.song ? this.state.song.duration : 0)}}</div>
         </div>
@@ -47,7 +47,7 @@
   import PlayIcon from 'vue-material-design-icons/play-circle-outline.vue'
   import RepeatIcon from 'vue-material-design-icons/repeat.vue'
   import PauseIcon from 'vue-material-design-icons/pause-circle-outline.vue'
-  // import {ipcRenderer} from 'electron'
+  import {ipcRenderer} from 'electron'
 
   export default {
     props: ['player', 'state'],
@@ -75,6 +75,20 @@
       },
       maxValue: function () {
         return (this.state.selectedSong) ? this.state.selectedSong.duration : 100
+      },
+      resume: function () {
+        ipcRenderer.send('set:state-isPlaying', true)
+      },
+      suspend: function () {
+        ipcRenderer.send('set:state-isPlaying', false)
+      },
+      switchState: function () {
+        let ctxState = this.player.context.state
+        if (ctxState === 'running') {
+          this.suspend()
+        } else if (ctxState === 'suspended') {
+          this.resume()
+        }
       }
     }
   }

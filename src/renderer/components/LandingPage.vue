@@ -70,30 +70,38 @@
       //   this.state.tab = arg
       // })
 
+      // ipcRenderer.on('player:resume', (event, arg) => {
+      //   if (this.player.context) {
+      //     console.log('Resuming ...')
+      //     this.player.context.resume()
+      //   }
+      // })
+
+      // ipcRenderer.on('player:suspend', (event, arg) => {
+      //   if (this.player.context) {
+      //     console.log('Suspending ...')
+      //     this.player.context.suspend()
+      //   }
+      // })
+      ipcRenderer.on('player:switchState', (event, arg) => {
+        if (this.player.context) {
+          console.log('Switch state to: ' + arg)
+          if (arg) {
+            this.player.context.resume()
+          } else {
+            this.player.context.suspend()
+          }
+        }
+      })
+
       ipcRenderer.on('play:song', (event, song) => {
         console.log('Playing song . . .')
-        // if (this.currentSong.context) {
-        //   if (this.currentSong.context.state === 'running') {
-        //     this.currentSong.source.stop(0)
-        //   }
-        // }
-
-        // let player = this.state.player
         if (this.player.context) {
           if (this.player.context.state === 'running') {
             this.player.source.stop(0)
+            this.player.context.close()
           }
         }
-
-        // this.currentSong.context = new AudioContext()
-        // this.currentSong.source = this.currentSong.context.createBufferSource()
-        // this.currentSong.gainNode = this.currentSong.context.createGain()
-        // console.log('Default gain node value: ' + this.currentSong.gainNode.gain.value)
-        // // Change volume to 40%
-        // this.currentSong.gainNode.gain.value = 0.5
-        // console.log('Changed gain node value: ' + this.currentSong.gainNode.gain.value)
-        // let audioData = arg.buffer
-        // this.playSong(audioData)
 
         let newCtx = new AudioContext()
         this.player.context = newCtx
@@ -105,6 +113,14 @@
         // ipcRenderer.send('set:player', this.state.player)
         this.playSong(audioData)
       })
+    },
+    beforeDestroy () {
+      if (this.player.context) {
+        this.player.context.close()
+        this.state.isPlaying = false
+        console.log(JSON.stringify(this.state))
+        ipcRenderer.send('set:state-isPlaying', this.state.isPlaying)
+      }
     },
     methods: {
       playSong: function (audioData) {
@@ -127,8 +143,7 @@
       },
       updateTime: function () {
         if (this.player.context) {
-          // console.log('Context:' + JSON.stringify(this.player.context))
-          console.log('Time: ' + this.player.context.currentTime)
+          // console.log('Time: ' + this.player.context.currentTime)
           ipcRenderer.send('set:time', this.player.context.currentTime)
           // this.currentSong.time = this.currentSong.context.currentTime
           window.requestAnimationFrame(this.updateTime)
@@ -138,7 +153,7 @@
   }
 </script>
 
-<style scoped>
+<style>
   @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 
   body { font-family: 'Source Sans Pro', sans-serif; }
