@@ -1,6 +1,6 @@
 <template>
   <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
-    <b-table striped hover :items="songs" :fields="fields">
+    <b-table striped hover :foot-clone="footClone" :items="songs" :fields="fields">
       <template slot="duration" slot-scope="data">
         {{ durationFormat(data.item.duration) }}
       </template>
@@ -36,7 +36,8 @@ export default {
         { key: 'title', sortable: true },
         { key: 'artist', sortable: true },
         { key: 'duration', sortable: true, class: 'text-center' }
-      ]
+      ],
+      footClone: true
     }
   },
   methods: {
@@ -82,7 +83,6 @@ export default {
 <style scoped>
 .dropzone {
   border: 5px dashed rgb(0, 17, 255);
-  height: 85vh;
   min-height: 100%;
   width: 100%;
 }
