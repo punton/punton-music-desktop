@@ -1,6 +1,11 @@
 <template>
   <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
-    <b-table striped hover :foot-clone="footClone" :items="songs" :fields="fields">
+    <b-table striped hover foot-clone :items="songs" :fields="fields" class="playlist">
+      <template slot="playing" slot-scope="data">
+        <div class="playing-icon">
+          <play-button :songPath="data.item.path" :songId="data.item.id" @setPlayingSongId="setPlayingSongId" :playingSongId="playingSongId"></play-button>
+        </div>
+      </template>
       <template slot="duration" slot-scope="data">
         {{ durationFormat(data.item.duration) }}
       </template>
@@ -13,6 +18,7 @@ import { ipcRenderer } from 'electron'
 import _ from 'lodash'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
+import PlayButton from './SongList/PlayButton'
 
 const audioCtx = new AudioContext()
 const getWaveform = (songData) => {
@@ -26,18 +32,19 @@ const getWaveform = (songData) => {
 
 export default {
   components: {
-    draggable
+    draggable,
+    PlayButton
   },
   data () {
     return {
       songs: [],
       fields: [
-        { key: 'playing', label: '⯈', class: 'text-center' },
+        { key: 'playing', label: '⯈', class: 'text-center', tdClass: 'playing-icon' },
         { key: 'title', sortable: true },
         { key: 'artist', sortable: true },
         { key: 'duration', sortable: true, class: 'text-center' }
       ],
-      footClone: true
+      playingSongId: null
     }
   },
   methods: {
@@ -53,6 +60,9 @@ export default {
     },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
+    },
+    setPlayingSongId: function (songId) {
+      this.playingSongId = songId
     }
   },
   beforeCreate () {
@@ -90,5 +100,15 @@ export default {
 .scrollable {
   overflow-y: auto;
   height: 85vh;
+}
+
+.playing-icon {
+  min-width: 100%;
+  width: 30px;
+  height: 30px;
+}
+
+table.playlist tr {
+  line-height: 100px;
 }
 </style>
