@@ -29,7 +29,10 @@ export default {
   },
   watch: {
     playingSongId: function (newVal, oldVal) {
-      this.playingStatusIcon = this.playingSongId === this.songId ? playIcon : null
+      this.setIcon(this.isThisSongPlaying ? playIcon : null)
+    },
+    songId: function () {
+      this.setIcon(this.isThisSongPlaying ? playIcon : null)
     }
   },
   methods: {
@@ -37,7 +40,7 @@ export default {
       this.setIcon(this.isThisSongPlaying ? pauseBtnIcon : playBtnIcon)
     },
     onMouseLeave: function (e) {
-      this.setIcon(this.playingSongId === this.songId ? playIcon : null)
+      this.setIcon(this.isThisSongPlaying ? playIcon : null)
     },
     onClick: function (e) {
       e.preventDefault()
