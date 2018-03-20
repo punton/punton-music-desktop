@@ -1,5 +1,6 @@
 <template>
   <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
+<!-- <<<<<<< HEAD
     <draggable v-model="songs">
       <div v-for="song in songs" :key="song.id">
         <b-row v-on:click="selectSong(song)">
@@ -9,6 +10,17 @@
         </b-row>
       </div>
     </draggable>
+======= -->
+    <b-table striped hover :foot-clone="footClone" :items="songs" :fields="fields">
+      <template slot="playing" slot-scope="data">
+        <b-button v-on:click="selectSong(data.item)">Play</b-button>
+      </template>
+      <template slot="title" slot-scope="data">{{data.item.title}}</template>
+      <template slot="duration" slot-scope="data">
+        {{durationFormat(data.item.duration)}}
+      </template>
+    </b-table>
+<!-- >>>>>>> dragdrop -->
   </div>
 </template>
 
@@ -32,7 +44,22 @@ export default {
   components: {
     draggable
   },
+  // <<<<<<< HEAD
   props: ['songs'],
+  // =======
+  data () {
+    return {
+      // songs: [],
+      fields: [
+        { key: 'playing', label: '⯈', class: 'text-center' },
+        { key: 'title', sortable: true },
+        { key: 'artist', sortable: true },
+        { key: 'duration', sortable: true, class: 'text-center' }
+      ],
+      footClone: false
+    }
+  },
+  // >>>>>>> dragdrop
   methods: {
     onDrop: function (e) {
       e.stopPropagation()
@@ -44,9 +71,15 @@ export default {
       console.table(songs)
       ipcRenderer.send('songList:save', songs)
     },
+    // <<<<<<< HEAD
     selectSong: function (song) {
       console.log(song.path)
       ipcRenderer.send('select:song', song)
+      // =======
+    },
+    durationFormat: function (duration) {
+      return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
+      // >>>>>>> dragdrop
     }
   },
   beforeCreate () {
@@ -62,7 +95,7 @@ export default {
         .then(waveform => {
           ipcRenderer.send('song:result', { id: songMetadata.id, waveMax: waveform.max, waveMin: waveform.min })
         })
-      this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path })
+      this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path, duration: songMetadata.duration, artist: songMetadata.artist })
     })
   },
   // mounted () {
@@ -76,14 +109,13 @@ export default {
 
 <style scoped>
 .dropzone {
-  border: 5px dashed rgb(0, 17, 255);
-  height: auto;
+  /* border: 5px dashed rgb(0, 17, 255); */
   min-height: 100%;
   width: 100%;
 }
 
 .scrollable {
-    overflow-y: scroll;
-    height: 85vh;
-  }
+  overflow-y: auto;
+  height: 85vh;
+}
 </style>

@@ -13,6 +13,7 @@ let initialState = {
   // Selected song to play
   song: null,
   isPlaying: false
+  // currentSong: null
 }
 
 let currentState = initialState

@@ -66,7 +66,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
   .container-fluid {
     padding-right: 0px;

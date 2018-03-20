@@ -2,7 +2,8 @@
   <div class="container-fluid" id="player-box">
     <div class="row" id="main-panel">
       <div class="col">
-        {{this.state.isPlaying}}
+        <p>Playing: {{this.state.song.title}}</p>
+        {{this.state.isPlaying}} {{this.player.volume}} {{this.player.context ? this.player.context.currentTime : -1 }} {{this.state.song ? this.state.song.duration : -1}}
       </div>
       <div class="col" id="panel">
         <div class="row" id="icons">
@@ -26,15 +27,16 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">{{formatTime(this.player.context ? this.player.context.currentTime : 0)}}</div>
+          <div class="col timeLabel">{{formatTime(this.player.context ? this.player.context.currentTime : 0)}}</div>
           <div class="col">
-            <b-progress :value="this.state.context ? this.player.context.currentTime : 0" :max=" this.state.song ? this.state.song.duration : 100 " animated></b-progress>
+            <b-progress :value="this.player.context ? this.player.context.currentTime : 0" :max="this.state.song ? this.state.song.duration : 100" animated></b-progress>
           </div>
-          <div class="col">{{formatTime(this.state.song ? this.state.song.duration : 0)}}</div>
+          <div class="col timeLabel">{{formatTime(this.state.song ? this.state.song.duration : 0)}}</div>
         </div>
       </div>
       <div class="col">
-        3
+        <input type="range" min="0" max="100" v-on:input="changeVolume($event)">
+        <p>{{this.player.volume}}</p>
       </div>
     </div>
   </div>
@@ -89,6 +91,9 @@
         } else if (ctxState === 'suspended') {
           this.resume()
         }
+      },
+      changeVolume: function (event) {
+        this.player.gainNode.gain.value = event.target.valueAsNumber / 100
       }
     }
   }
@@ -113,5 +118,13 @@
   #icons {
     display: flex;
     justify-content: space-around;
+  }
+
+  .b-progress {
+    Width: 100%;
+  }
+
+  #timeLabel {
+    width: fit-content;
   }
 </style>

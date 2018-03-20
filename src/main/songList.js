@@ -9,23 +9,28 @@ import Queue from 'better-queue'
 const fs = Promise.promisifyAll(require('fs'))
 const mm = require('music-metadata')
 
-let q = new Queue(async ({ event, song }, cb) => {
+const readingSong = async ({ event, song, total }, cb) => {
   const songData = await fs.readFileAsync(song.path)
   event.sender.send('song:requestWaveform', {
     songMetadata: {
       id: song.dataValues.id,
       title: song.dataValues.title,
+      artist: song.dataValues.artist,
+      duration: song.dataValues.duration,
       path: song.dataValues.path
     },
     duration: song.dataValues.duration,
     songData: songData,
     sampleRate: song.dataValues.sampleRate,
-    total: q.getStats().total
+    total
   })
   cb(null, true)
-})
+}
 
 ipcMain.on('songList:save', (event, songs) => {
+  let q = new Queue(readingSong, {
+    concurrent: 1,
+    batchSize: 1 })
   songs.forEach(async song => {
     console.dir(song)
     try {
@@ -48,7 +53,7 @@ ipcMain.on('songList:save', (event, songs) => {
         sampleRate: metadata.format.sampleRate
       })
       console.log(newSong.title)
-      q.push({ event, song: newSong })
+      q.push({ event, song: newSong, total: q.getStats() })
     } catch (err) {
       console.error(err)
     }
@@ -73,7 +78,11 @@ ipcMain.on('playlist:find', async (event, playlist) => {
   // TODO: Check playlist and query data
   try {
     const songs = await Song.findAll({
-      attributes: ['id', 'title', 'path', 'duration']
+      // <<<<<<< HEAD
+      //       attributes: ['id', 'title', 'path', 'duration']
+      // =======
+      // >>>>>>> dragdrop
+      attributes: ['id', 'title', 'path', 'duration', 'artist']
     })
     event.sender.send('song:retrieve', songs)
   } catch (err) {
