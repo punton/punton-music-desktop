@@ -3,7 +3,7 @@
     <b-table striped hover foot-clone :items="songs" :fields="fields" class="playlist">
       <template slot="playing" slot-scope="data">
         <div class="playing-icon">
-          <play-button :song="data.item" :playingSongId="playingSongId" @selectSong="selectSong"></play-button>
+          <play-button :song="data.item" :playingSongId="playingSongId" @selectSong="selectSong" :isPlaying="isPlaying"></play-button>
         </div>
       </template>
       <template slot="duration" slot-scope="data">
@@ -37,7 +37,8 @@ export default {
   },
   props: [
     'songs',
-    'playingSongId'
+    'playingSongId',
+    'isPlaying'
   ],
   data () {
     return {

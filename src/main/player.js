@@ -100,5 +100,6 @@ ipcMain.on('set:state-isPlaying', (event, isPlaying) => {
   // } else {
   //   event.sender.send('player:suspend')
   // }
+  event.sender.send('state:reply', currentState)
   event.sender.send('player:switchState', isPlaying)
 })

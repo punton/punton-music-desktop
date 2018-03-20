@@ -5,7 +5,7 @@
         <sidebar></sidebar>
       </div>
       <div class="col-11 framed">
-        <content-list :state="state" :songs="songs" :playingSongId="state.song.id"></content-list>
+        <content-list :state="state" :songs="songs" :playingSongId="state.song.id" :isPlaying="state.isPlaying"></content-list>
       </div>
     </div>
     <div class="row framed">
@@ -30,7 +30,6 @@
           }
         },
         player: {
-          isPlaying: false,
           context: null,
           source: null,
           gainNode: null
@@ -43,7 +42,7 @@
       ipcRenderer.on('state:reply', (event, arg) => {
         // console.log('Before: ' + JSON.stringify(this.state))
         this.state = arg
-        console.table(arg.song)
+        // console.table(arg.song)
         // console.log('After: ' + JSON.stringify(this.state))
       })
 

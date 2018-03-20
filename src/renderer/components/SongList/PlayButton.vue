@@ -10,11 +10,13 @@ import playBtnFillBlackIcon from '../../assets/icons/ic_play_circle_filled_black
 import pauseBtnIcon from '../../assets/icons/ic_pause_circle_outline_black_24dp.png'
 import playIcon from '../../assets/icons/ic_play_arrow_black_24dp.png'
 import pauseBtnFillBlackIcon from '../../assets/icons/ic_pause_circle_filled_black_24dp.png'
+import { ipcRenderer } from 'electron'
 
 export default {
   props: [
     'song',
-    'playingSongId'
+    'playingSongId',
+    'isPlaying'
   ],
   data () {
     return {
@@ -27,26 +29,33 @@ export default {
     }
   },
   watch: {
-    playingSongId: function (newVal, oldVal) {
-      this.setIcon(this.isThisSongPlaying ? playIcon : null)
+    playingSongId: function () {
+      this.setIcon(this.isThisSongPlaying && this.isPlaying ? playIcon : null)
     },
-    songId: function () {
-      this.setIcon(this.isThisSongPlaying ? playIcon : null)
+    song: function () {
+      this.setIcon(this.isThisSongPlaying && this.isPlaying ? playIcon : null)
+    },
+    isPlaying: function () {
+      this.setIcon(this.isThisSongPlaying && this.isPlaying ? playIcon : null)
     }
   },
   methods: {
     onMouseOver: function (e) {
-      this.setIcon(this.isThisSongPlaying ? pauseBtnIcon : playBtnIcon)
+      this.setIcon(this.isThisSongPlaying && this.isPlaying ? pauseBtnIcon : playBtnIcon)
     },
     onMouseLeave: function (e) {
-      this.setIcon(this.isThisSongPlaying ? playIcon : null)
+      this.setIcon(this.isThisSongPlaying && this.isPlaying ? playIcon : null)
     },
     onClick: function (e) {
       e.preventDefault()
-      this.$emit('selectSong', this.song)
+      if (this.isThisSongPlaying && this.isPlaying) {
+        ipcRenderer.send('set:state-isPlaying', false)
+      } else {
+        this.$emit('selectSong', this.song)
+      }
     },
     onMouseDown: function (e) {
-      this.setIcon(this.isThisSongPlaying ? pauseBtnFillBlackIcon : playBtnFillBlackIcon)
+      this.setIcon(this.isThisSongPlaying && this.isPlaying ? pauseBtnFillBlackIcon : playBtnFillBlackIcon)
     },
     onMouseUp: function (e) {
       this.setIcon(playBtnIcon)
