@@ -3,11 +3,11 @@
     <b-table striped hover foot-clone :items="songs" :fields="fields" class="playlist">
       <template slot="playing" slot-scope="data">
         <div class="playing-icon">
-          <play-button :songPath="data.item.path" :songId="data.item.id" @setPlayingSongId="setPlayingSongId" :playingSongId="playingSongId"></play-button>
+          <play-button :song="data.item" :playingSongId="playingSongId" @selectSong="selectSong"></play-button>
         </div>
       </template>
       <template slot="duration" slot-scope="data">
-        {{ durationFormat(data.item.duration) }}
+        {{durationFormat(data.item.duration)}}
       </template>
     </b-table>
   </div>
@@ -35,16 +35,18 @@ export default {
     draggable,
     PlayButton
   },
+  props: [
+    'songs',
+    'playingSongId'
+  ],
   data () {
     return {
-      songs: [],
       fields: [
         { key: 'playing', label: '⯈', class: 'text-center', tdClass: 'playing-icon' },
         { key: 'title', sortable: true },
         { key: 'artist', sortable: true },
         { key: 'duration', sortable: true, class: 'text-center' }
-      ],
-      playingSongId: null
+      ]
     }
   },
   methods: {
@@ -58,19 +60,15 @@ export default {
       console.table(songs)
       ipcRenderer.send('songList:save', songs)
     },
+    selectSong: function (song) {
+      console.log(song.path)
+      ipcRenderer.send('select:song', song)
+    },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
-    },
-    setPlayingSongId: function (songId) {
-      this.playingSongId = songId
     }
   },
   beforeCreate () {
-    ipcRenderer.on('song:retrieve', (event, songs) => {
-      songs.forEach(song => {
-        this.songs.push(song.dataValues)
-      })
-    })
     ipcRenderer.on('song:requestWaveform', (event, song) => {
       let { songData, songMetadata, total } = song
       console.log(total)
@@ -92,7 +90,7 @@ export default {
 
 <style scoped>
 .dropzone {
-  border: 5px dashed rgb(0, 17, 255);
+  /* border: 5px dashed rgb(0, 17, 255); */
   min-height: 100%;
   width: 100%;
 }

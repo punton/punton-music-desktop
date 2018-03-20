@@ -13,18 +13,17 @@ import pauseBtnFillBlackIcon from '../../assets/icons/ic_pause_circle_filled_bla
 
 export default {
   props: [
-    'songPath',
-    'songId',
+    'song',
     'playingSongId'
   ],
   data () {
     return {
-      playingStatusIcon: this.playingSongId === this.songId ? playIcon : null
+      playingStatusIcon: this.playingSongId === this.song.id ? playIcon : null
     }
   },
   computed: {
     isThisSongPlaying: function () {
-      return this.playingSongId === this.songId
+      return this.playingSongId === this.song.id
     }
   },
   watch: {
@@ -44,7 +43,7 @@ export default {
     },
     onClick: function (e) {
       e.preventDefault()
-      this.$emit('setPlayingSongId', this.isThisSongPlaying ? null : this.songId)
+      this.$emit('selectSong', this.song)
     },
     onMouseDown: function (e) {
       this.setIcon(this.isThisSongPlaying ? pauseBtnFillBlackIcon : playBtnFillBlackIcon)

@@ -1,15 +1,15 @@
 <template>
-  <div id="wrapper" class="container-fluid">
+  <div v-if="state" id="wrapper" class="container-fluid">
     <div class="row">
       <div class="col-1 framed">
         <sidebar></sidebar>
       </div>
       <div class="col-11 framed">
-        <content-list :state="state" :collection="collection"></content-list>
+        <content-list :state="state" :songs="songs" :playingSongId="state.song.id"></content-list>
       </div>
     </div>
     <div class="row framed">
-      <player :currentTime="currentSong.time"></player>
+      <player :state="state" :player="player"></player>
     </div>
   </div>
 </template>
@@ -25,89 +25,133 @@
     data () {
       return {
         state: {
+          song: {
+            id: null
+          }
+        },
+        player: {
           isPlaying: false,
-          tab: 0,
-          selectSong: null
-        },
-        collection: {
-          mlPlaylists: [],
-          userPlaylists: [],
-          allSongs: []
-        },
-        currentSong: {
           context: null,
           source: null,
-          gainNode: null,
-          time: 0,
-          duration: 0
-        }
+          gainNode: null
+        },
+        songs: []
       }
     },
     created: function () {
-      // console.log('Created at Parent')
-
-      // ipcRenderer.send('getCurrentTab')
-      ipcRenderer.send('getCurrentState')
-      ipcRenderer.send('getCollection')
-
-      ipcRenderer.on('getCollection-reply', (event, arg) => {
-        // console.log('Reply from getting collection :')
-        // console.log(arg)
-
-        this.collection = {
-          mlPlaylists: arg.mlPlaylists,
-          userPlaylists: arg.userPlaylists,
-          allSongs: arg.allSongs
-        }
-      })
-      ipcRenderer.on('currentState-reply', (event, arg) => {
-        console.log('Current state: ' + arg)
-        this.state.isPlaying = arg.isPlaying
-        this.state.tab = arg.tab
+      // Listen to state:reply
+      ipcRenderer.on('state:reply', (event, arg) => {
+        // console.log('Before: ' + JSON.stringify(this.state))
+        this.state = arg
+        console.table(arg.song)
+        // console.log('After: ' + JSON.stringify(this.state))
       })
 
-      ipcRenderer.on('currentTab-reply', (event, arg) => {
-        console.log('Current tab: ' + arg)
-        this.state.tab = arg
+      // Get initial state
+      ipcRenderer.send('get:state')
+      // Listen to song:retrieve
+      ipcRenderer.on('song:retrieve', (event, songs) => {
+        this.songs = []
+        // console.log(songs)
+        songs.forEach(song => {
+          this.songs.push(song.dataValues)
+        })
       })
+      // Get songs
+      ipcRenderer.send('playlist:find', 'ml')
 
-      ipcRenderer.on('playSong', (event, arg) => {
-        console.log('Playing song . . .')
-        if (this.currentSong.context) {
-          if (this.currentSong.context.state === 'running') {
-            this.currentSong.source.stop(0)
+      // ipcRenderer.send('getCollection')
+
+      // ipcRenderer.on('getCollection-reply', (event, arg) => {
+      //   this.collection = {
+      //     mlPlaylists: arg.mlPlaylists,
+      //     userPlaylists: arg.userPlaylists,
+      //     allSongs: arg.allSongs
+      //   }
+      // })
+
+      // ipcRenderer.on('currentTab-reply', (event, arg) => {
+      //   console.log('Current tab: ' + arg)
+      //   this.state.tab = arg
+      // })
+
+      // ipcRenderer.on('player:resume', (event, arg) => {
+      //   if (this.player.context) {
+      //     console.log('Resuming ...')
+      //     this.player.context.resume()
+      //   }
+      // })
+
+      // ipcRenderer.on('player:suspend', (event, arg) => {
+      //   if (this.player.context) {
+      //     console.log('Suspending ...')
+      //     this.player.context.suspend()
+      //   }
+      // })
+      ipcRenderer.on('player:switchState', (event, arg) => {
+        if (this.player.context) {
+          console.log('Switch state to: ' + arg)
+          if (arg) {
+            this.player.context.resume()
+          } else {
+            this.player.context.suspend()
           }
         }
-        this.currentSong.context = new AudioContext()
-        this.currentSong.source = this.currentSong.context.createBufferSource()
-        this.currentSong.gainNode = this.currentSong.context.createGain()
-        console.log('Default gain node value: ' + this.currentSong.gainNode.gain.value)
-        // Change volume to 40%
-        this.currentSong.gainNode.gain.value = 0.4
-        console.log('Changed gain node value: ' + this.currentSong.gainNode.gain.value)
-        let audioData = arg.buffer
+      })
+
+      ipcRenderer.on('play:song', (event, song) => {
+        console.log('Playing song . . .')
+        if (this.player.context) {
+          if (this.player.context.state === 'running') {
+            this.player.source.stop(0)
+            this.player.context.close()
+          }
+        }
+
+        let newCtx = new AudioContext()
+        this.player.context = newCtx
+        this.player.source = newCtx.createBufferSource()
+        this.player.gainNode = newCtx.createGain()
+        // Change volume to 50%
+        this.player.gainNode.gain.value = 0.3
+        let audioData = song.buffer
+        // ipcRenderer.send('set:player', this.state.player)
         this.playSong(audioData)
       })
     },
+    beforeDestroy () {
+      if (this.player.context) {
+        this.player.context.close()
+        this.state.isPlaying = false
+        console.log(JSON.stringify(this.state))
+        ipcRenderer.send('set:state-isPlaying', this.state.isPlaying)
+      }
+    },
     methods: {
       playSong: function (audioData) {
-        let source = this.currentSong.source
-        let audioCtx = this.currentSong.context
-        let gainNode = this.currentSong.gainNode
-        let getCurrentTime = this.getCurrentTime
+        // let source = this.currentSong.source
+        // let audioCtx = this.currentSong.context
+        // let gainNode = this.currentSong.gainNode
+        let updateTime = this.updateTime
+
+        let source = this.player.source
+        let audioCtx = this.player.context
+        let gainNode = this.player.gainNode
+
         source.start(0)
         audioCtx.decodeAudioData(audioData, function (buffer) {
           source.buffer = buffer
           source.connect(gainNode)
           gainNode.connect(audioCtx.destination)
-          window.requestAnimationFrame(getCurrentTime)
+          window.requestAnimationFrame(updateTime)
         })
       },
-      getCurrentTime: function () {
-        if (this.currentSong.context) {
-          this.currentSong.time = this.currentSong.context.currentTime
-          // console.log(this.currentSong.time)
-          window.requestAnimationFrame(this.getCurrentTime)
+      updateTime: function () {
+        if (this.player.context) {
+          // console.log('Time: ' + this.player.context.currentTime)
+          // ipcRenderer.send('set:time', this.player.context.currentTime)
+          // this.currentSong.time = this.currentSong.context.currentTime
+          window.requestAnimationFrame(this.updateTime)
         }
       }
     }
