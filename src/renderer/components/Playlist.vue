@@ -18,6 +18,8 @@ export default {
   },
   methods: {
   },
+  created () {
+  },
   mounted: function () {
     ipcRenderer.send('getCurrentTab')
 

@@ -38,7 +38,8 @@ export default {
   props: [
     'songs',
     'playingSongId',
-    'isPlaying'
+    'isPlaying',
+    'playlist'
   ],
   data () {
     return {
@@ -58,11 +59,9 @@ export default {
       _.values(e.dataTransfer.files).forEach(song => {
         songs.push({ name: song.name, path: song.path })
       })
-      console.table(songs)
-      ipcRenderer.send('songList:save', songs)
+      ipcRenderer.send('songList:save', { songs, playlist: this.playlist })
     },
     selectSong: function (song) {
-      console.log(song.path)
       ipcRenderer.send('select:song', song)
     },
     durationFormat: function (duration) {
@@ -71,17 +70,19 @@ export default {
   },
   beforeCreate () {
     ipcRenderer.on('song:requestWaveform', (event, song) => {
-      let { songData, songMetadata, total } = song
-      console.log(total)
+      let { songData, songMetadata } = song
       getWaveform(songData)
         .then(waveform => {
-          ipcRenderer.send('song:result', { id: songMetadata.id, waveMax: waveform.max, waveMin: waveform.min })
+          ipcRenderer.send('song:result', {
+            id: songMetadata.id,
+            waveMax: waveform.max,
+            waveMin: waveform.min
+          })
         })
-      this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path, duration: songMetadata.duration, artist: songMetadata.artist })
     })
-  },
-  mounted () {
-    ipcRenderer.send('playlist:find', 'ml')
+    ipcRenderer.on('songList:refresh', () => {
+      ipcRenderer.send('songList:find', this.playlist.id)
+    })
   },
   beforeDestroy () {
     audioCtx.close()

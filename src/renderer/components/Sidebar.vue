@@ -2,24 +2,24 @@
   <div class="container-fluid" id="side-bar">
     <b-list-group>
       <b-list-group-item 
-        v-on:mouseenter="highlight"
-        v-on:mouseleave="unhighlight"
+        @mouseenter="highlight"
+        @mouseleave="unhighlight"
         v-b-tooltip.hover.right="'Recommendation'"
-        v-on:click="setCurrentTab(0)">
+        @click="setCurrentTab(0)">
         <thumbup-icon/>
       </b-list-group-item>
       <b-list-group-item 
-        v-on:mouseenter="highlight" 
-        v-on:mouseleave="unhighlight" 
+        @mouseenter="highlight" 
+        @mouseleave="unhighlight" 
         v-b-tooltip.hover.right="'Songs'"
-        v-on:click="setCurrentTab(1)">
+        @click="setCurrentTab(1)">
         <music-note-icon/><sup><asterisk-icon/></sup>
       </b-list-group-item>
       <b-list-group-item 
-        v-on:mouseenter="highlight" 
-        v-on:mouseleave="unhighlight" 
+        @mouseenter="highlight" 
+        @mouseleave="unhighlight" 
         v-b-tooltip.hover.right="'Playlists'"
-        v-on:click="setCurrentTab(2)">
+        @click="setCurrentTab(2)">
         <playlist-icon/>
       </b-list-group-item>
     </b-list-group>
@@ -35,10 +35,11 @@ import AsteriskIcon from 'vue-material-design-icons/asterisk.vue'
 import {ipcRenderer} from 'electron'
 
 export default {
+  props: ['setPlaylist'],
   components: { MusicNoteIcon, PlaylistIcon, ThumbupIcon, AsteriskIcon },
   data () {
     return {
-
+      playlists: []
     }
   },
   methods: {
@@ -50,18 +51,20 @@ export default {
       e.target.style.backgroundColor = 'white'
       e.target.style.fill = 'black'
     },
-    showRecommendation: function () {
-      // console.log('Getting ML playlists . . .')
-      // ipcRenderer.send('getMlPlaylists')
-    },
-    setCurrentTab: function (tab) {
-      ipcRenderer.send('setCurrentTab', tab)
+    setCurrentTab: function (playlistIndex) {
+      this.$emit('setPlaylist', this.playlists[playlistIndex])
     }
   },
   mounted: function () {
-    // ipcRenderer.send('getMlPlaylists')
-    // ipcRenderer.send('getUserPlaylists')
-    // ipcRenderer.send('getAllSongs')
+    ipcRenderer.send('playlist:requestName')
+  },
+  created () {
+    ipcRenderer.on('playlist:receiveName', (event, playlists) => {
+      playlists.forEach(playlist => {
+        this.playlists.push(playlist.dataValues)
+      })
+      this.$emit('setPlaylist', playlists[0].dataValues)
+    })
   }
 }
 </script>

@@ -1,12 +1,24 @@
 import Sequelize from 'sequelize'
 
 const Playlist = global.db.define('playlist', {
-  Id: {
+  id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV4,
     primaryKey: true
   },
-  Name: { type: Sequelize.STRING, allowNull: false }
+  name: { type: Sequelize.STRING, allowNull: false }
+})
+
+global.db.sync().then(() => {
+  Playlist.count().then(count => {
+    if (count === 0) {
+      Playlist.bulkCreate([
+        { name: 'Machine Learning' },
+        { name: 'Custom' },
+        { name: 'All' }
+      ])
+    }
+  })
 })
 
 export default Playlist
