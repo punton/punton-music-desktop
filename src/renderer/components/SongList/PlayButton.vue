@@ -20,48 +20,51 @@ export default {
   ],
   data () {
     return {
-      playingStatusIcon: this.playingSongId === this.song.id ? playIcon : null
+      playingStatusIcon: this.isThisSongPlaying ? playIcon : null
     }
   },
   computed: {
     isThisSongPlaying: function () {
-      return this.playingSongId === this.song.id
+      return (this.playingSongId === this.song.id) && this.isPlaying
     }
   },
   watch: {
     playingSongId: function () {
-      this.setIcon(this.isThisSongPlaying && this.isPlaying ? playIcon : null)
+      this.showPlayOrNull()
     },
     song: function () {
-      this.setIcon(this.isThisSongPlaying && this.isPlaying ? playIcon : null)
+      this.showPlayOrNull()
     },
     isPlaying: function () {
-      this.setIcon(this.isThisSongPlaying && this.isPlaying ? playIcon : null)
+      this.showPlayOrNull()
     }
   },
   methods: {
     onMouseOver: function (e) {
-      this.setIcon(this.isThisSongPlaying && this.isPlaying ? pauseBtnIcon : playBtnIcon)
+      this.setIcon(this.isThisSongPlaying ? pauseBtnIcon : playBtnIcon)
     },
     onMouseLeave: function (e) {
-      this.setIcon(this.isThisSongPlaying && this.isPlaying ? playIcon : null)
+      this.showPlayOrNull()
     },
     onClick: function (e) {
       e.preventDefault()
-      if (this.isThisSongPlaying && this.isPlaying) {
+      if (this.isThisSongPlaying) {
         ipcRenderer.send('set:state-isPlaying', false)
       } else {
         this.$emit('selectSong', this.song)
       }
     },
     onMouseDown: function (e) {
-      this.setIcon(this.isThisSongPlaying && this.isPlaying ? pauseBtnFillBlackIcon : playBtnFillBlackIcon)
+      this.setIcon(this.isThisSongPlaying ? pauseBtnFillBlackIcon : playBtnFillBlackIcon)
     },
     onMouseUp: function (e) {
       this.setIcon(playBtnIcon)
     },
     setIcon: function (icon) {
       this.playingStatusIcon = icon
+    },
+    showPlayOrNull: function () {
+      this.setIcon(this.isThisSongPlaying ? playIcon : null)
     }
   }
 }
