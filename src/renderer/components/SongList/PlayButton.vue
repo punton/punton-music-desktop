@@ -20,7 +20,7 @@ export default {
   ],
   data () {
     return {
-      playingStatusIcon: this.isThisSongPlaying ? playIcon : null
+      playingStatusIcon: (this.playingSongId === this.song.id) && this.isPlaying ? playIcon : null
     }
   },
   computed: {
