@@ -25,7 +25,11 @@ const getWaveform = (songData) => {
   return new Promise((resolve, reject) => {
     webAudioBuilder(audioCtx, songData.buffer.slice(0), (err, waveform) => {
       if (err) reject(err)
-      resolve(waveform)
+      try {
+        resolve(waveform.resample({width: 1024}))
+      } catch (e) {
+        if (e) resolve(waveform)
+      }
     })
   })
 }
