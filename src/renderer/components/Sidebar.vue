@@ -19,7 +19,7 @@
         @mouseenter="highlight" 
         @mouseleave="unhighlight" 
         v-b-tooltip.hover.right="'Playlists'"
-        @click="setCurrentTab(2)">
+        @click="showAllPlaylists()">
         <playlist-icon/>
       </b-list-group-item>
     </b-list-group>
@@ -35,7 +35,7 @@ import AsteriskIcon from 'vue-material-design-icons/asterisk.vue'
 import {ipcRenderer} from 'electron'
 
 export default {
-  props: ['setPlaylist'],
+  props: ['setPlaylist', 'showPlaylists'],
   components: { MusicNoteIcon, PlaylistIcon, ThumbupIcon, AsteriskIcon },
   data () {
     return {
@@ -52,7 +52,10 @@ export default {
       e.target.style.fill = 'black'
     },
     setCurrentTab: function (playlistIndex) {
-      this.$emit('setPlaylist', this.playlists[playlistIndex])
+      this.$emit('setPlaylist', { isPlaylist: false, songList: this.playlists[playlistIndex] })
+    },
+    showAllPlaylists: function () {
+      this.$emit('showPlaylists', { isPlaylist: true, playlists: this.playlists.slice(2) })
     }
   },
   mounted: function () {
@@ -63,7 +66,7 @@ export default {
       playlists.forEach(playlist => {
         this.playlists.push(playlist.dataValues)
       })
-      this.$emit('setPlaylist', playlists[0].dataValues)
+      this.$emit('setPlaylist', { isPlaylist: false, songList: playlists[0].dataValues })
     })
   }
 }

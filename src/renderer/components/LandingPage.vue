@@ -2,15 +2,20 @@
   <div v-if="state" id="wrapper" class="container-fluid">
     <div class="row">
       <div class="col-1 framed">
-        <sidebar @setPlaylist="setPlaylist"></sidebar>
+        <sidebar @setPlaylist="setPlaylist" @showPlaylists="showPlaylists"></sidebar>
       </div>
       <div class="col-11 framed">
-        <song-list
-          :songs="songs"
-          :playingSongId="state.song.id"
-          :isPlaying="state.isPlaying"
-          :playlist="currentPlaylist"
-          ></song-list>
+          <song-list
+            v-if="!isPlaylist"
+            :songs="songs"
+            :playingSongId="state.song.id"
+            :isPlaying="state.isPlaying"
+            :playlist="currentPlaylist"
+            ></song-list>
+          <playlist
+            v-else-if="isPlaylist"
+            :playlists="currentPlaylist">
+          </playlist>
       </div>
     </div>
     <div class="row framed">
@@ -23,10 +28,11 @@ import {ipcRenderer} from 'electron'
 import Sidebar from './Sidebar'
 import Player from './Player'
 import SongList from './SongList'
+import Playlist from './Playlist'
 
 export default {
   name: 'landing-page',
-  components: { Sidebar, Player, SongList },
+  components: { Sidebar, Player, SongList, Playlist },
   data () {
     return {
       state: {
@@ -40,7 +46,8 @@ export default {
         gainNode: null
       },
       songs: [],
-      currentPlaylist: null
+      currentPlaylist: null,
+      isPlaylist: false
     }
   },
   created: function () {
@@ -156,9 +163,14 @@ export default {
         window.requestAnimationFrame(this.updateTime)
       }
     },
-    setPlaylist: function (playlist) {
-      this.currentPlaylist = playlist
+    setPlaylist: function ({isPlaylist, songList}) {
+      this.isPlaylist = isPlaylist
+      this.currentPlaylist = songList
       ipcRenderer.send('songList:find', this.currentPlaylist.id)
+    },
+    showPlaylists: function ({isPlaylist, playlists}) {
+      this.isPlaylist = isPlaylist
+      this.currentPlaylist = playlists
     }
   }
 }
