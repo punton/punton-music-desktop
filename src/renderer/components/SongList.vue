@@ -1,6 +1,6 @@
 <template>
   <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
-    <b-table striped hover foot-clone :items="songs" :fields="fields" class="playlist">
+    <b-table striped hover foot-clone :items="this.getSongs" :fields="fields" class="playlist">
       <template slot="playing" slot-scope="data">
         <div class="playing-icon">
           <play-button :song="data.item" :playingSongId="playingSongId" @selectSong="selectSong"></play-button>
@@ -19,6 +19,7 @@ import _ from 'lodash'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
+import { mapGetters, mapActions } from 'vuex'
 
 const audioCtx = new AudioContext()
 const getWaveform = (songData) => {
@@ -62,11 +63,15 @@ export default {
     },
     selectSong: function (song) {
       console.log(song.path)
-      ipcRenderer.send('select:song', song)
+      this.setSelectedSong(song)
+      ipcRenderer.send('select:songv2', song)
     },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
-    }
+    },
+    ...mapActions([
+      'setSelectedSong'
+    ])
   },
   beforeCreate () {
     ipcRenderer.on('song:requestWaveform', (event, song) => {
@@ -79,11 +84,16 @@ export default {
       this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path, duration: songMetadata.duration, artist: songMetadata.artist })
     })
   },
-  mounted () {
-    ipcRenderer.send('playlist:find', 'ml')
-  },
-  beforeDestroy () {
-    audioCtx.close()
+  // mounted () {
+  //   // ipcRenderer.send('playlist:find', 'ml')
+  // },
+  // beforeDestroy () {
+  //   audioCtx.close()
+  // },
+  computed: {
+    ...mapGetters([
+      'getSongs'
+    ])
   }
 }
 </script>
@@ -96,8 +106,8 @@ export default {
 }
 
 .scrollable {
-  overflow-y: auto;
   height: 85vh;
+  overflow-y: auto;
 }
 
 .playing-icon {

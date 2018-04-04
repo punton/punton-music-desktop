@@ -3,7 +3,8 @@
     <div class="row" id="main-panel">
       <div class="col">
         <p>Playing: {{this.state.song.title}}</p>
-        {{this.state.isPlaying}} {{this.player.volume}} {{this.player.context ? this.player.context.currentTime : -1 }} {{this.state.song ? this.state.song.duration : -1}}
+        <p>{{this.player.context ? this.player.context.currentTime : 0}}</p>
+        <!-- {{this.state.isPlaying}} {{this.player.volume}} {{this.player.context ? this.player.context.currentTime : 0 }} {{this.state.song ? this.state.song.duration : -1}} -->
       </div>
       <div class="col" id="panel">
         <div class="row" id="icons">
@@ -36,7 +37,7 @@
       </div>
       <div class="col">
         <input type="range" min="0" max="100" v-on:input="changeVolume($event)">
-        <p>{{this.player.volume}}</p>
+        <p>{{(this.player.gainNode ? this.player.gainNode.gain.value * 100 : 0).toFixed(2)}}%</p>
       </div>
     </div>
   </div>
@@ -61,7 +62,6 @@
     methods: {
       highlight: function (e) {
         // console.log('Highlighted.')
-        // console.log(e.target.style)
         e.target.style.backgroundColor = 'black'
         e.target.style.fill = 'white'
       },
@@ -93,7 +93,11 @@
         }
       },
       changeVolume: function (event) {
-        this.player.gainNode.gain.value = event.target.valueAsNumber / 100
+        // TO:DO move to LandingPage
+        let gainNode = this.player.gainNode
+        if (gainNode) {
+          gainNode.gain.value = event.target.valueAsNumber / 100
+        }
       }
     }
   }

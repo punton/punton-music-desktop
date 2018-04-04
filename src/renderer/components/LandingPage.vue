@@ -30,7 +30,6 @@
           }
         },
         player: {
-          isPlaying: false,
           context: null,
           source: null,
           gainNode: null
@@ -60,34 +59,6 @@
       // Get songs
       ipcRenderer.send('playlist:find', 'ml')
 
-      // ipcRenderer.send('getCollection')
-
-      // ipcRenderer.on('getCollection-reply', (event, arg) => {
-      //   this.collection = {
-      //     mlPlaylists: arg.mlPlaylists,
-      //     userPlaylists: arg.userPlaylists,
-      //     allSongs: arg.allSongs
-      //   }
-      // })
-
-      // ipcRenderer.on('currentTab-reply', (event, arg) => {
-      //   console.log('Current tab: ' + arg)
-      //   this.state.tab = arg
-      // })
-
-      // ipcRenderer.on('player:resume', (event, arg) => {
-      //   if (this.player.context) {
-      //     console.log('Resuming ...')
-      //     this.player.context.resume()
-      //   }
-      // })
-
-      // ipcRenderer.on('player:suspend', (event, arg) => {
-      //   if (this.player.context) {
-      //     console.log('Suspending ...')
-      //     this.player.context.suspend()
-      //   }
-      // })
       ipcRenderer.on('player:switchState', (event, arg) => {
         if (this.player.context) {
           console.log('Switch state to: ' + arg)
@@ -100,7 +71,7 @@
       })
 
       ipcRenderer.on('play:song', (event, song) => {
-        console.log('Playing song . . .')
+        // console.log('Playing song . . .')
         if (this.player.context) {
           if (this.player.context.state === 'running') {
             this.player.source.stop(0)
@@ -129,29 +100,27 @@
     },
     methods: {
       playSong: function (audioData) {
-        // let source = this.currentSong.source
-        // let audioCtx = this.currentSong.context
-        // let gainNode = this.currentSong.gainNode
-        let updateTime = this.updateTime
+        console.log('[Decodinging song]')
 
         let source = this.player.source
         let audioCtx = this.player.context
         let gainNode = this.player.gainNode
-
+        let updateTimeFunc = this.updateTime
         source.start(0)
         audioCtx.decodeAudioData(audioData, function (buffer) {
           source.buffer = buffer
           source.connect(gainNode)
           gainNode.connect(audioCtx.destination)
-          window.requestAnimationFrame(updateTime)
+          window.requestAnimationFrame(updateTimeFunc)
         })
       },
       updateTime: function () {
         if (this.player.context) {
-          // console.log('Time: ' + this.player.context.currentTime)
-          // ipcRenderer.send('set:time', this.player.context.currentTime)
-          // this.currentSong.time = this.currentSong.context.currentTime
+          let currentTime = this.player.context.currentTime
+          ipcRenderer.send('set:time', currentTime)
           window.requestAnimationFrame(this.updateTime)
+        } else {
+          console.log('No context found.')
         }
       }
     }

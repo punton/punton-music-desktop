@@ -25,3 +25,4 @@ export default {
   props: ['state', 'collection', 'songs', 'playingSongId']
 }
 </script>
+ 

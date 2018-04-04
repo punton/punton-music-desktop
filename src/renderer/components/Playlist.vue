@@ -1,8 +1,11 @@
 <template>
-  <div>
+  <!-- <div>
     <b-list-group>
       <b-list-group-item v-for="playlist in playlists" :key="playlist.id">{{playlist.name}}</b-list-group-item>
     </b-list-group>
+  </div> -->
+  <div class="playlist-grid">
+
   </div>
 </template>
 
@@ -59,3 +62,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .playlist-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+  }
+</style>
