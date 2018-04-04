@@ -1,6 +1,45 @@
 <template>
-  <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
-    <b-table striped hover foot-clone :items="songs" :fields="fields" class="playlist">
+  <el-table
+    class="dropzone"
+    @dragover.prevent @drop="onDrop"
+    :data="songs"
+    height="85vh"
+    style="width: 100%">
+      <el-table-column
+        type="index"
+        label="Play"
+        header-align="center"
+        width="140">
+          <template slot-scope="scope">
+            <div class="playing-icon">
+              <play-button :song="scope.row" :playingSongId="playingSongId" @selectSong="selectSong" :isPlaying="isPlaying"></play-button>
+            </div>
+          </template>
+      </el-table-column>
+      <el-table-column
+        sortable
+        prop="title"
+        label="Title">
+      </el-table-column>
+      <el-table-column
+        sortable
+        prop="artist"
+        label="Artist">
+      </el-table-column>
+      <el-table-column
+        sortable
+        header-align="center"
+        align="center"
+        prop="duration"
+        width="160"
+        label="Duration">
+        <template slot-scope="scope">
+          {{durationFormat(scope.row.duration)}}
+        </template>
+      </el-table-column>
+  </el-table>
+  <!-- <div class="dropzone scrollable" >
+    <b-table striped responsive hover fixed foot-clone :items="songs" :fields="fields" class="playlist">
       <template slot="playing" slot-scope="data">
         <div class="playing-icon">
           <play-button :song="data.item" :playingSongId="playingSongId" @selectSong="selectSong" :isPlaying="isPlaying"></play-button>
@@ -10,7 +49,7 @@
         {{durationFormat(data.item.duration)}}
       </template>
     </b-table>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -96,23 +135,14 @@ export default {
 
 <style scoped>
 .dropzone {
-  /* border: 5px dashed rgb(0, 17, 255); */
+  border: 5px dashed rgb(0, 17, 255);
   min-height: 100%;
   width: 100%;
 }
 
-.scrollable {
-  overflow-y: auto;
-  height: 85vh;
-}
-
 .playing-icon {
   min-width: 100%;
-  width: 30px;
   height: 30px;
-}
-
-table.playlist tr {
-  line-height: 100px;
+  text-align: center;
 }
 </style>

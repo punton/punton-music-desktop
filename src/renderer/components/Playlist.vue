@@ -3,6 +3,9 @@
     <b-list-group-item v-for="playlist in playlists" :key="playlist.id" @click="selectPlaylist(playlist.id)">
       {{playlist.name}}
     </b-list-group-item>
+    <b-list-group-item>
+      +
+    </b-list-group-item>
   </b-list-group>
 </template>
 
