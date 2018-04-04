@@ -1,24 +1,47 @@
 <template>
-  <b-list-group>
-    <b-list-group-item v-for="playlist in playlists" :key="playlist.id" @click="selectPlaylist(playlist.id)">
-      {{playlist.name}}
-    </b-list-group-item>
-    <b-list-group-item>
-      +
-    </b-list-group-item>
-  </b-list-group>
+  <div class="scrollable">
+    <el-collapse accordion>
+      <el-collapse-item
+        v-for="playlist in playlists"
+        :name="playlist.id"
+        :key="playlist.id">
+        <template slot="title">
+          {{playlist.name}}
+        </template>
+        <song-list
+          :songs="songs"
+          :playingSongId="playingSongId"
+          :isPlaying="isPlaying"
+          :playlist="playlist.id"
+        ></song-list>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
 </template>
 
 <script>
-import _ from 'lodash'
+import songList from '@/components/SongList'
 
 export default {
+  components: {
+    songList
+  },
   name: 'playlists',
-  props: ['playlists', 'setPlaylist'],
+  props: ['playlists', 'setPlaylist', 'playingSongId', 'isPlaying', 'songs'],
   methods: {
     selectPlaylist: function (playlistId) {
-      this.$emit('setPlaylist', { isPlaylist: false, songList: _.find(this.playlists, { id: playlistId }) })
+      this.$emit('setPlaylist', { isPlaylist: true, songList: playlistId })
     }
   }
 }
 </script>
+
+<style scoped>
+.scrollable {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  min-height: 85vh;
+  max-height: 85vh;
+  padding: 0 8px 0 8px;
+}
+</style>

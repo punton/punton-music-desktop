@@ -38,18 +38,6 @@
         </template>
       </el-table-column>
   </el-table>
-  <!-- <div class="dropzone scrollable" >
-    <b-table striped responsive hover fixed foot-clone :items="songs" :fields="fields" class="playlist">
-      <template slot="playing" slot-scope="data">
-        <div class="playing-icon">
-          <play-button :song="data.item" :playingSongId="playingSongId" @selectSong="selectSong" :isPlaying="isPlaying"></play-button>
-        </div>
-      </template>
-      <template slot="duration" slot-scope="data">
-        {{durationFormat(data.item.duration)}}
-      </template>
-    </b-table>
-  </div> -->
 </template>
 
 <script>
@@ -84,16 +72,6 @@ export default {
     'isPlaying',
     'playlist'
   ],
-  data () {
-    return {
-      fields: [
-        { key: 'playing', label: '⯈', class: 'text-center', tdClass: 'playing-icon' },
-        { key: 'title', sortable: true },
-        { key: 'artist', sortable: true },
-        { key: 'duration', sortable: true, class: 'text-center' }
-      ]
-    }
-  },
   methods: {
     onDrop: function (e) {
       e.stopPropagation()
@@ -135,7 +113,7 @@ export default {
 
 <style scoped>
 .dropzone {
-  border: 5px dashed rgb(0, 17, 255);
+  /* border: 5px dashed rgb(0, 17, 255); */
   min-height: 100%;
   width: 100%;
 }

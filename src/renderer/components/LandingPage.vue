@@ -14,6 +14,9 @@
             ></song-list>
           <playlist
             v-else-if="isPlaylist"
+            :songs="songs"
+            :playingSongId="state.song.id"
+            :isPlaying="state.isPlaying"
             :playlists="currentPlaylist"
             @setPlaylist="setPlaylist">
           </playlist>
