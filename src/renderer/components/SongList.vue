@@ -2,7 +2,7 @@
   <el-table
     class="dropzone"
     @dragover.prevent @drop="onDrop"
-    :data="songs"
+    :data="getSongs"
     height="85vh"
     style="width: 100%">
       <el-table-column
@@ -12,6 +12,7 @@
         width="140">
           <template slot-scope="scope">
             <div class="playing-icon">
+              {{scope.row}}
               <play-button :song="scope.row" :playingSongId="playingSongId" @selectSong="selectSong" :isPlaying="isPlaying"></play-button>
             </div>
           </template>

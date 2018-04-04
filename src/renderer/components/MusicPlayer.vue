@@ -4,7 +4,7 @@
         <sidebar></sidebar>
       </div>
       <div class="tab-content">
-        <content-list></content-list>
+        <song-list></song-list>
       </div>
       <div class="playback-controller">
         <playback-controller></playback-controller>
@@ -15,23 +15,22 @@
 <script>
   import Sidebar from './Sidebar'
   import { ipcRenderer } from 'electron'
-  import ContentList from './ContentList'
+  import SongList from '@/components/SongList'
   import PlaybackController from './PlaybackController'
   import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'music-player',
-    components: { Sidebar, ContentList, PlaybackController },
+    components: { Sidebar, SongList, PlaybackController },
     data () {
       return {
       }
     },
     created: function () {
-      ipcRenderer.on('song:retrieve', (event, songs) => {
+      ipcRenderer.on('songList:retrieve', (event, songs) => {
+        console.log('Retrieving')
         this.setSongs(songs)
       })
-
-      ipcRenderer.send('playlist:find', 'ml')
 
       ipcRenderer.on('play:song', (event, songInfo) => {
         this.initializePlayer(songInfo)

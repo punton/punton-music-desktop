@@ -16,12 +16,6 @@ const state = {
 }
 
 const mutations = {
-  DECREMENT_MAIN_COUNTER (state) {
-    state.main--
-  },
-  INCREMENT_MAIN_COUNTER (state) {
-    console.log(++state.main)
-  },
   SET_PLAYING_SONG (state, newSong) {
     state.selectedSong = newSong
   },
@@ -35,6 +29,7 @@ const mutations = {
     state.songs = []
     songs.forEach(song => {
       state.songs.push(song.dataValues)
+      console.table(song.dataValues)
     })
   },
   SET_CONTEXT_TIME (state, contextTime) {
