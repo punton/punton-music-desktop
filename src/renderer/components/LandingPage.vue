@@ -37,23 +37,6 @@ import Playlist from './Playlist'
 export default {
   name: 'landing-page',
   components: { Sidebar, Player, SongList, Playlist },
-  data () {
-    return {
-      state: {
-        song: {
-          id: null
-        }
-      },
-      player: {
-        context: null,
-        source: null,
-        gainNode: null
-      },
-      songs: [],
-      currentPlaylist: null,
-      isPlaylist: false
-    }
-  },
   created: function () {
     // Listen to state:reply
     ipcRenderer.on('state:reply', (event, arg) => {
@@ -113,7 +96,7 @@ export default {
     })
 
     ipcRenderer.on('play:song', (event, song) => {
-      console.log('Playing song . . .')
+    // console.log('Playing song . . .')
       if (this.player.context) {
         if (this.player.context.state === 'running') {
           this.player.source.stop(0)
@@ -167,47 +150,66 @@ export default {
         window.requestAnimationFrame(this.updateTime)
       }
     },
-    setPlaylist: function ({isPlaylist, songList}) {
-      this.isPlaylist = isPlaylist
-      this.currentPlaylist = songList
-      ipcRenderer.send('songList:find', this.currentPlaylist.id)
-    },
-    showPlaylists: function ({isPlaylist, playlists}) {
-      this.isPlaylist = isPlaylist
-      this.currentPlaylist = playlists
+    methods: {
+      playSong: function (audioData) {
+        console.log('[Decodinging song]')
+
+        let source = this.player.source
+        let audioCtx = this.player.context
+        let gainNode = this.player.gainNode
+        let updateTimeFunc = this.updateTime
+        source.start(0)
+        audioCtx.decodeAudioData(audioData, function (buffer) {
+          source.buffer = buffer
+          source.connect(gainNode)
+          gainNode.connect(audioCtx.destination)
+          window.requestAnimationFrame(updateTimeFunc)
+        })
+      },
+      updateTime: function () {
+        if (this.player.context) {
+          let currentTime = this.player.context.currentTime
+          ipcRenderer.send('set:time', currentTime)
+          window.requestAnimationFrame(this.updateTime)
+        } else {
+          console.log('No context found.')
+        }
+      }
     }
   }
 }
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
 
-  body { font-family: 'Source Sans Pro', sans-serif; }
+body {
+  font-family: "Source Sans Pro", sans-serif;
+}
 
-  .container-fluid {
-    padding-right: 0px;
-    padding-left: 0px;
-  }
+.container-fluid {
+  padding-right: 0px;
+  padding-left: 0px;
+}
 
-  .row {
-    margin-left: 0px;
-    margin-right: 0px;
-  }
+.row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
 
-  .col-1 {
-    padding-left: 0px;
-    padding-right: 0px;
-  }
+.col-1 {
+  padding-left: 0px;
+  padding-right: 0px;
+}
 
-  .col-11 {
-    /* padding-left: 5px; */
-    padding-left: 1px;
-    padding-right: 0px;
-  }
+.col-11 {
+  /* padding-left: 5px; */
+  padding-left: 1px;
+  padding-right: 0px;
+}
 
-  .framed {
-    border-width: 1px;
-    border-style: solid
-  }
+.framed {
+  border-width: 1px;
+  border-style: solid;
+}
 </style>

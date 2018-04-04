@@ -46,6 +46,7 @@ import _ from 'lodash'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
+import { mapGetters, mapActions } from 'vuex'
 
 const audioCtx = new AudioContext()
 const getWaveform = (songData) => {
@@ -83,11 +84,16 @@ export default {
       ipcRenderer.send('songList:save', { songs, playlist: this.playlist })
     },
     selectSong: function (song) {
-      ipcRenderer.send('select:song', song)
+      console.log(song.path)
+      this.setSelectedSong(song)
+      ipcRenderer.send('select:songv2', song)
     },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
-    }
+    },
+    ...mapActions([
+      'setSelectedSong'
+    ])
   },
   beforeCreate () {
     ipcRenderer.on('song:requestWaveform', (event, song) => {
@@ -105,8 +111,10 @@ export default {
       ipcRenderer.send('songList:find', this.playlist.id)
     })
   },
-  beforeDestroy () {
-    audioCtx.close()
+  computed: {
+    ...mapGetters([
+      'getSongs'
+    ])
   }
 }
 </script>
@@ -116,6 +124,11 @@ export default {
   /* border: 5px dashed rgb(0, 17, 255); */
   min-height: 100%;
   width: 100%;
+}
+
+.scrollable {
+  height: 85vh;
+  overflow-y: auto;
 }
 
 .playing-icon {

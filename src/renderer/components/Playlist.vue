@@ -16,6 +16,7 @@
         ></song-list>
       </el-collapse-item>
     </el-collapse>
+    <div class="playlist-grid">
   </div>
 </template>
 
@@ -44,4 +45,9 @@ export default {
   max-height: 85vh;
   padding: 0 8px 0 8px;
 }
+  .playlist-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+  }
 </style>

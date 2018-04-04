@@ -39,9 +39,9 @@ function createWindow () {
   global.mainWindow = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
-    height: 768,
+    height: 600,
     useContentSize: true,
-    width: 1024,
+    width: 800,
     backgroundThrottling: false
   })
 
