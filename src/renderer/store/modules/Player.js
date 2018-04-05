@@ -8,7 +8,8 @@ const state = {
     source: null,
     gainNode: null
   },
-  playlist: [],
+  playlists: [],
+  currentPlaylist: null,
   songs: [],
   contextTime: 0,
   seekTime: 0,
@@ -23,7 +24,7 @@ const mutations = {
     state.player = player
   },
   SET_PLAYLIST (state, playlist) {
-    state.playlist = playlist
+    state.playlists = playlist
   },
   SET_SONGS (state, songs) {
     state.songs = []
@@ -31,6 +32,13 @@ const mutations = {
       state.songs.push(song.dataValues)
       console.table(song.dataValues)
     })
+  },
+  SET_PLAYLISTS (state, playlists) {
+    state.playlists = playlists
+    console.log(`[Playlists state] Add all playlists to store.`)
+  },
+  SET_CURRENT_PLAYLIST (state, playlist) {
+    state.currentPlaylist = playlist
   },
   SET_CONTEXT_TIME (state, contextTime) {
     state.contextTime = contextTime
@@ -93,6 +101,12 @@ const actions = {
   setContextTime ({ commit }, contextTime) {
     commit('SET_CONTEXT_TIME', contextTime)
   },
+  setPlaylists ({ commit }, playlists) {
+    commit('SET_PLAYLISTS', playlists)
+  },
+  setCurrentPlaylist ({ commit }, playlist) {
+    commit('SET_CURRENT_PLAYLIST', playlist)
+  },
   createPlayer ({ commit, state }) {
     return new Promise((resolve, reject) => {
       commit('CREATE_PLAYER')
@@ -153,6 +167,15 @@ const getters = {
   },
   getVolume: state => {
     return state.player.gainNode ? state.player.gainNode.gain.value * 100 : 0
+  },
+  getPlaylists: state => {
+    return state.playlists
+  },
+  getPlaylistByIndex: state => index => {
+    return state.playlists[index]
+  },
+  getCurrentPlaylist: state => {
+    return state.currentPlaylist
   },
   getSongDuration: state => {
     return state.selectedSong.id ? state.selectedSong.data.duration : 0

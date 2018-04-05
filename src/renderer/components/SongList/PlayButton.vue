@@ -11,6 +11,7 @@ import pauseBtnIcon from '../../assets/icons/ic_pause_circle_outline_black_24dp.
 import playIcon from '../../assets/icons/ic_play_arrow_black_24dp.png'
 import pauseBtnFillBlackIcon from '../../assets/icons/ic_pause_circle_filled_black_24dp.png'
 import { ipcRenderer } from 'electron'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   props: [
@@ -26,7 +27,10 @@ export default {
   computed: {
     isThisSongPlaying: function () {
       return (this.playingSongId === this.song.id) && this.isPlaying
-    }
+    },
+    ...mapGetters([
+      'getSelectedSong'
+    ])
   },
   watch: {
     playingSongId: function () {
@@ -51,7 +55,8 @@ export default {
       if (this.isThisSongPlaying) {
         ipcRenderer.send('set:state-isPlaying', false)
       } else {
-        this.$emit('selectSong', this.song)
+        this.setSelectedSong(this.song)
+        // this.$emit('selectSong', this.song)
       }
     },
     onMouseDown: function (e) {
@@ -65,7 +70,10 @@ export default {
     },
     showPlayOrNull: function () {
       this.setIcon(this.isThisSongPlaying ? playIcon : null)
-    }
+    },
+    ...mapActions([
+      'setSelectedSong'
+    ])
   }
 }
 </script>

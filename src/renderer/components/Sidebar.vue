@@ -26,15 +26,9 @@
 </template>
 
 <script>
-// import MusicNoteIcon from 'vue-material-design-icons/music-note.vue'
-// import PlaylistIcon from 'vue-material-design-icons/playlist-play.vue'
-// import ThumbupIcon from 'vue-material-design-icons/thumb-up.vue'
-// import AsteriskIcon from 'vue-material-design-icons/asterisk.vue'
-
-import {ipcRenderer} from 'electron'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  // components: { MusicNoteIcon, PlaylistIcon, ThumbupIcon, AsteriskIcon },
   data () {
     return {
       playlists: []
@@ -60,22 +54,19 @@ export default {
       })
     },
     setCurrentTab: function (playlistIndex) {
-      this.$emit('setPlaylist', { isPlaylist: false, songList: this.playlists[playlistIndex] })
+      this.setCurrentPlaylist(this.getPlaylistByIndex(playlistIndex))
     },
     showAllPlaylists: function () {
       this.$emit('showPlaylists', { isPlaylist: true, playlists: this.playlists.slice(2) })
-    }
+    },
+    ...mapActions([
+      'setCurrentPlaylist'
+    ])
   },
-  mounted: function () {
-    ipcRenderer.send('playlist:requestName')
-  },
-  created () {
-    ipcRenderer.on('playlist:receiveName', (event, playlists) => {
-      playlists.forEach(playlist => {
-        this.playlists.push(playlist.dataValues)
-      })
-      this.$emit('setPlaylist', { isPlaylist: false, songList: playlists[0].dataValues })
-    })
+  computed: {
+    ...mapGetters([
+      'getPlaylistByIndex'
+    ])
   }
 }
 </script>

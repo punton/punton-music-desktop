@@ -22,13 +22,21 @@
   export default {
     name: 'music-player',
     components: { Sidebar, SongList, PlaybackController },
-    data () {
-      return {
-      }
+    mounted () {
+      ipcRenderer.on('playlist:receiveName', (event, playlists) => {
+        let tempPlaylists = []
+        playlists.forEach(playlist => {
+          tempPlaylists.push(playlist.dataValues)
+        })
+        this.setPlaylists(tempPlaylists)
+        this.setCurrentPlaylist(this.getPlaylistByIndex(0))
+        ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+      })
     },
-    created: function () {
+    created () {
+      ipcRenderer.send('playlist:requestName')
+
       ipcRenderer.on('songList:retrieve', (event, songs) => {
-        console.log('Retrieving')
         this.setSongs(songs)
       })
 
@@ -62,7 +70,9 @@
         'setContextTime',
         'createPlayer',
         'playSong',
-        'stopSong'
+        'stopSong',
+        'setPlaylists',
+        'setCurrentPlaylist'
       ])
     },
     computed: {
@@ -71,7 +81,9 @@
         'getContextTime',
         'getSongDuration',
         'getPlayer',
-        'getSelectedSong'
+        'getSelectedSong',
+        'getPlaylistByIndex',
+        'getCurrentPlaylist'
       ])
     }
   }

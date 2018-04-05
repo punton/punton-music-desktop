@@ -12,7 +12,6 @@
         width="140">
           <template slot-scope="scope">
             <div class="playing-icon">
-              {{scope.row}}
               <play-button :song="scope.row" :playingSongId="playingSongId" @selectSong="selectSong" :isPlaying="isPlaying"></play-button>
             </div>
           </template>
