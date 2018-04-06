@@ -26,8 +26,8 @@ Vue.component('icon', Icon)
 
 /* eslint-disable no-new */
 new Vue({
+  store,
   components: { App },
   router,
-  store,
   template: '<App/>'
 }).$mount('#app')

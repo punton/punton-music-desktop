@@ -15,31 +15,33 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   props: [
-    'song',
-    'playingSongId',
-    'isPlaying'
+    'song'
   ],
   data () {
     return {
-      playingStatusIcon: (this.playingSongId === this.song.id) && this.isPlaying ? playIcon : null
+      playingStatusIcon: this.playingStatus ? playIcon : null
     }
   },
   computed: {
-    isThisSongPlaying: function () {
-      return (this.playingSongId === this.song.id) && this.isPlaying
-    },
     ...mapGetters([
-      'getSelectedSong'
-    ])
+      'getSelectedSong',
+      'isPlayerRunning'
+    ]),
+    isThisSongPlaying: function () {
+      return (this.getSelectedSong.id === this.song.id) && this.isPlayerRunning
+    },
+    playingStatus: function () {
+      return (this.getSelectedSong.id === this.song.id) && this.isPlayerRunning
+    }
   },
   watch: {
-    playingSongId: function () {
+    getSelectedSong: function (n, o) {
       this.showPlayOrNull()
     },
     song: function () {
       this.showPlayOrNull()
     },
-    isPlaying: function () {
+    isPlayerRunning: function () {
       this.showPlayOrNull()
     }
   },
@@ -56,7 +58,7 @@ export default {
         ipcRenderer.send('set:state-isPlaying', false)
       } else {
         this.setSelectedSong(this.song)
-        // this.$emit('selectSong', this.song)
+        ipcRenderer.send('select:songv2', this.song)
       }
     },
     onMouseDown: function (e) {

@@ -30,7 +30,6 @@ const mutations = {
     state.songs = []
     songs.forEach(song => {
       state.songs.push(song.dataValues)
-      console.table(song.dataValues)
     })
   },
   SET_PLAYLISTS (state, playlists) {
@@ -80,6 +79,7 @@ const mutations = {
     }
   },
   SET_SELECTED_SONG (state, song) {
+    console.log(`[Selected Song State]  ${song.id} ${song.title}`)
     state.selectedSong = {
       id: song.id,
       data: song
@@ -184,7 +184,7 @@ const getters = {
     return state.player
   },
   getSelectedSong: state => {
-    console.table(state.selectedSong)
+    // console.table(state.selectedSong)
     return state.selectedSong
   },
   isPlayerRunning: state => {
