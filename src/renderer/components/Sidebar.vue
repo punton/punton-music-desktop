@@ -26,14 +26,11 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  data () {
-    return {
-      playlists: []
-    }
-  },
+  props: ['isShowPlaylists'],
   methods: {
     highlight: function (e) {
       e.target.style.backgroundColor = 'black'
@@ -54,10 +51,12 @@ export default {
       })
     },
     setCurrentTab: function (playlistIndex) {
+      this.$emit('setShowPlaylists', false)
       this.setCurrentPlaylist(this.getPlaylistByIndex(playlistIndex))
+      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
     },
     showAllPlaylists: function () {
-      this.$emit('showPlaylists', { isPlaylist: true, playlists: this.playlists.slice(2) })
+      this.$emit('setShowPlaylists', true)
     },
     ...mapActions([
       'setCurrentPlaylist'
@@ -65,7 +64,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getPlaylistByIndex'
+      'getPlaylistByIndex',
+      'getCurrentPlaylist'
     ])
   }
 }

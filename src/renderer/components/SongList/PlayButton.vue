@@ -55,6 +55,8 @@ export default {
     onClick: function (e) {
       e.preventDefault()
       if (this.isThisSongPlaying) {
+        // TODO: Stop playing a song.
+        console.log('Stop playing a song')
         ipcRenderer.send('set:state-isPlaying', false)
       } else {
         this.setSelectedSong(this.song)

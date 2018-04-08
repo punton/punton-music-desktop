@@ -16,19 +16,27 @@
         ></song-list>
       </el-collapse-item>
     </el-collapse>
-    <div class="playlist-grid">
+    <div class="playlist-grid"></div>
   </div>
 </template>
 
 <script>
 import songList from '@/components/SongList'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
     songList
   },
-  name: 'playlists',
-  props: ['playlists', 'setPlaylist', 'playingSongId', 'isPlaying', 'songs'],
+  props: ['playingSongId', 'isPlaying', 'songs'],
+  computed: {
+    playlists: function () {
+      return this.getPlaylists.slice(2)
+    },
+    ...mapGetters([
+      'getPlaylists'
+    ])
+  },
   methods: {
     selectPlaylist: function (playlistId) {
       this.$emit('setPlaylist', { isPlaylist: true, songList: playlistId })

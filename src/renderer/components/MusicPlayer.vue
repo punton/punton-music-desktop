@@ -1,92 +1,103 @@
 <template>
   <div class="player-grid">
-      <div class="side-bar">
-        <sidebar></sidebar>
-      </div>
-      <div class="tab-content">
-        <song-list></song-list>
-      </div>
-      <div class="playback-controller">
-        <playback-controller></playback-controller>
-      </div>
+    <div class="side-bar">
+      <sidebar @setShowPlaylists="setShowPlaylists"></sidebar>
+    </div>
+    <div class="tab-content">
+      <song-list v-if="!isShowPlaylists"></song-list>
+      <playlist v-else-if="isShowPlaylists"></playlist>
+    </div>
+    <div class="playback-controller">
+      <playback-controller></playback-controller>
+    </div>
   </div>
 </template>
 
 <script>
-  import Sidebar from './Sidebar'
-  import { ipcRenderer } from 'electron'
-  import SongList from '@/components/SongList'
-  import PlaybackController from './PlaybackController'
-  import { mapActions, mapGetters } from 'vuex'
+import Sidebar from './Sidebar'
+import { ipcRenderer } from 'electron'
+import SongList from '@/components/SongList'
+import PlaybackController from './PlaybackController'
+import Playlist from '@/components/Playlist'
+import { mapActions, mapGetters } from 'vuex'
 
-  export default {
-    name: 'music-player',
-    components: { Sidebar, SongList, PlaybackController },
-    mounted () {
-      ipcRenderer.on('playlist:receiveName', (event, playlists) => {
-        let tempPlaylists = []
-        playlists.forEach(playlist => {
-          tempPlaylists.push(playlist.dataValues)
-        })
-        this.setPlaylists(tempPlaylists)
-        this.setCurrentPlaylist(this.getPlaylistByIndex(0))
-        ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
-      })
-    },
-    created () {
-      ipcRenderer.send('playlist:requestName')
-
-      ipcRenderer.on('songList:retrieve', (event, songs) => {
-        this.setSongs(songs)
-      })
-
-      ipcRenderer.on('play:song', (event, songInfo) => {
-        this.initializePlayer(songInfo)
-      })
-    },
-    beforeDestroy () {
-      this.stopSong()
-      console.log('[BeforeDestroying]: Context closed.')
-    },
-    methods: {
-      updateTime: async function () {
-        if (this.getSelectedSong.id) {
-          let player = await this.getPlayer
-          await new Promise((resolve, reject) => {
-            this.setContextTime(player.context.currentTime)
-            window.requestAnimationFrame(this.updateTime)
-            resolve()
-          })
-        }
-      },
-      initializePlayer: async function (songInfo) {
-        await this.stopSong()
-        await this.playSong(songInfo, this.updateTime)
-        this.updateTime()
-      },
-      ...mapActions([
-        'setSongs',
-        'setSeekTIme',
-        'setContextTime',
-        'createPlayer',
-        'playSong',
-        'stopSong',
-        'setPlaylists',
-        'setCurrentPlaylist'
-      ])
-    },
-    computed: {
-      ...mapGetters([
-        'getSeekTime',
-        'getContextTime',
-        'getSongDuration',
-        'getPlayer',
-        'getSelectedSong',
-        'getPlaylistByIndex',
-        'getCurrentPlaylist'
-      ])
+export default {
+  name: 'music-player',
+  components: { Sidebar, SongList, PlaybackController, Playlist },
+  data () {
+    return {
+      isShowPlaylists: false
     }
+  },
+  mounted () {
+    ipcRenderer.on('playlist:receiveName', (event, playlists) => {
+      let tempPlaylists = []
+      playlists.forEach(playlist => {
+        tempPlaylists.push(playlist.dataValues)
+      })
+      this.setPlaylists(tempPlaylists)
+      this.setCurrentPlaylist(this.getPlaylistByIndex(0))
+      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+    })
+  },
+  created () {
+    ipcRenderer.send('playlist:requestName')
+
+    ipcRenderer.on('songList:retrieve', (event, songs) => {
+      this.setSongs(songs)
+    })
+
+    ipcRenderer.on('play:song', (event, songInfo) => {
+      this.initializePlayer(songInfo)
+    })
+  },
+  beforeDestroy () {
+    this.stopSong()
+    console.log('[BeforeDestroying]: Context closed.')
+  },
+  methods: {
+    setShowPlaylists: function (showPlaylists) {
+      console.log(`fwepfewkopf: ${showPlaylists}`)
+      this.isShowPlaylists = showPlaylists
+    },
+    updateTime: async function () {
+      if (this.getSelectedSong.id) {
+        let player = await this.getPlayer
+        await new Promise((resolve, reject) => {
+          this.setContextTime(player.context.currentTime)
+          window.requestAnimationFrame(this.updateTime)
+          resolve()
+        })
+      }
+    },
+    initializePlayer: async function (songInfo) {
+      await this.stopSong()
+      await this.playSong(songInfo, this.updateTime)
+      this.updateTime()
+    },
+    ...mapActions([
+      'setSongs',
+      'setSeekTIme',
+      'setContextTime',
+      'createPlayer',
+      'playSong',
+      'stopSong',
+      'setPlaylists',
+      'setCurrentPlaylist'
+    ])
+  },
+  computed: {
+    ...mapGetters([
+      'getSeekTime',
+      'getContextTime',
+      'getSongDuration',
+      'getPlayer',
+      'getSelectedSong',
+      'getPlaylistByIndex',
+      'getCurrentPlaylist'
+    ])
   }
+}
 </script>
 
 <style scoped>

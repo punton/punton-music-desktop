@@ -3,6 +3,7 @@
     class="dropzone"
     @dragover.prevent @drop="onDrop"
     :data="getSongs"
+    empty-text="Drop song here!"
     height="85vh"
     style="width: 100%">
       <el-table-column

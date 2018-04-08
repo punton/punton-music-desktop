@@ -79,7 +79,6 @@ const mutations = {
     }
   },
   SET_SELECTED_SONG (state, song) {
-    console.log(`[Selected Song State]  ${song.id} ${song.title}`)
     state.selectedSong = {
       id: song.id,
       data: song
