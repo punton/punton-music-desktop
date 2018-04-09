@@ -2,14 +2,65 @@
   <div class="playback-ctrl-grid">
     <div class="playback-left-cell"></div>
     <div class="playback-ctrl-cell">
-      <icon class="random-cell white-icon" scale=2 name="random" v-b-tooltip.hover.top="'Shuffle'"></icon>
+      <el-tooltip effect="dark" placement="top">
+        <div class="random-cell" slot="content">SHUFFLE</div>
+        <el-button
+        class="tab-box"
+        plain
+        circle
+        type="info">
+          <icon name="random" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" placement="top">
+        <div class="backward-cell" slot="content">PREVIOUS</div>
+        <el-button
+        class="tab-box"
+        plain
+        circle
+        type="info">
+          <icon name="backward" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" placement="top">
+        <div class="play-cell" slot="content">PAUSE</div>
+        <el-button
+        class="tab-box"
+        plain
+        circle
+        @click="switchContextState"
+        type="info">
+          <icon name="pause" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" placement="top">
+        <div class="forward-cell" slot="content">FORWARD</div>
+        <el-button
+        class="tab-box"
+        plain
+        circle
+        type="info">
+          <icon name="forward" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" placement="top">
+        <div class="random-cell" slot="content">REPEAT</div>
+        <el-button
+        class="tab-box"
+        plain
+        circle
+        type="info">
+          <icon name="retweet" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <!-- <icon class="random-cell white-icon" scale=2 name="random" v-b-tooltip.hover.top="'Shuffle'"></icon>
       <icon class="backward-cell white-icon" scale=2 name="backward" v-b-tooltip.hover.top="'Previous'"></icon>
       <div @click="switchContextState">
         <icon v-if="this.isContextRunning" class="play-cell white-icon" scale=2 name="pause" v-b-tooltip.hover.top="'Pause'"></icon>
         <icon v-else class="play-cell white-icon" scale=2 name="play" v-b-tooltip.hover.top="'Resume'"></icon>
       </div>
       <icon class="forward-cell white-icon" scale=2 name="forward" v-b-tooltip.hover.top="'Forward'"></icon>
-      <icon class="repeat-cell white-icon" scale=2 name="retweet" v-b-tooltip.hover.top="'Repeat'"></icon>
+      <icon class="repeat-cell white-icon" scale=2 name="retweet" v-b-tooltip.hover.top="'Repeat'"></icon> -->
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>

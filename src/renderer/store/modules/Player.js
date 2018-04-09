@@ -80,10 +80,6 @@ const mutations = {
 }
 
 const actions = {
-  someAsyncTask ({ commit }) {
-    // do something async
-    commit('INCREMENT_MAIN_COUNTER')
-  },
   setSongs ({ commit }, songs) {
     commit('SET_SONGS', songs)
   },

@@ -77,7 +77,14 @@
   }
 </script>
 
+<style>
+  body {
+    margin: 0
+  }
+</style>
+
 <style scoped>
+
   .side-bar {
     grid-area: sb;
   }
