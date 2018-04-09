@@ -23,14 +23,14 @@
         </el-button>
       </el-tooltip>
       <el-tooltip effect="dark" placement="top">
-        <div class="play-cell" slot="content">PAUSE</div>
+        <div class="play-cell" slot="content">{{this.isContextRunning ? 'PAUSE' : 'RESUME'}}</div>
         <el-button
         class="tab-box"
         plain
         circle
         @click="switchContextState"
         type="info">
-          <icon name="pause" scale=2></icon>
+          <icon :name="isContextRunning ? 'pause' : 'play'" scale=2></icon>
         </el-button>
       </el-tooltip>
       <el-tooltip effect="dark" placement="top">
@@ -53,14 +53,6 @@
           <icon name="retweet" scale=2></icon>
         </el-button>
       </el-tooltip>
-      <!-- <icon class="random-cell white-icon" scale=2 name="random" v-b-tooltip.hover.top="'Shuffle'"></icon>
-      <icon class="backward-cell white-icon" scale=2 name="backward" v-b-tooltip.hover.top="'Previous'"></icon>
-      <div @click="switchContextState">
-        <icon v-if="this.isContextRunning" class="play-cell white-icon" scale=2 name="pause" v-b-tooltip.hover.top="'Pause'"></icon>
-        <icon v-else class="play-cell white-icon" scale=2 name="play" v-b-tooltip.hover.top="'Resume'"></icon>
-      </div>
-      <icon class="forward-cell white-icon" scale=2 name="forward" v-b-tooltip.hover.top="'Forward'"></icon>
-      <icon class="repeat-cell white-icon" scale=2 name="retweet" v-b-tooltip.hover.top="'Repeat'"></icon> -->
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
