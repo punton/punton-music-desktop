@@ -57,7 +57,7 @@
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
       <div class="progressbar-cell">
-        <vue-slider 
+        <vue-slider    
           :value="formatTime(this.getCurrentTime).toFixed(2)" 
           :min="0"
           :interval="0.01"
@@ -73,17 +73,15 @@
       </div>
     </div>
     <div class="playback-right-cell">
-      <icon name="volume-down"></icon>
+      <icon name="volume-up"/>
       <vue-slider
-        direction='horizontal'
         :min='0'
         :interval='1'
         :max='100'
         :value='this.getVolume'
         tooltip='hover'
         :width="'50%'"
-        @callback='changeVolume'
-      >
+        @callback='changeVolume'>
       </vue-slider>
     </div>
   </div>
@@ -163,9 +161,9 @@
     background-color: #afafaf;
     display: grid;
     /* grid-auto-columns: auto; */
-    grid-template-areas:
-    "rc bc pc fc tc"
-    "zc gc gc gc dc";
+    grid-template:
+    "rc bc pc fc tc" 1fr 
+    "zc gc gc gc dc" 1fr / 1fr 1fr 1fr 1fr 1fr;
     align-items: center;
     justify-items: center;
   }
@@ -173,14 +171,12 @@
   .playback-left-cell {
     grid-area: plc;
     background-color: #afafaf;
-    /* background-color: red; */
   }
 
   .playback-right-cell {
     grid-area: prc;
     background-color: #afafaf;
-    /* background-color: peachpuff; */
-    display: grid;
+    display: subgrid;
     justify-items: center;
     align-items: center;
   }
@@ -188,12 +184,11 @@
   .playback-ctrl-grid {
     width: 100%;
     display: grid;
-    /* grid-auto-columns: minmax(11.11vw, 11.11vw); */
-    grid-auto-rows: minmax(7.5vh, 7.5vh);
-    grid-auto-columns: auto;
-    grid-template-areas:
-    "plc plc plc pcc pcc pcc prc prc prc"
-    "plc plc plc pcc pcc pcc prc prc prc";
+    /* grid-auto-rows: minmax(7.5vh, 7.5vh);
+    grid-auto-columns: auto; */
+    grid-template:
+    "plc plc pcc pcc pcc prc prc" 7.5vh
+    "plc plc pcc pcc pcc prc prc" 7.5vh / 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   }
 
   .random-cell {
