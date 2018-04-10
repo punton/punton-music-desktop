@@ -3,6 +3,7 @@
     class="dropzone"
     @dragover.prevent @drop="onDrop"
     :data="getSongs"
+    empty-text="Drop song here!"
     height="85vh"
     style="width: 100%">
       <el-table-column
@@ -12,7 +13,7 @@
         width="140">
           <template slot-scope="scope">
             <div class="playing-icon">
-              <play-button :song="scope.row" :playingSongId="playingSongId" @selectSong="selectSong" :isPlaying="isPlaying"></play-button>
+              <play-button :song="scope.row"></play-button>
             </div>
           </template>
       </el-table-column>
@@ -46,7 +47,7 @@ import _ from 'lodash'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 const audioCtx = new AudioContext()
 const getWaveform = (songData) => {
@@ -67,12 +68,6 @@ export default {
     draggable,
     PlayButton
   },
-  props: [
-    'songs',
-    'playingSongId',
-    'isPlaying',
-    'playlist'
-  ],
   methods: {
     onDrop: function (e) {
       e.stopPropagation()
@@ -83,17 +78,9 @@ export default {
       })
       ipcRenderer.send('songList:save', { songs, playlist: this.playlist })
     },
-    selectSong: function (song) {
-      console.log(song.path)
-      this.setSelectedSong(song)
-      ipcRenderer.send('select:songv2', song)
-    },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
-    },
-    ...mapActions([
-      'setSelectedSong'
-    ])
+    }
   },
   beforeCreate () {
     ipcRenderer.on('song:requestWaveform', (event, song) => {

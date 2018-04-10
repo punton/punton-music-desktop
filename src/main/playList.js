@@ -14,3 +14,14 @@ ipcMain.on('playlist:requestName', async (event) => {
     console.error(err.message)
   }
 })
+
+ipcMain.on('playlist:create', async (event, playlistName) => {
+  try {
+    await Playlist.create({
+      name: playlistName
+    })
+    event.sender.send('playlist:requestName')
+  } catch (e) {
+    console.dir(e)
+  }
+})

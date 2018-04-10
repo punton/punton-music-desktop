@@ -13,7 +13,8 @@ const state = {
   songs: [],
   contextTime: 0,
   seekTime: 0,
-  isContextRunning: false
+  isContextRunning: false,
+  contextState: ''
 }
 
 const mutations = {
@@ -30,7 +31,6 @@ const mutations = {
     state.songs = []
     songs.forEach(song => {
       state.songs.push(song.dataValues)
-      console.table(song.dataValues)
     })
   },
   SET_PLAYLISTS (state, playlists) {
@@ -84,13 +84,16 @@ const mutations = {
       id: song.id,
       data: song
     }
+  },
+  SET_CONTEXT_STATE (state, contextState) {
+    console.log(`[Player context state]: ${contextState}`)
+    state.contextState = contextState
   }
 }
 
 const actions = {
-  someAsyncTask ({ commit }) {
-    // do something async
-    commit('INCREMENT_MAIN_COUNTER')
+  setContextState ({ commit }, contextState) {
+    commit('SET_CONTEXT_STATE', contextState)
   },
   setSongs ({ commit }, songs) {
     commit('SET_SONGS', songs)
@@ -122,7 +125,6 @@ const actions = {
     await dispatch('setSeekTime', songInfo.seekTime)
     await new Promise((resolve, reject) => {
       console.log('[Vuex] Successfully decoded. Start playing ...')
-      // console.table(state.player)
       state.player.source.start(0, songInfo.seekTime, state.selectedSong.data.duration)
       state.player.source.onended = function (event) {
         state.player.source.stop(0)
@@ -150,9 +152,6 @@ const actions = {
 }
 
 const getters = {
-  getCounter: state => {
-    return state.main
-  },
   getSongs: state => {
     return state.songs
   },
@@ -184,12 +183,15 @@ const getters = {
     return state.player
   },
   getSelectedSong: state => {
-    console.table(state.selectedSong)
+    // console.table(state.selectedSong)
     return state.selectedSong
   },
   isPlayerRunning: state => {
     console.log(state.player.context ? state.player.context.state === 'running' : false)
     return state.player.context ? state.player.context.state === 'running' : false
+  },
+  getPlayerContextState: state => {
+    return state.contextState
   }
 }
 
