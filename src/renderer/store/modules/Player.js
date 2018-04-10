@@ -104,7 +104,6 @@ const actions = {
     await dispatch('setSeekTime', songInfo.seekTime)
     await new Promise((resolve, reject) => {
       console.log('[Vuex] Successfully decoded. Start playing ...')
-      // console.table(state.player)
       state.player.source.start(0, songInfo.seekTime, state.selectedSong.data.duration)
       state.player.source.onended = function (event) {
         state.player.source.stop(0)

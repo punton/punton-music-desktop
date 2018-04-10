@@ -43,16 +43,9 @@
       </el-tooltip>
       <el-tooltip effect="dark" placement="top">
         <div class="random-cell" slot="content">REPEAT</div>
-        <!-- <el-button
-        class="tab-box"
-        role="button"
-        aria-pressed="false"
-        type="primary">
-          <icon name="retweet" scale=2></icon>
-        </el-button> -->
-        <button type="button" aria-pressed="false" @click="toggleRepeat()">
+        <el-checkbox-button size="mini">
           <icon name="retweet" scale="2"></icon>
-        </button>
+        </el-checkbox-button>
       </el-tooltip>
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
