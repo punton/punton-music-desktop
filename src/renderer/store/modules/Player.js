@@ -13,7 +13,8 @@ const state = {
   songs: [],
   contextTime: 0,
   seekTime: 0,
-  isContextRunning: false
+  isContextRunning: false,
+  contextState: ''
 }
 
 const mutations = {
@@ -83,10 +84,17 @@ const mutations = {
       id: song.id,
       data: song
     }
+  },
+  SET_CONTEXT_STATE (state, contextState) {
+    console.log(`[Player context state]: ${contextState}`)
+    state.contextState = contextState
   }
 }
 
 const actions = {
+  setContextState ({ commit }, contextState) {
+    commit('SET_CONTEXT_STATE', contextState)
+  },
   someAsyncTask ({ commit }) {
     // do something async
     commit('INCREMENT_MAIN_COUNTER')
@@ -189,6 +197,9 @@ const getters = {
   isPlayerRunning: state => {
     console.log(state.player.context ? state.player.context.state === 'running' : false)
     return state.player.context ? state.player.context.state === 'running' : false
+  },
+  getPlayerContextState: state => {
+    return state.contextState
   }
 }
 

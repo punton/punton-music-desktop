@@ -25,17 +25,18 @@ export default {
   computed: {
     ...mapGetters([
       'getSelectedSong',
-      'isPlayerRunning'
+      'getPlayer',
+      'getPlayerContextState'
     ]),
-    isThisSongPlaying: function () {
-      return (this.getSelectedSong.id === this.song.id) && this.isPlayerRunning
+    isThisSongPlaying: async function () {
+      return (await this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
     },
-    playingStatus: function () {
-      return (this.getSelectedSong.id === this.song.id) && this.isPlayerRunning
+    playingStatus: async function () {
+      return (await this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
     }
   },
   watch: {
-    getSelectedSong: function (n, o) {
+    getSelectedSong: function () {
       this.showPlayOrNull()
     },
     song: function () {
@@ -47,24 +48,36 @@ export default {
   },
   methods: {
     onMouseOver: function (e) {
-      this.setIcon(this.isThisSongPlaying ? pauseBtnIcon : playBtnIcon)
+      this.setIcon(this.isThisSongPlaying === true ? pauseBtnIcon : playBtnIcon)
     },
     onMouseLeave: function (e) {
       this.showPlayOrNull()
     },
-    onClick: function (e) {
+    onClick: async function (e) {
       e.preventDefault()
-      if (this.isThisSongPlaying) {
-        // TODO: Stop playing a song.
-        console.log('Stop playing a song')
-        ipcRenderer.send('set:state-isPlaying', false)
+      if (await this.isThisSongPlaying === true) {
+        console.log('Pause song')
+        // หยุดเพลงปัจจุบัน
+        this.playingStatusIcon = null
+        this.setContextState('suspended')
+        this.suspend()
       } else {
-        this.setSelectedSong(this.song)
-        ipcRenderer.send('select:songv2', this.song)
+        if (this.getSelectedSong.id === this.song.id && this.getPlayerContextState === 'suspended') {
+          // ถ้าเพลงเดิมหยุดอยู่ให้เล่นต่อ
+          console.log('[Resume playing] change state')
+          this.setContextState('running')
+          this.resume()
+        } else {
+          // ถ้ากดเพลงใหม่ให้เริ่มเล่นเพลงใหม่
+          console.log('[Start playing new song]')
+          this.setSelectedSong(this.song)
+          this.setContextState('running')
+          ipcRenderer.send('select:songv2', this.song)
+        }
       }
     },
     onMouseDown: function (e) {
-      this.setIcon(this.isThisSongPlaying ? pauseBtnFillBlackIcon : playBtnFillBlackIcon)
+      this.setIcon(this.isThisSongPlaying === true ? pauseBtnFillBlackIcon : playBtnFillBlackIcon)
     },
     onMouseUp: function (e) {
       this.setIcon(playBtnIcon)
@@ -73,10 +86,13 @@ export default {
       this.playingStatusIcon = icon
     },
     showPlayOrNull: function () {
-      this.setIcon(this.isThisSongPlaying ? playIcon : null)
+      this.setIcon(this.isThisSongPlaying === true ? playIcon : null)
     },
     ...mapActions([
-      'setSelectedSong'
+      'resume',
+      'suspend',
+      'setSelectedSong',
+      'setContextState'
     ])
   }
 }
