@@ -5,6 +5,7 @@ import 'util'
 import { Playlist } from './models'
 
 ipcMain.on('playlist:requestName', async (event) => {
+  console.log('request playlist name')
   try {
     const playlists = await Playlist.findAll({
       attributes: ['id', 'name']
@@ -20,7 +21,7 @@ ipcMain.on('playlist:create', async (event, playlistName) => {
     await Playlist.create({
       name: playlistName
     })
-    event.sender.send('playlist:requestName')
+    event.sender.send('playlist:callRequest')
   } catch (e) {
     console.dir(e)
   }
