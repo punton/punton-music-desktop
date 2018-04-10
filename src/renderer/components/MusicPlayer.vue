@@ -57,7 +57,6 @@ export default {
   },
   methods: {
     setShowPlaylists: function (showPlaylists) {
-      console.log(`fwepfewkopf: ${showPlaylists}`)
       this.isShowPlaylists = showPlaylists
     },
     updateTime: async function () {
