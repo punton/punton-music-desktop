@@ -95,10 +95,6 @@ const actions = {
   setContextState ({ commit }, contextState) {
     commit('SET_CONTEXT_STATE', contextState)
   },
-  someAsyncTask ({ commit }) {
-    // do something async
-    commit('INCREMENT_MAIN_COUNTER')
-  },
   setSongs ({ commit }, songs) {
     commit('SET_SONGS', songs)
   },
@@ -129,7 +125,6 @@ const actions = {
     await dispatch('setSeekTime', songInfo.seekTime)
     await new Promise((resolve, reject) => {
       console.log('[Vuex] Successfully decoded. Start playing ...')
-      // console.table(state.player)
       state.player.source.start(0, songInfo.seekTime, state.selectedSong.data.duration)
       state.player.source.onended = function (event) {
         state.player.source.stop(0)
@@ -157,9 +152,6 @@ const actions = {
 }
 
 const getters = {
-  getCounter: state => {
-    return state.main
-  },
   getSongs: state => {
     return state.songs
   },

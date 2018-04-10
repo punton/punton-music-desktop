@@ -2,19 +2,56 @@
   <div class="playback-ctrl-grid">
     <div class="playback-left-cell"></div>
     <div class="playback-ctrl-cell">
-      <icon class="random-cell white-icon" scale=2 name="random" v-b-tooltip.hover.top="'Shuffle'"></icon>
-      <icon class="backward-cell white-icon" scale=2 name="backward" v-b-tooltip.hover.top="'Previous'"></icon>
-      <div @click="switchContextState">
-        <icon v-if="this.isContextRunning" class="play-cell white-icon" scale=2 name="pause" v-b-tooltip.hover.top="'Pause'"></icon>
-        <icon v-else class="play-cell white-icon" scale=2 name="play" v-b-tooltip.hover.top="'Resume'"></icon>
-      </div>
-      <icon class="forward-cell white-icon" scale=2 name="forward" v-b-tooltip.hover.top="'Forward'"></icon>
-      <icon class="repeat-cell white-icon" scale=2 name="retweet" v-b-tooltip.hover.top="'Repeat'"></icon>
+      <el-tooltip effect="dark" placement="top">
+        <div class="random-cell" slot="content">SHUFFLE</div>
+        <el-button
+        class="tab-box"
+        plain
+        circle
+        type="info">
+          <icon name="random" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" placement="top">
+        <div class="backward-cell" slot="content">PREVIOUS</div>
+        <el-button
+        class="tab-box"
+        type="text">
+          <icon name="backward" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" placement="top">
+        <div class="play-cell" slot="content">{{this.isContextRunning ? 'PAUSE' : 'RESUME'}}</div>
+        <el-button
+        class="tab-box"
+        plain
+        circle
+        @click="switchContextState"
+        type="info">
+          <icon :name="isContextRunning ? 'pause' : 'play'" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" placement="top">
+        <div class="forward-cell" slot="content">FORWARD</div>
+        <el-button
+        class="tab-box"
+        plain
+        circle
+        type="info">
+          <icon name="forward" scale=2></icon>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" placement="top">
+        <div class="random-cell" slot="content">REPEAT</div>
+        <el-checkbox-button size="mini">
+          <icon name="retweet" scale="2"></icon>
+        </el-checkbox-button>
+      </el-tooltip>
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
       <div class="progressbar-cell">
-        <vue-slider 
+        <vue-slider    
           :value="formatTime(this.getCurrentTime).toFixed(2)" 
           :min="0"
           :interval="0.01"
@@ -30,17 +67,15 @@
       </div>
     </div>
     <div class="playback-right-cell">
-      <icon name="volume-down"></icon>
+      <icon name="volume-up"/>
       <vue-slider
-        direction='horizontal'
         :min='0'
         :interval='1'
         :max='100'
         :value='this.getVolume'
         tooltip='hover'
         :width="'50%'"
-        @callback='changeVolume'
-      >
+        @callback='changeVolume'>
       </vue-slider>
     </div>
   </div>
@@ -90,6 +125,10 @@
           this.resume()
         }
       },
+      toggleRepeat: function ($event) {
+        console.log('Toggling repeat...')
+        console.log(event)
+      },
       ...mapActions([
         'resume',
         'suspend',
@@ -120,9 +159,9 @@
     background-color: #afafaf;
     display: grid;
     /* grid-auto-columns: auto; */
-    grid-template-areas:
-    "rc bc pc fc tc"
-    "zc gc gc gc dc";
+    grid-template:
+    "rc bc pc fc tc" 1fr 
+    "zc gc gc gc dc" 1fr / 1fr 1fr 1fr 1fr 1fr;
     align-items: center;
     justify-items: center;
   }
@@ -130,14 +169,12 @@
   .playback-left-cell {
     grid-area: plc;
     background-color: #afafaf;
-    /* background-color: red; */
   }
 
   .playback-right-cell {
     grid-area: prc;
     background-color: #afafaf;
-    /* background-color: peachpuff; */
-    display: grid;
+    display: subgrid;
     justify-items: center;
     align-items: center;
   }
@@ -145,12 +182,11 @@
   .playback-ctrl-grid {
     width: 100%;
     display: grid;
-    /* grid-auto-columns: minmax(11.11vw, 11.11vw); */
-    grid-auto-rows: minmax(7.5vh, 7.5vh);
-    grid-auto-columns: auto;
-    grid-template-areas:
-    "plc plc plc pcc pcc pcc prc prc prc"
-    "plc plc plc pcc pcc pcc prc prc prc";
+    /* grid-auto-rows: minmax(7.5vh, 7.5vh);
+    grid-auto-columns: auto; */
+    grid-template:
+    "plc plc pcc pcc pcc prc prc" 7.5vh
+    "plc plc pcc pcc pcc prc prc" 7.5vh / 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   }
 
   .random-cell {
