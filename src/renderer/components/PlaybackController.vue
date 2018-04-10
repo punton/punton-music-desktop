@@ -16,9 +16,7 @@
         <div class="backward-cell" slot="content">PREVIOUS</div>
         <el-button
         class="tab-box"
-        plain
-        circle
-        type="info">
+        type="text">
           <icon name="backward" scale=2></icon>
         </el-button>
       </el-tooltip>
@@ -45,13 +43,16 @@
       </el-tooltip>
       <el-tooltip effect="dark" placement="top">
         <div class="random-cell" slot="content">REPEAT</div>
-        <el-button
+        <!-- <el-button
         class="tab-box"
-        plain
-        circle
-        type="info">
+        role="button"
+        aria-pressed="false"
+        type="primary">
           <icon name="retweet" scale=2></icon>
-        </el-button>
+        </el-button> -->
+        <button type="button" aria-pressed="false" @click="toggleRepeat()">
+          <icon name="retweet" scale="2"></icon>
+        </button>
       </el-tooltip>
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
@@ -130,6 +131,10 @@
         } else if (await player.context.state === 'suspended') {
           this.resume()
         }
+      },
+      toggleRepeat: function ($event) {
+        console.log('Toggling repeat...')
+        console.log(event)
       },
       ...mapActions([
         'resume',
