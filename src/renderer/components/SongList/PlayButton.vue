@@ -25,7 +25,6 @@ export default {
   computed: {
     ...mapGetters([
       'getSelectedSong',
-      'getPlayer',
       'getPlayerContextState'
     ]),
     isThisSongPlaying: function () {
@@ -56,20 +55,13 @@ export default {
     onClick: function (e) {
       e.preventDefault()
       if (this.isThisSongPlaying === true) {
-        console.log('Pause song')
-        // หยุดเพลงปัจจุบัน
-        this.playingStatusIcon = null
         this.setContextState('suspended')
         this.suspend()
       } else {
         if (this.getSelectedSong.id === this.song.id && this.getPlayerContextState === 'suspended') {
-          // ถ้าเพลงเดิมหยุดอยู่ให้เล่นต่อ
-          console.log('[Resume playing] change state')
           this.setContextState('running')
           this.resume()
         } else {
-          // ถ้ากดเพลงใหม่ให้เริ่มเล่นเพลงใหม่
-          console.log('[Start playing new song]')
           this.setSelectedSong(this.song)
           this.setContextState('running')
           ipcRenderer.send('select:songv2', this.song)

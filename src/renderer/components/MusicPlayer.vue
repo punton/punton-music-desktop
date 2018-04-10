@@ -31,6 +31,7 @@ export default {
   },
   mounted () {
     ipcRenderer.on('playlist:receiveName', (event, playlists) => {
+      console.log('receiveName')
       let tempPlaylists = []
       playlists.forEach(playlist => {
         tempPlaylists.push(playlist.dataValues)
@@ -42,6 +43,10 @@ export default {
   },
   created () {
     ipcRenderer.send('playlist:requestName')
+
+    ipcRenderer.on('playlist:callRequest', event => {
+      ipcRenderer.send('playlist:requestName')
+    })
 
     ipcRenderer.on('songList:retrieve', (event, songs) => {
       this.setSongs(songs)
@@ -57,7 +62,6 @@ export default {
   },
   methods: {
     setShowPlaylists: function (showPlaylists) {
-      console.log(`fwepfewkopf: ${showPlaylists}`)
       this.isShowPlaylists = showPlaylists
     },
     updateTime: async function () {

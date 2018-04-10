@@ -1,44 +1,45 @@
 <template>
-  <el-table
-    class="dropzone"
-    @dragover.prevent @drop="onDrop"
-    :data="getSongs"
-    empty-text="Drop song here!"
-    height="85vh"
-    style="width: 100%">
-      <el-table-column
-        type="index"
-        label="Play"
-        header-align="center"
-        width="140">
+  <div @dragover.prevent @drop="onDrop">
+    <el-table
+      class="dropzone"
+      :data="getSongs"
+      empty-text="Drop song here!"
+      height="85vh"
+      style="width: 100%">
+        <el-table-column
+          type="index"
+          label="Play"
+          header-align="center"
+          width="140">
+            <template slot-scope="scope">
+              <div class="playing-icon">
+                <play-button :song="scope.row"></play-button>
+              </div>
+            </template>
+        </el-table-column>
+        <el-table-column
+          sortable
+          prop="title"
+          label="Title">
+        </el-table-column>
+        <el-table-column
+          sortable
+          prop="artist"
+          label="Artist">
+        </el-table-column>
+        <el-table-column
+          sortable
+          header-align="center"
+          align="center"
+          prop="duration"
+          width="160"
+          label="Duration">
           <template slot-scope="scope">
-            <div class="playing-icon">
-              <play-button :song="scope.row"></play-button>
-            </div>
+            {{durationFormat(scope.row.duration)}}
           </template>
-      </el-table-column>
-      <el-table-column
-        sortable
-        prop="title"
-        label="Title">
-      </el-table-column>
-      <el-table-column
-        sortable
-        prop="artist"
-        label="Artist">
-      </el-table-column>
-      <el-table-column
-        sortable
-        header-align="center"
-        align="center"
-        prop="duration"
-        width="160"
-        label="Duration">
-        <template slot-scope="scope">
-          {{durationFormat(scope.row.duration)}}
-        </template>
-      </el-table-column>
-  </el-table>
+        </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
@@ -76,10 +77,13 @@ export default {
       _.values(e.dataTransfer.files).forEach(song => {
         songs.push({ name: song.name, path: song.path })
       })
-      ipcRenderer.send('songList:save', { songs, playlist: this.playlist })
+      ipcRenderer.send('songList:save', { songs, playlist: this.getCurrentPlaylist })
     },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
+    },
+    refreshSongList: function () {
+      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
     }
   },
   beforeCreate () {
@@ -95,12 +99,16 @@ export default {
         })
     })
     ipcRenderer.on('songList:refresh', () => {
-      ipcRenderer.send('songList:find', this.playlist.id)
+      this.refreshSongList()
     })
+  },
+  destroyed () {
+    ipcRenderer.removeAllListeners('song:requestWaveform')
   },
   computed: {
     ...mapGetters([
-      'getSongs'
+      'getSongs',
+      'getCurrentPlaylist'
     ])
   }
 }

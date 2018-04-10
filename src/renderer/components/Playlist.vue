@@ -52,7 +52,12 @@ export default {
         ipcRenderer.send('playlist:create', playlistName.value)
         this.$message({
           type: 'success',
-          message: `Create playlist ${playlistName} successfully.`
+          message: `Create playlist ${playlistName.value} successfully.`
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Cancel create playlist.'
         })
       })
     }
