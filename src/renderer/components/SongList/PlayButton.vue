@@ -28,11 +28,11 @@ export default {
       'getPlayer',
       'getPlayerContextState'
     ]),
-    isThisSongPlaying: async function () {
-      return (await this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
+    isThisSongPlaying: function () {
+      return (this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
     },
-    playingStatus: async function () {
-      return (await this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
+    playingStatus: function () {
+      return (this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
     }
   },
   watch: {
@@ -53,9 +53,9 @@ export default {
     onMouseLeave: function (e) {
       this.showPlayOrNull()
     },
-    onClick: async function (e) {
+    onClick: function (e) {
       e.preventDefault()
-      if (await this.isThisSongPlaying === true) {
+      if (this.isThisSongPlaying === true) {
         console.log('Pause song')
         // หยุดเพลงปัจจุบัน
         this.playingStatusIcon = null
