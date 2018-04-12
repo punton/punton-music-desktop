@@ -12,7 +12,9 @@ const state = {
   songs: [],
   contextTime: 0,
   seekTime: 0,
-  isContextRunning: false
+  isContextRunning: false,
+  isSongRepeat: false,
+  isPlaylistRepeat: false
 }
 
 const mutations = {
@@ -81,6 +83,14 @@ const mutations = {
       id: song.id,
       data: song
     }
+  },
+  TOGGLE_REPEAT (State) {
+    console.log(`Before > Song repeat ${state.isSongRepeat}, Playlist repeat ${state.isPlaylistRepeat}`)
+    let isSongRepeat = state.isSongRepeat
+    let isPlaylistRepeat = state.isPlaylistRepeat
+    state.isSongRepeat = (isPlaylistRepeat) ? isSongRepeat : !isSongRepeat
+    state.isPlaylistRepeat = (isSongRepeat || isPlaylistRepeat) ? !isPlaylistRepeat : isSongRepeat
+    console.log(`After > Song repeat ${state.isSongRepeat}, Playlist repeat ${state.isPlaylistRepeat}`)
   }
 }
 
@@ -137,6 +147,9 @@ const actions = {
   },
   setVolume ({ commit }, volume) {
     commit('SET_PLAYER_VOLUME', volume)
+  },
+  togglePlayerRepeat ({ commit }) {
+    commit('TOGGLE_REPEAT')
   }
 }
 
@@ -172,6 +185,12 @@ const getters = {
   isPlayerRunning: state => {
     console.log(state.player.context ? state.player.context.state === 'running' : false)
     return state.player.context ? state.player.context.state === 'running' : false
+  },
+  isSongRepeating: state => {
+    return state.isSongRepeat
+  },
+  isPlaylistRepeating: state => {
+    return state.isPlaylistRepeating
   }
 }
 

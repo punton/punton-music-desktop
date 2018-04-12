@@ -9,7 +9,9 @@
         <icon v-else class="play-cell white-icon" scale=2 name="play" v-b-tooltip.hover.top="'Resume'"></icon>
       </div>
       <icon class="forward-cell white-icon" scale=2 name="forward" v-b-tooltip.hover.top="'Forward'"></icon>
-      <icon class="repeat-cell white-icon" scale=2 name="retweet" v-b-tooltip.hover.top="'Repeat'"></icon>
+      <el-checkbox-button @change="toggleRepeat">
+        <icon class="repeat-cell" scale=2 name="retweet" v-b-tooltip.hover.top="'Repeat'"></icon>
+      </el-checkbox-button>
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
@@ -90,10 +92,15 @@
           this.resume()
         }
       },
+      toggleRepeat: function (value) {
+        // console.log(`Toggle repeat ${value}`)
+        this.togglePlayerRepeat()
+      },
       ...mapActions([
         'resume',
         'suspend',
-        'setVolume'
+        'setVolume',
+        'togglePlayerRepeat'
       ])
     },
     computed: {
