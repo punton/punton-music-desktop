@@ -2,16 +2,27 @@
   <div class="playback-ctrl-grid">
     <div class="playback-left-cell"></div>
     <div class="playback-ctrl-cell">
-      <icon class="random-cell white-icon" scale=2 name="random" v-b-tooltip.hover.top="'Shuffle'"></icon>
-      <icon class="backward-cell white-icon" scale=2 name="backward" v-b-tooltip.hover.top="'Previous'"></icon>
+      <el-button type="text" @click="toggleShuffle">
+        <!-- <icon v-show="this.isPlaylistShuffling" label="no-shuffling"> -->
+          <!-- <icon name="ban" scale=2 color="red"></icon> -->
+        <icon v-show="this.isPlaylistShuffling" class="random-cell white-icon" scale=1 name="random"></icon>
+        <!-- </icon> -->
+        <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="red"></icon>
+      </el-button>
+      <icon class="backward-cell white-icon" scale=1 name="backward" v-b-tooltip.hover.top="'Previous'"></icon>
       <div @click="switchContextState">
-        <icon v-if="this.isContextRunning" class="play-cell white-icon" scale=2 name="pause" v-b-tooltip.hover.top="'Pause'"></icon>
-        <icon v-else class="play-cell white-icon" scale=2 name="play" v-b-tooltip.hover.top="'Resume'"></icon>
+        <icon v-if="this.isPlaying" class="play-cell white-icon" scale=1 name="pause" v-b-tooltip.hover.top="'Pause'"></icon>
+        <icon v-else class="play-cell white-icon" scale=1 name="play" v-b-tooltip.hover.top="'Resume'"></icon>
       </div>
-      <icon class="forward-cell white-icon" scale=2 name="forward" v-b-tooltip.hover.top="'Forward'"></icon>
-      <el-checkbox-button @change="toggleRepeat">
-        <icon class="repeat-cell" scale=2 name="retweet" v-b-tooltip.hover.top="'Repeat'"></icon>
-      </el-checkbox-button>
+      <icon class="forward-cell white-icon" scale=1 name="forward"></icon>
+      <el-button type="text" @click="toggleRepeat">
+        <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="steelblue"></icon>
+        <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="steelblue"></icon>
+        <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
+          <icon name="retweet" scale=1 color="red"></icon>
+          <!-- <icon name="ban" scale=1 color="red"></icon> -->
+        </icon>
+      </el-button>
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
@@ -41,8 +52,7 @@
         :value='this.getVolume'
         tooltip='hover'
         :width="'50%'"
-        @callback='changeVolume'
-      >
+        @callback='changeVolume'>
       </vue-slider>
     </div>
   </div>
@@ -51,7 +61,7 @@
 <script>
   import { ipcRenderer } from 'electron'
   import vueSlider from 'vue-slider-component'
-  import { mapGetters, mapActions, mapState } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     props: ['player', 'state', 'currentTime', 'seekTime'],
@@ -100,7 +110,8 @@
         'resume',
         'suspend',
         'setVolume',
-        'togglePlayerRepeat'
+        'togglePlayerRepeat',
+        'toggleShuffle'
       ])
     },
     computed: {
@@ -109,10 +120,11 @@
         'getCurrentTime',
         'getSongDuration',
         'getPlayer',
-        'getVolume'
-      ]),
-      ...mapState([
-        'isContextRunning'
+        'getVolume',
+        'isSongRepeating',
+        'isPlaylistRepeating',
+        'isPlaylistShuffling',
+        'isPlaying'
       ])
     }
   }

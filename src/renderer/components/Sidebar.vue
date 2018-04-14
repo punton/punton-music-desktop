@@ -1,30 +1,4 @@
 <template>
-  <!-- <div class="container-fluid" id="side-bar">
-    <b-list-group>
-      <b-list-group-item 
-        v-on:mouseenter="highlight"
-        v-on:mouseleave="unhighlight"
-        v-b-tooltip.hover.right="'Recommendation'"
-        v-on:click="setCurrentTab(0)">
-        <thumbup-icon/>
-      </b-list-group-item>
-      <b-list-group-item 
-        v-on:mouseenter="highlight" 
-        v-on:mouseleave="unhighlight" 
-        v-b-tooltip.hover.right="'Songs'"
-        v-on:click="setCurrentTab(1)">
-        <music-note-icon/><sup><asterisk-icon/></sup>
-      </b-list-group-item>
-      <b-list-group-item 
-        v-on:mouseenter="highlight" 
-        v-on:mouseleave="unhighlight" 
-        v-b-tooltip.hover.right="'Playlists'"
-        v-on:click="setCurrentTab(2)">
-        <playlist-icon/>
-      </b-list-group-item>
-    </b-list-group>
-  </div>
-   -->
    <div class="sidebar-grid">
      <div class="tab-box"
      @mouseenter="highlight"

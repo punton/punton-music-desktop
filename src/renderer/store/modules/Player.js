@@ -12,18 +12,13 @@ const state = {
   songs: [],
   contextTime: 0,
   seekTime: 0,
-  isContextRunning: false,
+  isSongPlaying: false,
   isSongRepeat: false,
-  isPlaylistRepeat: false
+  isPlaylistRepeat: false,
+  isShuffling: false
 }
 
 const mutations = {
-  DECREMENT_MAIN_COUNTER (state) {
-    state.main--
-  },
-  INCREMENT_MAIN_COUNTER (state) {
-    console.log(++state.main)
-  },
   SET_PLAYING_SONG (state, newSong) {
     state.selectedSong = newSong
   },
@@ -55,26 +50,26 @@ const mutations = {
     state.player.gainNode = audioContext.createGain()
     state.player.source.connect(state.player.gainNode)
     state.player.gainNode.connect(state.player.context.destination)
-    state.isContextRunning = state.player.context.state === 'running'
-    console.log(`[Player state] ${state.player.context.state}`)
+    state.isSongPlaying = true
+    console.log(`(CREATED) [Player state] ${state.player.context.state}`)
   },
   RESUME_PLAYER (state) {
     console.log(`[Player state] Before: ${state.player.context.state}`)
     state.player.context.resume()
-    state.isContextRunning = state.player.context.state === 'running'
+    state.isSongPlaying = true
     console.log(`[Player state] After: ${state.player.context.state}`)
   },
   SUSPEND_PLAYER (state) {
     console.log(`[Player state] Before: ${state.player.context.state}`)
     state.player.context.suspend()
-    state.isContextRunning = state.player.context.state === 'running'
+    state.isSongPlaying = false
     console.log(`[Player state] After: ${state.player.context.state}`)
   },
   STOP_PLAYER (state) {
     if (state.player.context && state.player.source) {
       state.player.source.stop(0)
       state.player.context.close(0)
-      state.isContextRunning = state.player.context.state === 'running'
+      state.isSongPlaying = false
       console.log(`[Player state] ${state.player.context.state}`)
     }
   },
@@ -91,6 +86,10 @@ const mutations = {
     state.isSongRepeat = (isPlaylistRepeat) ? isSongRepeat : !isSongRepeat
     state.isPlaylistRepeat = (isSongRepeat || isPlaylistRepeat) ? !isPlaylistRepeat : isSongRepeat
     console.log(`After > Song repeat ${state.isSongRepeat}, Playlist repeat ${state.isPlaylistRepeat}`)
+  },
+  TOGGLE_SHUFFLE (state) {
+    state.isShuffling = !state.isShuffling
+    console.log(`Shuffle: ${state.isShuffling ? 'ON' : 'OFF'}`)
   }
 }
 
@@ -150,6 +149,9 @@ const actions = {
   },
   togglePlayerRepeat ({ commit }) {
     commit('TOGGLE_REPEAT')
+  },
+  toggleShuffle ({ commit }) {
+    commit('TOGGLE_SHUFFLE')
   }
 }
 
@@ -190,7 +192,15 @@ const getters = {
     return state.isSongRepeat
   },
   isPlaylistRepeating: state => {
-    return state.isPlaylistRepeating
+    return state.isPlaylistRepeat
+  },
+  getNextSong: state => {
+  },
+  isPlaylistShuffling: state => {
+    return state.isShuffling
+  },
+  isPlaying: state => {
+    return state.isSongPlaying
   }
 }
 
