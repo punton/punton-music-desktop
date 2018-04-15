@@ -1,14 +1,16 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
-// import fs from 'fs'
 import path from 'path'
 require('dotenv').config()
 require('./player')
 const db = require('./datastore')
 global.db = db.default
 global.db.sync()
+require('./models/playlist')
 require('./songList')
+require('./playList')
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -21,17 +23,7 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-// let collection = null
-// let playlists = null
-// let songs = null
-
 function createWindow () {
-  // Mock data up
-  // let mockUpData = mockSongUp()
-  // collection = mockUpData.collection
-  // playlists = mockUpData.playlists
-  // songs = mockUpData.songs
-
   /**
    * Initial window options
    */

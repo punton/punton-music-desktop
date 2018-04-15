@@ -1,3 +1,4 @@
 import Song from './song'
+import Playlist from './playlist'
 
-export { Song }
+export { Song, Playlist }

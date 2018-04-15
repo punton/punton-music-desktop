@@ -1,72 +1,87 @@
 <template>
-  <!-- <div>
-    <b-list-group>
-      <b-list-group-item v-for="playlist in playlists" :key="playlist.id">{{playlist.name}}</b-list-group-item>
-    </b-list-group>
-  </div> -->
-  <div class="playlist-grid">
-
+  <div class="scrollable playlist-grid">
+    <el-collapse accordion>
+      <el-collapse-item
+        v-for="playlist in playlists"
+        :name="playlist.id"
+        :key="playlist.id">
+        <template slot="title">
+          {{playlist.name}}
+        </template>
+        <song-list
+          :songs="songs"
+          :playingSongId="playingSongId"
+          :isPlaying="isPlaying"
+          :playlist="playlist.id"
+        ></song-list>
+      </el-collapse-item>
+      <el-button type="primary" class="add-btn" icon="el-icon-plus" @click="addPlaylist">Add new playlist</el-button>
+    </el-collapse>
   </div>
 </template>
 
 <script>
-import {ipcRenderer} from 'electron'
+import songList from '@/components/SongList'
+import { mapGetters } from 'vuex'
+import { ipcRenderer } from 'electron'
 
 export default {
-  data () {
-    return {
-      playlists: [],
-      currentTab: -1
-    }
+  components: {
+    songList
+  },
+  props: ['playingSongId', 'isPlaying', 'songs'],
+  computed: {
+    playlists: function () {
+      return this.getPlaylists.slice(2)
+    },
+    ...mapGetters([
+      'getPlaylists'
+    ])
   },
   methods: {
-  },
-  mounted: function () {
-    ipcRenderer.send('getCurrentTab')
-
-    ipcRenderer.on('getMlPlaylists-reply', (event, arg) => {
-      console.log('Get ML Playlists')
-      for (let id of arg) {
-        // console.log(id)
-        ipcRenderer.send('getPlaylist', id)
-      }
-    })
-
-    ipcRenderer.on('getUserPlaylists-reply', (event, arg) => {
-      console.log('Get User playlists')
-    })
-
-    ipcRenderer.on('getAllSongs-reply', (event, arg) => {
-      console.log('Get all songs')
-    })
-
-    ipcRenderer.on('getPlaylist-reply', (event, arg) => {
-      // console.log('Playlist song ID')
-
-      console.log(this.playlists)
-      this.playlists.push(arg)
-
-      // for (let id of arg.songs) {
-      //   ipcRenderer.send('getSong', id)
-      // }
-    })
-
-    ipcRenderer.on('getSong-reply', (event, arg) => {
-      console.log(arg)
-    })
-
-    ipcRenderer.on('currentTab-reply', (event, arg) => {
-      console.log('Current tab = ' + arg)
-      this.currentTab = arg
-    })
+    selectPlaylist: function (playlistId) {
+      this.$emit('setPlaylist', { isPlaylist: true, songList: playlistId })
+    },
+    addPlaylist: function () {
+      this.$prompt('Please input your new playlist name', 'New Playlist', {
+        confirmButtonText: 'Create',
+        cancelButtonText: 'Cancel',
+        inputPattern: /(.*[^\s])+/,
+        inputErrorMessage: 'Invalid Name'
+      }).then(playlistName => {
+        ipcRenderer.send('playlist:create', playlistName.value)
+        this.$message({
+          type: 'success',
+          message: `Create playlist ${playlistName.value} successfully.`
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Cancel create playlist.'
+        })
+      })
+    }
   }
 }
 </script>
 
 <style scoped>
-  .playlist-grid {
-    width: 100%;
-    height: 100%;
-    display: grid;
-  }
+.scrollable {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  min-height: 85vh;
+  max-height: 85vh;
+  padding: 0 8px 0 8px;
+}
+
+.playlist-grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+}
+
+.add-btn {
+  width: 100%;
+}
 </style>

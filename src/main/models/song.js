@@ -10,17 +10,13 @@ const Song = global.db.define('song', {
   title: { type: Sequelize.STRING, allowNull: false },
   path: { type: Sequelize.TEXT, allowNull: false },
   duration: { type: Sequelize.INTEGER, defaultValue: 0, allowNull: false },
-  track: Sequelize.INTEGER,
-  disk: Sequelize.STRING,
   album: Sequelize.STRING,
-  year: Sequelize.STRING,
-  date: Sequelize.STRING,
   artist: Sequelize.STRING,
-  artists: Sequelize.JSON,
   picture: Sequelize.BLOB,
-  wave_max: Sequelize.JSON,
-  wave_min: Sequelize.JSON,
-  sampleRate: Sequelize.INTEGER
+  waveMax: Sequelize.JSON,
+  waveMin: Sequelize.JSON,
+  sampleRate: Sequelize.INTEGER,
+  playlistId: Sequelize.UUID
 })
 
 export default Song

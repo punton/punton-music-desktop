@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
     <b-table striped hover foot-clone :items="this.getSongs" :fields="fields" class="playlist">
       <template slot="playing" slot-scope="data">
@@ -10,6 +11,48 @@
         {{durationFormat(data.item.duration)}}
       </template>
     </b-table>
+=======
+  <div @dragover.prevent @drop="onDrop">
+    <el-table
+      class="dropzone"
+      :data="getSongs"
+      empty-text="Drop song here!"
+      height="85vh"
+      style="width: 100%">
+        <el-table-column
+          type="index"
+          label="Play"
+          header-align="center"
+          width="140">
+            <template slot-scope="scope">
+              <div class="playing-icon">
+                <play-button :song="scope.row"></play-button>
+              </div>
+            </template>
+        </el-table-column>
+        <el-table-column
+          sortable
+          prop="title"
+          label="Title">
+        </el-table-column>
+        <el-table-column
+          sortable
+          prop="artist"
+          label="Artist">
+        </el-table-column>
+        <el-table-column
+          sortable
+          header-align="center"
+          align="center"
+          prop="duration"
+          width="160"
+          label="Duration">
+          <template slot-scope="scope">
+            {{durationFormat(scope.row.duration)}}
+          </template>
+        </el-table-column>
+    </el-table>
+>>>>>>> staging-002
   </div>
 </template>
 
@@ -19,14 +62,22 @@ import _ from 'lodash'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
+<<<<<<< HEAD
 import { mapGetters, mapActions } from 'vuex'
+=======
+import { mapGetters } from 'vuex'
+>>>>>>> staging-002
 
 const audioCtx = new AudioContext()
 const getWaveform = (songData) => {
   return new Promise((resolve, reject) => {
     webAudioBuilder(audioCtx, songData.buffer.slice(0), (err, waveform) => {
       if (err) reject(err)
-      resolve(waveform)
+      try {
+        resolve(waveform.resample({width: 1024}))
+      } catch (e) {
+        if (e) resolve(waveform)
+      }
     })
   })
 }
@@ -36,20 +87,6 @@ export default {
     draggable,
     PlayButton
   },
-  props: [
-    'songs',
-    'playingSongId'
-  ],
-  data () {
-    return {
-      fields: [
-        { key: 'playing', label: '⯈', class: 'text-center', tdClass: 'playing-icon' },
-        { key: 'title', sortable: true },
-        { key: 'artist', sortable: true },
-        { key: 'duration', sortable: true, class: 'text-center' }
-      ]
-    }
-  },
   methods: {
     onDrop: function (e) {
       e.stopPropagation()
@@ -58,41 +95,38 @@ export default {
       _.values(e.dataTransfer.files).forEach(song => {
         songs.push({ name: song.name, path: song.path })
       })
-      console.table(songs)
-      ipcRenderer.send('songList:save', songs)
-    },
-    selectSong: function (song) {
-      console.log(song.path)
-      this.setSelectedSong(song)
-      ipcRenderer.send('select:songv2', song)
+      ipcRenderer.send('songList:save', { songs, playlist: this.getCurrentPlaylist })
     },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
     },
-    ...mapActions([
-      'setSelectedSong'
-    ])
+    refreshSongList: function () {
+      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+    }
   },
   beforeCreate () {
     ipcRenderer.on('song:requestWaveform', (event, song) => {
-      let { songData, songMetadata, total } = song
-      console.log(total)
+      let { songData, songMetadata } = song
       getWaveform(songData)
         .then(waveform => {
-          ipcRenderer.send('song:result', { id: songMetadata.id, waveMax: waveform.max, waveMin: waveform.min })
+          ipcRenderer.send('song:result', {
+            id: songMetadata.id,
+            waveMax: waveform.max,
+            waveMin: waveform.min
+          })
         })
-      this.songs.push({ id: songMetadata.id, title: songMetadata.title, path: songMetadata.path, duration: songMetadata.duration, artist: songMetadata.artist })
+    })
+    ipcRenderer.on('songList:refresh', () => {
+      this.refreshSongList()
     })
   },
-  // mounted () {
-  //   // ipcRenderer.send('playlist:find', 'ml')
-  // },
-  // beforeDestroy () {
-  //   audioCtx.close()
-  // },
+  destroyed () {
+    ipcRenderer.removeAllListeners('song:requestWaveform')
+  },
   computed: {
     ...mapGetters([
-      'getSongs'
+      'getSongs',
+      'getCurrentPlaylist'
     ])
   }
 }
@@ -112,11 +146,7 @@ export default {
 
 .playing-icon {
   min-width: 100%;
-  width: 30px;
   height: 30px;
-}
-
-table.playlist tr {
-  line-height: 100px;
+  text-align: center;
 }
 </style>

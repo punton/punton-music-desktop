@@ -9,7 +9,7 @@ import Queue from 'better-queue'
 const fs = Promise.promisifyAll(require('fs'))
 const mm = require('music-metadata')
 
-const readingSong = async ({ event, song, total }, cb) => {
+const readingSong = async ({ event, song }, cb) => {
   const songData = await fs.readFileAsync(song.path)
   event.sender.send('song:requestWaveform', {
     songMetadata: {
@@ -19,20 +19,16 @@ const readingSong = async ({ event, song, total }, cb) => {
       duration: song.dataValues.duration,
       path: song.dataValues.path
     },
-    duration: song.dataValues.duration,
-    songData: songData,
-    sampleRate: song.dataValues.sampleRate,
-    total
+    songData: songData
   })
   cb(null, true)
 }
 
-ipcMain.on('songList:save', (event, songs) => {
+ipcMain.on('songList:save', (event, { songs, playlist }) => {
   let q = new Queue(readingSong, {
     concurrent: 1,
     batchSize: 1 })
   songs.forEach(async song => {
-    console.dir(song)
     try {
       const metadata = await mm.parseFile(song.path, {
         native: true
@@ -42,18 +38,16 @@ ipcMain.on('songList:save', (event, songs) => {
         title: metadata.common.title || song.name,
         path: song.path,
         duration: metadata.format.duration,
-        track: metadata.common.track.no,
-        disk: metadata.common.disk.no,
         album: metadata.common.album,
-        year: metadata.common.year,
-        date: metadata.common.date,
         artist: metadata.common.artist,
-        artists: metadata.common.artists,
         picture: metadata.common.picture,
-        sampleRate: metadata.format.sampleRate
+        sampleRate: metadata.format.sampleRate,
+        playlistId: playlist.id
       })
-      console.log(newSong.title)
-      q.push({ event, song: newSong, total: q.getStats() })
+      event.sender.send('songList:refresh')
+      if (playlist.name === 'Machine Learning') {
+        q.push({ event, song: newSong })
+      }
     } catch (err) {
       console.error(err)
     }
@@ -61,10 +55,9 @@ ipcMain.on('songList:save', (event, songs) => {
 })
 
 ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
-  console.log('Succeed')
   Song.update({
-    wave_max: waveMax,
-    wave_min: waveMin
+    waveMax: waveMax,
+    waveMin: waveMin
   }, {
     where: {
       id: {
@@ -74,17 +67,17 @@ ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
   })
 })
 
-ipcMain.on('playlist:find', async (event, playlist) => {
-  // TODO: Check playlist and query data
+ipcMain.on('songList:find', async (event, playlistId) => {
   try {
     const songs = await Song.findAll({
-      // <<<<<<< HEAD
-      //       attributes: ['id', 'title', 'path', 'duration']
-      // =======
-      // >>>>>>> dragdrop
-      attributes: ['id', 'title', 'path', 'duration', 'artist']
+      attributes: ['id', 'title', 'path', 'duration', 'artist'],
+      where: {
+        playlistId: {
+          [Op.eq]: playlistId
+        }
+      }
     })
-    event.sender.send('song:retrieve', songs)
+    event.sender.send('songList:retrieve', songs)
   } catch (err) {
     console.error(err)
   }

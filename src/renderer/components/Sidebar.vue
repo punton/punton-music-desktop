@@ -1,45 +1,54 @@
 <template>
-   <div class="sidebar-grid">
-     <div class="tab-box"
-     @mouseenter="highlight"
-     @mouseleave="unhighlight"
-     v-b-tooltip.hover.right="'Recommend\n Songs'"
-     @click="setTab(0)">
-      <icon name="thumbs-up" scale=2></icon>
-     </div>
-     <div class="tab-box tab-icon-inline"
-     @mouseenter="highlight"
-     @mouseleave="unhighlight"
-     v-b-tooltip.hover.right="'All\n Songs'"
-     @click="setTab(1)">
-      <icon name="list" scale="2"></icon>
-     </div>
-     <div class="tab-box tab-icon-inline"
-     @mouseenter="highlight"
-     @mouseleave="unhighlight"
-     v-b-tooltip.hover.right="'Custom\n Playlists'"
-     @click="setTab(2)">
-      <icon name="music" scale="2"></icon>
-      <icon name="asterisk" scale=1></icon>
-     </div>
-   </div>
+  <div class="sidebar-grid">
+    <el-tooltip effect="dark" placement="right">
+      <div slot="content">Recommend<br/>Songs</div>
+      <el-button
+      class="tab-box"
+      plain
+      @click="setCurrentTab(0)"
+      type="primary">
+        <icon name="thumbs-up" scale=2></icon>
+      </el-button>
+    </el-tooltip>
+    <el-tooltip effect="dark" placement="right">
+      <div slot="content">All<br/>Songs</div>
+      <el-button
+      class="tab-box"
+      plain
+      @click="setCurrentTab(1)"
+      type="primary">
+        <icon name="list" scale="2"></icon>
+      </el-button>
+    </el-tooltip>
+    <el-tooltip effect="dark" placement="right">
+      <div slot="content">Custom<br/>Playlists</div>
+      <el-button
+      class="tab-box"
+      plain
+      @click="showAllPlaylists()"
+      type="primary">
+        <icon name="music" scale="2"></icon>
+        <icon name="asterisk" scale="1"></icon>
+      </el-button>
+    </el-tooltip>
+    <el-tooltip effect="dark" placement="right">
+      <div slot="content">Create<br/>a playlist</div>
+      <el-button
+      class="tab-box"
+      plain
+      type="success">
+        <icon name="plus" scale="2"></icon>
+      </el-button>
+    </el-tooltip>
+  </div>
 </template>
 
 <script>
-// import MusicNoteIcon from 'vue-material-design-icons/music-note.vue'
-// import PlaylistIcon from 'vue-material-design-icons/playlist-play.vue'
-// import ThumbupIcon from 'vue-material-design-icons/thumb-up.vue'
-// import AsteriskIcon from 'vue-material-design-icons/asterisk.vue'
-
-import {ipcRenderer} from 'electron'
+import { ipcRenderer } from 'electron'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  // components: { MusicNoteIcon, PlaylistIcon, ThumbupIcon, AsteriskIcon },
-  data () {
-    return {
-
-    }
-  },
+  props: ['isShowPlaylists'],
   methods: {
     highlight: function (e) {
       e.target.style.backgroundColor = 'black'
@@ -59,9 +68,23 @@ export default {
         }
       })
     },
-    setTab: function (tab) {
-      ipcRenderer.send('setCurrentTab', tab)
-    }
+    setCurrentTab: function (playlistIndex) {
+      this.$emit('setShowPlaylists', false)
+      this.setCurrentPlaylist(this.getPlaylistByIndex(playlistIndex))
+      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+    },
+    showAllPlaylists: function () {
+      this.$emit('setShowPlaylists', true)
+    },
+    ...mapActions([
+      'setCurrentPlaylist'
+    ])
+  },
+  computed: {
+    ...mapGetters([
+      'getPlaylistByIndex',
+      'getCurrentPlaylist'
+    ])
   }
 }
 </script>
@@ -73,33 +96,42 @@ export default {
     display: grid;
     justify-items: center;
     align-items: center;
-    border-top-right-radius: 15%;
-    border-bottom-right-radius: 15%;
+    margin-left: 0;
+  }
+
+  .rec-cell {
+    grid-area: 'rc'
+  }
+
+  .playlists-cell {
+    grid-area: 'pc'
+  }
+
+  .all-songs-cell {
+    grid-area: 'ac'
+  }
+
+  .create-cell {
+    grid-area: 'cc'
   }
 
   .sidebar-grid {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     display: grid;
-    grid-template-rows: repeat(6, 1fr);
-    grid-template-areas: 
+    /* grid-template-rows: repeat(6, 1fr); */
+    grid-template: 
+    /* "tb"
     "tb"
-    "tb"
-    "tb";
+    "tb"; */
+    "rc" 3fr
+    "pc" 3fr
+    "ac" 3fr
+    "cc" 2fr / 1fr;
     background-color: white
   }
 
   .tab-icon-inline {
     display: inline-flex; align-items: center; justify-content: center;
   }
-/*   
-  .material-design-icon {
-    height: 100%;
-    width: 100%;
-  }
-
-  .circular-icon {
-    border: 2px;
-    border-radius: 50%;
-  } */
 </style>
