@@ -15,7 +15,8 @@ const state = {
   isSongPlaying: false,
   isSongRepeat: false,
   isPlaylistRepeat: false,
-  isShuffling: false
+  isShuffling: false,
+  volume: 50
 }
 
 const mutations = {
@@ -39,6 +40,9 @@ const mutations = {
   },
   SET_SEEK_TIME (state, seekTime) {
     state.seekTime = seekTime
+  },
+  SET_VOLUME (state, volume) {
+    state.volume = volume
   },
   SET_PLAYER_VOLUME (state, volume) {
     state.player.gainNode.gain.value = volume
@@ -67,10 +71,14 @@ const mutations = {
   },
   STOP_PLAYER (state) {
     if (state.player.context && state.player.source) {
-      state.player.source.stop(0)
-      state.player.context.close(0)
-      state.isSongPlaying = false
-      console.log(`[Player state] ${state.player.context.state}`)
+      try {
+        state.player.source.stop(0)
+        state.player.context.close(0)
+        state.isSongPlaying = false
+        console.log(`[Player state] ${state.player.context.state}`)
+      } catch (error) {
+        console.error(error)
+      }
     }
   },
   SET_SELECTED_SONG (state, song) {
@@ -120,9 +128,9 @@ const actions = {
     await dispatch('createPlayer')
     state.player.source.buffer = await state.player.context.decodeAudioData(songInfo.bin.buffer)
     await dispatch('setSeekTime', songInfo.seekTime)
+    await dispatch('setPlayerVolume', state.volume / 100)
     await new Promise((resolve, reject) => {
       console.log('[Vuex] Successfully decoded. Start playing ...')
-      // console.table(state.player)
       state.player.source.start(0, songInfo.seekTime, state.selectedSong.data.duration)
       state.player.source.onended = function (event) {
         state.player.source.stop(0)
@@ -144,7 +152,14 @@ const actions = {
   stopSong ({ commit }) {
     commit('STOP_PLAYER')
   },
-  setVolume ({ commit }, volume) {
+  async setVolume ({ dispatch, commit }, volume) {
+    await new Promise((resolve, reject) => {
+      commit('SET_VOLUME', volume)
+      resolve()
+    })
+    await dispatch('setPlayerVolume', state.volume / 100)
+  },
+  setPlayerVolume ({ commit }, volume) {
     commit('SET_PLAYER_VOLUME', volume)
   },
   togglePlayerRepeat ({ commit }) {
@@ -169,7 +184,8 @@ const getters = {
     return state.contextTime + state.seekTime
   },
   getVolume: state => {
-    return state.player.gainNode ? state.player.gainNode.gain.value * 100 : 0
+    // return state.player.gainNode ? state.player.gainNode.gain.value * 100 : 0
+    return state.volume
   },
   getSongDuration: state => {
     return state.selectedSong.id ? state.selectedSong.data.duration : 0

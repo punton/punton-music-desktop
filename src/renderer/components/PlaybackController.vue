@@ -1,12 +1,9 @@
 <template>
   <div class="playback-ctrl-grid">
-    <div class="playback-left-cell"></div>
+    <div class="playback-left-cell">{{this.getSelectedSong.id ? this.getSelectedSong.data.title : ''}}</div>
     <div class="playback-ctrl-cell">
       <el-button type="text" @click="toggleShuffle">
-        <!-- <icon v-show="this.isPlaylistShuffling" label="no-shuffling"> -->
-          <!-- <icon name="ban" scale=2 color="red"></icon> -->
         <icon v-show="this.isPlaylistShuffling" class="random-cell white-icon" scale=1 name="random"></icon>
-        <!-- </icon> -->
         <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="red"></icon>
       </el-button>
       <icon class="backward-cell white-icon" scale=1 name="backward" v-b-tooltip.hover.top="'Previous'"></icon>
@@ -20,24 +17,11 @@
         <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="steelblue"></icon>
         <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
           <icon name="retweet" scale=1 color="red"></icon>
-          <!-- <icon name="ban" scale=1 color="red"></icon> -->
         </icon>
       </el-button>
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
-      <!-- <div class="progressbar-cell">
-        <vue-slider 
-          :value="formatTime(this.getCurrentTime).toFixed(2)" 
-          :min="0"
-          :interval="0.01"
-          :max="formatTime(this.getSongDuration)" 
-          tooltip='hover' 
-          :dotSize='15'
-          @callback='seek'
-          :lazy='true'>
-        </vue-slider>
-      </div> -->
       <div class="progressbar-cell">
         <vue-slider 
           :value="toPercentage(this.getCurrentTime, this.getSongDuration)" 
@@ -49,7 +33,7 @@
           @callback='seek'
           :lazy='true'
           :disabled="!this.getPlayer.context"
-          speed="0.1">
+          :speed="0.1">
           <div slot="tooltip">{{formatTime(this.getCurrentTime).toFixed(2)}}</div>
         </vue-slider>
       </div>
@@ -58,7 +42,9 @@
       </div>
     </div>
     <div class="playback-right-cell">
-      <icon name="volume-down"></icon>
+      <icon v-if="this.getVolume > 75" name="volume-up" color="white"></icon>
+      <icon v-else-if="this.getVolume > 1" name="volume-down" color="white"></icon>
+      <icon v-else name="volume-off" color="white"></icon>
       <vue-slider
         direction='horizontal'
         :min='0'
@@ -104,7 +90,7 @@
       },
       changeVolume: function (value) {
         console.log(value)
-        this.setVolume(value / 100)
+        this.setVolume(value)
       },
       seek: function (time) {
         let seekTime = (time / 100) * this.getSongDuration
@@ -143,7 +129,8 @@
         'isSongRepeating',
         'isPlaylistRepeating',
         'isPlaylistShuffling',
-        'isPlaying'
+        'isPlaying',
+        'getSelectedSong'
       ])
     }
   }
@@ -154,10 +141,8 @@
     width: 100%;
     height: 100%;
     grid-area: pcc;
-    /* background-color: royalblue; */
     background-color: #afafaf;
     display: grid;
-    /* grid-auto-columns: auto; */
     grid-template-areas:
     "rc bc pc fc tc"
     "zc gc gc gc dc";
@@ -168,27 +153,26 @@
   .playback-left-cell {
     grid-area: plc;
     background-color: #afafaf;
-    /* background-color: red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .playback-right-cell {
     grid-area: prc;
     background-color: #afafaf;
-    /* background-color: peachpuff; */
-    display: grid;
-    justify-items: center;
+    display: flex;
+    justify-content: center;
     align-items: center;
   }
 
   .playback-ctrl-grid {
     width: 100%;
+    height: 15vh;
     display: grid;
-    /* grid-auto-columns: minmax(11.11vw, 11.11vw); */
-    grid-auto-rows: minmax(7.5vh, 7.5vh);
-    grid-auto-columns: auto;
-    grid-template-areas:
-    "plc plc plc pcc pcc pcc prc prc prc"
-    "plc plc plc pcc pcc pcc prc prc prc";
+    grid-template:
+    "plc plc pcc pcc pcc prc prc" 1fr
+    "plc plc pcc pcc pcc prc prc" 1fr / 1fr 1fr 1fr 1fr 1fr 1fr 1fr
   }
 
   .random-cell {
@@ -198,14 +182,6 @@
   .backward-cell {
     grid-area: bc;
   }
-
-  /* .resume-cell {
-    grid-area: rc;
-  }
-
-  .pause-cell {
-    grid-area: pc;
-  } */
 
   .play-cell {
     grid-area: pc;
