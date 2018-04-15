@@ -1,17 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class="dropzone scrollable" @dragover.prevent @drop="onDrop">
-    <b-table striped hover foot-clone :items="this.getSongs" :fields="fields" class="playlist">
-      <template slot="playing" slot-scope="data">
-        <div class="playing-icon">
-          <play-button :song="data.item" :playingSongId="playingSongId" @selectSong="selectSong"></play-button>
-        </div>
-      </template>
-      <template slot="duration" slot-scope="data">
-        {{durationFormat(data.item.duration)}}
-      </template>
-    </b-table>
-=======
   <div @dragover.prevent @drop="onDrop">
     <el-table
       class="dropzone"
@@ -52,7 +39,6 @@
           </template>
         </el-table-column>
     </el-table>
->>>>>>> staging-002
   </div>
 </template>
 
@@ -62,11 +48,7 @@ import _ from 'lodash'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
-<<<<<<< HEAD
-import { mapGetters, mapActions } from 'vuex'
-=======
 import { mapGetters } from 'vuex'
->>>>>>> staging-002
 
 const audioCtx = new AudioContext()
 const getWaveform = (songData) => {
