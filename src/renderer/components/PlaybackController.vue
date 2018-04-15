@@ -26,7 +26,7 @@
       <div class="time-cell">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
-      <div class="progressbar-cell">
+      <!-- <div class="progressbar-cell">
         <vue-slider 
           :value="formatTime(this.getCurrentTime).toFixed(2)" 
           :min="0"
@@ -36,6 +36,21 @@
           :dotSize='15'
           @callback='seek'
           :lazy='true'>
+        </vue-slider>
+      </div> -->
+      <div class="progressbar-cell">
+        <vue-slider 
+          :value="toPercentage(this.getCurrentTime, this.getSongDuration)" 
+          :min="0"
+          :interval="1"
+          :max="100" 
+          tooltip='hover' 
+          :dotSize="15"
+          @callback='seek'
+          :lazy='true'
+          :disabled="!this.getPlayer.context"
+          speed="0.1">
+          <div slot="tooltip">{{formatTime(this.getCurrentTime).toFixed(2)}}</div>
         </vue-slider>
       </div>
       <div class="duration-cell">
@@ -52,6 +67,7 @@
         :value='this.getVolume'
         tooltip='hover'
         :width="'50%'"
+        :disabled="!this.getPlayer.context"
         @callback='changeVolume'>
       </vue-slider>
     </div>
@@ -91,8 +107,9 @@
         this.setVolume(value / 100)
       },
       seek: function (time) {
-        console.log(`[PlaybackCtrl] Seek time = ${time}`)
-        ipcRenderer.send('set:seek-time', time)
+        let seekTime = (time / 100) * this.getSongDuration
+        console.log(`[PlaybackCtrl] Seek time = ${seekTime}`)
+        ipcRenderer.send('set:seek-time', seekTime)
       },
       switchContextState: async function () {
         let player = await this.getPlayer
@@ -106,6 +123,9 @@
         // console.log(`Toggle repeat ${value}`)
         this.togglePlayerRepeat()
       },
+      toPercentage: function (value, max) {
+        return value / max * 100
+      },
       ...mapActions([
         'resume',
         'suspend',
@@ -116,7 +136,6 @@
     },
     computed: {
       ...mapGetters([
-        'getCounter',
         'getCurrentTime',
         'getSongDuration',
         'getPlayer',

@@ -110,7 +110,7 @@ ipcMain.on('set:state-isPlaying', (event, isPlaying) => {
 
 ipcMain.on('set:seek-time', (event, time) => {
   console.log(`[Main process] Seek time = ${time}`)
-  let seekTime = parseFloat(time) * 60
+  // let seekTime = parseFloat(time) * 60
   // playSong(event, currentState.song.data.path, seekTime)
-  event.sender.send('play:song', {bin: cachedSongBin, seekTime: seekTime})
+  event.sender.send('play:song', {bin: cachedSongBin, seekTime: time})
 })

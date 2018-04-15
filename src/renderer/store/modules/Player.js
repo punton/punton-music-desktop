@@ -156,9 +156,6 @@ const actions = {
 }
 
 const getters = {
-  getCounter: state => {
-    return state.main
-  },
   getSongs: state => {
     return state.songs
   },
