@@ -6,10 +6,10 @@
         <icon v-show="this.isPlaylistShuffling" class="random-cell white-icon" scale=1 name="random"></icon>
         <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="red"></icon>
       </el-button>
-      <icon class="backward-cell white-icon" scale=1 name="backward" v-b-tooltip.hover.top="'Previous'"></icon>
+      <icon class="backward-cell white-icon" scale=1 name="backward"></icon>
       <div @click="switchContextState">
-        <icon v-if="this.isPlaying" class="play-cell white-icon" scale=1 name="pause" v-b-tooltip.hover.top="'Pause'"></icon>
-        <icon v-else class="play-cell white-icon" scale=1 name="play" v-b-tooltip.hover.top="'Resume'"></icon>
+        <icon v-if="this.isPlaying" class="play-cell white-icon" scale=1 name="pause"></icon>
+        <icon v-else class="play-cell white-icon" scale=1 name="play"></icon>
       </div>
       <icon class="forward-cell white-icon" scale=1 name="forward"></icon>
       <el-button type="text" @click="toggleRepeat">
