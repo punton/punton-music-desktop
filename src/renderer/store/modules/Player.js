@@ -1,3 +1,5 @@
+import { ipcRenderer } from 'electron'
+
 const state = {
   selectedSong: {
     id: null,
@@ -92,7 +94,7 @@ const mutations = {
         state.isContextRunning = state.player.context.state === 'running'
         console.log(`[Player state] ${state.player.context.state}`)
       } catch (error) {
-        console.error(error)
+        console.log(error)
       }
     }
   },
@@ -186,7 +188,9 @@ const actions = {
         state.player.source.stop(0)
         state.player.context.close()
         console.log('[Context] song ended.')
-        utils.getNextSong()
+        let nextSong = utils.getNextSong()
+        commit('SET_SELECTED_SONG', nextSong)
+        ipcRenderer.send('select:song', nextSong)
       }
       resolve()
     })
