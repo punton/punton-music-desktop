@@ -120,6 +120,32 @@ const mutations = {
   }
 }
 
+const utils = {
+  getNextSong () {
+    console.log(`Shuffle: ${state.isShuffling ? 'ON' : 'OFF'}`)
+    console.log(`Repeat Song: ${state.isSongRepeat ? 'ON' : 'OFF'}`)
+    console.log(`Repeat Playlist: ${state.isPlaylistRepeat ? 'ON' : 'OFF'}`)
+    let nextSong
+    if (state.isSongRepeat) {
+      nextSong = state.selectedSong.data
+    } else if (state.isShuffling) {
+      let index = Math.floor(Math.random() * state.songs.length)
+      console.log(`Random index: ${index}`)
+      nextSong = state.songs[index]
+    } else {
+      state.songs.forEach(function (song, index) {
+        if (state.selectedSong.id === song.id) {
+          console.log(`Current song index: ${index}`)
+          let nextSongIndex = index === state.songs.length - 1 ? 0 : index + 1
+          nextSong = state.songs[nextSongIndex]
+        }
+      })
+    }
+    console.log(`Next song: ${JSON.stringify(nextSong)}`)
+    return nextSong
+  }
+}
+
 const actions = {
   setContextState ({ commit }, contextState) {
     commit('SET_CONTEXT_STATE', contextState)
@@ -160,6 +186,7 @@ const actions = {
         state.player.source.stop(0)
         state.player.context.close()
         console.log('[Context] song ended.')
+        utils.getNextSong()
       }
       resolve()
     })
@@ -238,8 +265,6 @@ const getters = {
   },
   isPlaylistRepeating: state => {
     return state.isPlaylistRepeat
-  },
-  getNextSong: state => {
   },
   isPlaylistShuffling: state => {
     return state.isShuffling
