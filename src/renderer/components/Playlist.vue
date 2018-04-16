@@ -72,7 +72,6 @@ export default {
   overflow-y: scroll;
   min-height: 85vh;
   max-height: 85vh;
-  padding: 0 8px 0 8px;
 }
 
 .playlist-grid {
@@ -82,6 +81,6 @@ export default {
 }
 
 .add-btn {
-  width: 100%;
+  width: 85%;
 }
 </style>
