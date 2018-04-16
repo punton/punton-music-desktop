@@ -62,22 +62,6 @@ ipcMain.on('get:state', (event, arg) => {
 
 // select current song
 ipcMain.on('select:song', (event, song) => {
-  console.log('[Main] song: ' + JSON.stringify(song))
-  fs.readFile(song.path, (err, data) => {
-    if (err) throw err
-    // currentState = cloneState()
-    currentState.song = {
-      id: song.id,
-      data: song
-    }
-    currentState.isPlaying = true
-    // event.sender.send('update:state', cloneState())
-    event.sender.send('state:update', currentState)
-    event.sender.send('play:song', data)
-  })
-})
-
-ipcMain.on('select:songv2', (event, song) => {
   console.log(`[Main Process] Selected song ${JSON.stringify(song)}`)
 
   currentState.song = {
