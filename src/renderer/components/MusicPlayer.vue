@@ -105,8 +105,10 @@ export default {
 </script>
 
 <style>
-  body {
-    margin: 0
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow-y: hidden;
   }
 </style>
 
@@ -126,13 +128,10 @@ export default {
 
   .player-grid {
     display: grid;
-    grid-auto-rows: minmax(auto, 25%); 
-    grid-auto-columns: minmax(15% 25%);
-    grid-template-areas:
-    "sb tc tc tc tc"
-    "sb tc tc tc tc"
-    "sb tc tc tc tc"
-    "pc pc pc pc pc";
-    max-width: 100%;
+    grid-template:
+    "sb tc tc tc tc" 1fr
+    "sb tc tc tc tc" 1fr
+    "sb tc tc tc tc" 1fr
+    "pc pc pc pc pc" 1fr / 1fr 1fr 1fr 1fr 1fr;
   }
 </style>
