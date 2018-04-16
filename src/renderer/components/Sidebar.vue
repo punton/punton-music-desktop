@@ -31,16 +31,6 @@
         <icon name="asterisk" scale="1"></icon>
       </el-button>
     </el-tooltip>
-    <!-- <el-tooltip effect="dark" placement="right">
-      <div slot="content">Create<br/>a playlist</div>
-      <el-button
-      class="tab-box"
-      plain
-      type="success">
-        <icon name="plus" scale="2"></icon>
-      </el-button>
-    </el-tooltip> -->
-    <div></div>
   </div>
 </template>
 
