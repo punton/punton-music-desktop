@@ -31,7 +31,7 @@
         <icon name="asterisk" scale="1"></icon>
       </el-button>
     </el-tooltip>
-    <el-tooltip effect="dark" placement="right">
+    <!-- <el-tooltip effect="dark" placement="right">
       <div slot="content">Create<br/>a playlist</div>
       <el-button
       class="tab-box"
@@ -39,7 +39,8 @@
       type="success">
         <icon name="plus" scale="2"></icon>
       </el-button>
-    </el-tooltip>
+    </el-tooltip> -->
+    <div></div>
   </div>
 </template>
 
@@ -121,9 +122,6 @@ export default {
     display: grid;
     /* grid-template-rows: repeat(6, 1fr); */
     grid-template: 
-    /* "tb"
-    "tb"
-    "tb"; */
     "rc" 3fr
     "pc" 3fr
     "ac" 3fr
