@@ -3,7 +3,7 @@
     <div class="playback-left-cell">{{this.getSelectedSong.id ? this.getSelectedSong.data.title : ''}}</div>
     <div class="playback-ctrl-cell">
       <el-button type="text" @click="toggleShuffle">
-        <icon v-show="this.isPlaylistShuffling" class="random-cell white-icon" scale=1 name="random"></icon>
+        <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="lime"></icon>
         <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="red"></icon>
       </el-button>
       <icon class="backward-cell white-icon" scale=1 name="backward"></icon>
@@ -13,8 +13,8 @@
       </div>
       <icon class="forward-cell white-icon" scale=1 name="forward"></icon>
       <el-button type="text" @click="toggleRepeat">
-        <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="steelblue"></icon>
-        <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="steelblue"></icon>
+        <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="lime"></icon>
+        <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="lime"></icon>
         <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
           <icon name="retweet" scale=1 color="red"></icon>
         </icon>
@@ -110,7 +110,7 @@
         this.togglePlayerRepeat()
       },
       toPercentage: function (value, max) {
-        return value / max * 100
+        return Math.min(value / max * 100, 100)
       },
       ...mapActions([
         'resume',
