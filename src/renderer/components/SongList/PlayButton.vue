@@ -64,7 +64,7 @@ export default {
         } else {
           this.setSelectedSong(this.song)
           this.setContextState('running')
-          ipcRenderer.send('select:songv2', this.song)
+          ipcRenderer.send('select:song', this.song)
         }
       }
     },
