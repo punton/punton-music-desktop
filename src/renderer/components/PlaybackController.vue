@@ -6,12 +6,16 @@
         <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="lime"></icon>
         <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="red"></icon>
       </el-button>
-      <icon class="backward-cell white-icon" scale=1 name="backward"></icon>
+      <el-button type="text" @click="playPrevSong">
+        <icon class="backward-cell white-icon" scale=1 name="backward"></icon>
+      </el-button>
       <div @click="switchContextState">
         <icon v-if="this.isPlaying" class="play-cell white-icon" scale=1 name="pause"></icon>
         <icon v-else class="play-cell white-icon" scale=1 name="play"></icon>
       </div>
-      <icon class="forward-cell white-icon" scale=1 name="forward"></icon>
+      <el-button type="text" @click="playNextSong">
+        <icon class="forward-cell white-icon" scale=1 name="forward"></icon>
+      </el-button>
       <el-button type="text" @click="toggleRepeat">
         <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="lime"></icon>
         <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="lime"></icon>
@@ -112,12 +116,27 @@
       toPercentage: function (value, max) {
         return Math.min(value / max * 100, 100)
       },
+      playPrevSong: function () {
+        let prevSong = this.getPrevSong
+        console.log(`Start playing previous song: ${JSON.stringify(prevSong)} ...`)
+        this.setSelectedSong(prevSong)
+        ipcRenderer.send('select:song', prevSong)
+      },
+      playNextSong: function () {
+        let nextSong = this.getNextSong
+        console.log(`Start playing next song ${JSON.stringify(nextSong)} ...`)
+        this.setSelectedSong(nextSong)
+        ipcRenderer.send('select:song', nextSong)
+      },
       ...mapActions([
         'resume',
         'suspend',
         'setVolume',
         'togglePlayerRepeat',
-        'toggleShuffle'
+        'toggleShuffle',
+        'stopSong',
+        'playSong',
+        'setSelectedSong'
       ])
     },
     computed: {
@@ -130,7 +149,9 @@
         'isPlaylistRepeating',
         'isPlaylistShuffling',
         'isPlaying',
-        'getSelectedSong'
+        'getSelectedSong',
+        'getPrevSong',
+        'getNextSong'
       ])
     }
   }

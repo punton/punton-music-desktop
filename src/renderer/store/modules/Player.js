@@ -135,16 +135,29 @@ const utils = {
       console.log(`Random index: ${index}`)
       nextSong = state.songs[index]
     } else {
-      state.songs.forEach(function (song, index) {
-        if (state.selectedSong.id === song.id) {
-          console.log(`Current song index: ${index}`)
-          let nextSongIndex = index === state.songs.length - 1 ? 0 : index + 1
-          nextSong = state.songs[nextSongIndex]
-        }
-      })
+      let songIndex = utils.getSongIndex(state.selectedSong.data)
+      let nextSongIndex = songIndex === state.songs.length - 1 ? 0 : songIndex + 1
+      nextSong = state.songs[nextSongIndex]
+      return nextSong
     }
     console.log(`Next song: ${JSON.stringify(nextSong)}`)
     return nextSong
+  },
+  getPrevSong () {
+    let songIndex = this.getSongIndex(state.selectedSong.data)
+    let prevSongIndex = songIndex === 0 ? 0 : songIndex - 1
+    let prevSong = state.songs[prevSongIndex]
+    return prevSong
+  },
+  getSongIndex (song) {
+    let songIndex = -1
+    state.songs.forEach(function (stateSong, index) {
+      if (stateSong.id === song.id) {
+        console.log(`Current song index: ${index}`)
+        songIndex = index
+      }
+    })
+    return songIndex
   }
 }
 
@@ -278,6 +291,12 @@ const getters = {
   },
   getPlayerContextState: state => {
     return state.contextState
+  },
+  getPrevSong: () => {
+    return utils.getPrevSong()
+  },
+  getNextSong: () => {
+    return utils.getNextSong()
   }
 }
 
