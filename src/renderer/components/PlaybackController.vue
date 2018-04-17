@@ -2,28 +2,28 @@
   <div class="playback-ctrl-grid">
     <div class="playback-left-cell">{{this.getSelectedSong.id ? this.getSelectedSong.data.title : ''}}</div>
     <div class="playback-ctrl-cell">
-      <button class="themed-btn" @click="toggleShuffle">
+      <button class="themed-btn btn-ctrl-size" @click="toggleShuffle">
         <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="black"></icon>
         <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="white"></icon>
       </button>
-      <button class="themed-btn" @click="playPrevSong">
+      <button class="themed-btn btn-ctrl-size" @click="playPrevSong">
         <icon class="backward-cell white-icon" scale=1 name="backward"></icon>
       </button>
-      <button class="themed-btn" @click="switchContextState">
+      <button class="themed-btn btn-ctrl-size" @click="switchContextState">
         <icon v-if="this.isPlaying" class="play-cell white-icon" scale=1 name="pause"></icon>
         <icon v-else class="play-cell white-icon" scale=1 name="play"></icon>
       </button>
-      <button class="themed-btn" @click="playNextSong">
+      <button class="themed-btn btn-ctrl-size" @click="playNextSong">
         <icon class="forward-cell white-icon" scale=1 name="forward"></icon>
       </button>
-      <button class="themed-btn" @click="toggleRepeat">
+      <button class="themed-btn btn-ctrl-size" @click="toggleRepeat">
         <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="white"></icon>
         <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="white"></icon>
         <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
           <icon name="retweet" scale=1 color="black"></icon>
         </icon>
       </button>
-      <div class="time-cell themed-txt">
+      <div class="time-cell themed-txt rotate-right">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
       <div class="progressbar-cell">
@@ -39,29 +39,34 @@
           :disabled="!this.getPlayer.context"
           :speed="0.1"
           :process-style="processStyle">
-          <div slot="tooltip">{{formatTime(this.getCurrentTime).toFixed(2)}}</div>
+          <div class="themed-txt" slot="tooltip">{{formatTime(this.getCurrentTime).toFixed(2)}}</div>
         </vue-slider>
       </div>
-      <div class="duration-cell themed-txt">
+      <div class="duration-cell themed-txt rotate-left">
         {{formatTime(this.getSongDuration).toFixed(2)}}
       </div>
     </div>
     <div class="playback-right-cell">
-      <icon v-if="this.getVolume > 75" name="volume-up" color="white"></icon>
-      <icon v-else-if="this.getVolume > 1" name="volume-down" color="white"></icon>
-      <icon v-else name="volume-off" color="white"></icon>
-      <vue-slider
-        direction='horizontal'
-        :min='0'
-        :interval='1'
-        :max='100'
-        :value='this.getVolume'
-        tooltip='hover'
-        :width="'50%'"
-        :disabled="!this.getPlayer.context"
-        :process-style="processStyle"
-        @callback='changeVolume'>
-      </vue-slider>
+      <div style="width:80%; display:flex; justify-content:center; align-items:center;">
+        <div class="themed-btn" style="width:10%;">
+          <icon v-if="this.getVolume > 75" name="volume-up" color="white"></icon>
+          <icon v-else-if="this.getVolume > 1" name="volume-down" color="white"></icon>
+          <icon v-else name="volume-off" color="white"></icon>
+        </div>
+        <vue-slider
+          direction='horizontal'
+          :min='0'
+          :interval='1'
+          :max='100'
+          :value='this.getVolume'
+          tooltip='hover'
+          :width="'70%'"
+          :disabled="!this.getPlayer.context"
+          :process-style="processStyle"
+          @callback='changeVolume'>
+          <div class="themed-txt" slot="tooltip" slot-scope="{ value }">{{value}}</div>
+        </vue-slider>
+      </div>
     </div>
   </div>
 </template>
@@ -245,18 +250,29 @@
     fill: white;
   }
 
-  .themed-btn {
-    min-width: 75%;
+  .btn-ctrl-size {
+        min-width: 75%;
     width: 75%;
     max-width: 75%;
     min-height: 75%;
     height: 75%;
     max-height: 75%;
+  }
+
+  .themed-btn {
     background-color:#F10707;
     border:0.35rem solid white;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .rotate-left {
+    transform: rotate(10deg);
+  }
+
+  .rotate-right {
+    transform: rotate(-10deg);
   }
 
   .themed-txt {

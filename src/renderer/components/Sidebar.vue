@@ -136,10 +136,11 @@ export default {
   }
 
   .themed-btn {
-    width:90%;
-    height: 15%;
+    width:80%;
+    height: 12.5%;
     background-color:#F10707;
     border:0.35rem solid white;
-    margin:0.5rem 0 0.1rem 0;
+    margin:0.5rem 0 0.5rem 0;
+    transform: rotate(-15deg);
   }
 </style>
