@@ -68,9 +68,6 @@ export default {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
     }
   },
-  destroyed () {
-    ipcRenderer.removeAllListeners('song:requestWaveform')
-  },
   computed: {
     ...mapGetters([
       'getSongs',

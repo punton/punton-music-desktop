@@ -1,6 +1,6 @@
 <template>
   <div class="scrollable playlist-grid">
-    <el-collapse accordion>
+    <el-collapse accordion @change="selectPlaylist">
       <el-collapse-item 
         v-for="playlist in playlists"
         :name="playlist.id"
@@ -17,7 +17,7 @@
 
 <script>
 import songList from '@/components/SongList'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { ipcRenderer } from 'electron'
 
 export default {
@@ -35,7 +35,10 @@ export default {
   },
   methods: {
     selectPlaylist: function (playlistId) {
-      this.$emit('setPlaylist', { isPlaylist: true, songList: playlistId })
+      const selectedPlaylist = this.getPlaylists.filter(playlist => playlist.id === playlistId)[0]
+      this.setCurrentPlaylist(selectedPlaylist)
+      if (selectedPlaylist !== undefined) ipcRenderer.send('songList:find', selectedPlaylist.id)
+      console.dir(selectedPlaylist)
     },
     addPlaylist: function () {
       this.$prompt('Please input your new playlist name', 'New Playlist', {
@@ -55,7 +58,10 @@ export default {
           message: 'Cancel create playlist.'
         })
       })
-    }
+    },
+    ...mapActions([
+      'setCurrentPlaylist'
+    ])
   }
 }
 </script>

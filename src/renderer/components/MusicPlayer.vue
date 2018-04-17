@@ -89,6 +89,7 @@ export default {
   },
   beforeDestroy () {
     this.stopSong()
+    audioCtx.close()
     console.log('[BeforeDestroying]: Context closed.')
   },
   methods: {
