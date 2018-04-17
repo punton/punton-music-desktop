@@ -174,7 +174,8 @@ export default {
     margin: 0;
     height: 100%;
     overflow-y: hidden;
-    background-color: #272727
+    background-color: #272727;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
 </style>
 

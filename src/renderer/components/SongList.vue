@@ -5,8 +5,8 @@
       :data="getSongs"
       empty-text="Drop song here!"
       height="85vh"
-      :header-cell-style="{'background-color': '#272727', 'color': 'white'}"
-      :cell-style="{'background-color': '#303030', 'color': 'white'}"
+      :header-cell-style="{'background-color': '#272727', 'color': '#F4F4F4'}"
+      :cell-style="{'background-color': '#474747', 'color': '#F4F4F4'}"
       style="width: 100%;">
         <el-table-column
           type="index"
@@ -104,7 +104,7 @@ export default {
 
 .themed-txt {
   background-color: #272727;
-  border:0.35rem solid white;
-  color: white;
+  border:0.35rem solid #F4F4F4;
+  color: #F4F4F4;
 }
 </style>

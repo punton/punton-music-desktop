@@ -10,7 +10,7 @@
         <icon name="thumbs-up" scale=2></icon>
       </el-button> -->
       <button class="themed-btn" @click="setCurrentTab(0)">
-        <icon name="thumbs-up" scale="2" color="white"></icon>
+        <icon name="thumbs-up" scale="2" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
     <el-tooltip effect="dark" placement="right">
@@ -22,8 +22,8 @@
         <icon name="list" scale="2"></icon>
       </el-button> -->
       <button class="themed-btn" @click="setCurrentTab(1)">
-        <icon name="music" scale="2" color="white"></icon>
-        <icon name="asterisk" scale="1" color="white"></icon>
+        <icon name="music" scale="2" color="#F4F4F4"></icon>
+        <icon name="asterisk" scale="1" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
     <el-tooltip effect="dark" placement="right">
@@ -36,7 +36,7 @@
         <icon name="asterisk" scale="1"></icon>
       </el-button> -->
       <button class="themed-btn" @click="showAllPlaylists()">
-        <icon name="list" scale="2" color="white"></icon>
+        <icon name="list" scale="2" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
   </div>
@@ -54,12 +54,12 @@ export default {
       let icons = e.target.childNodes
       icons.forEach((icon) => {
         if (icon.nodeName === 'svg') {
-          icon.style.fill = 'white'
+          icon.style.fill = '#F4F4F4'
         }
       })
     },
     unhighlight: function (e) {
-      e.target.style.backgroundColor = 'white'
+      e.target.style.backgroundColor = '#F4F4F4'
       let icons = e.target.childNodes
       icons.forEach((icon) => {
         if (icon.nodeName === 'svg') {
@@ -139,7 +139,7 @@ export default {
     width:80%;
     height: 12.5%;
     background-color:#F10707;
-    border:solid white;
+    border:solid #F4F4F4;
     border-width: medium thin medium 0.4em;
     margin:0.5rem 0 0.5rem 0;
     transform: rotate(-15deg);

@@ -9,22 +9,22 @@
     </div>
     <div class="playback-ctrl-cell">
       <button class="themed-btn btn-ctrl-size" @click="toggleShuffle">
-        <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="white"></icon>
+        <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#F4F4F4"></icon>
         <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#272727"></icon>
       </button>
       <button class="themed-btn btn-ctrl-size" @click="playPrevSong">
-        <icon class="backward-cell white-icon" scale=1 name="backward"></icon>
+        <icon class="backward-cell" scale=1 name="backward" color="#F4F4F4"></icon>
       </button>
       <button class="themed-btn btn-ctrl-size" @click="switchContextState">
-        <icon v-if="this.isPlaying" class="play-cell white-icon" scale=1 name="pause"></icon>
-        <icon v-else class="play-cell white-icon" scale=1 name="play"></icon>
+        <icon v-if="this.isPlaying" class="play-cell" scale=1 name="pause" color="#F4F4F4"></icon>
+        <icon v-else class="play-cell" scale=1 name="play" color="#F4F4F4"></icon>
       </button>
       <button class="themed-btn btn-ctrl-size" @click="playNextSong">
-        <icon class="forward-cell white-icon" scale=1 name="forward"></icon>
+        <icon class="forward-celln" scale=1 name="forward" color="#F4F4F4"></icon>
       </button>
       <button class="themed-btn btn-ctrl-size" @click="toggleRepeat">
-        <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="white"></icon>
-        <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="white"></icon>
+        <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="#F4F4F4"></icon>
+        <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="#F4F4F4"></icon>
         <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
           <icon name="retweet" scale=1 color="#272727"></icon>
         </icon>
@@ -55,9 +55,9 @@
     <div class="playback-right-cell">
       <div style="width:80%; display:flex; justify-content:center; align-items:center;">
         <div class="themed-btn" style="width:10%;">
-          <icon v-if="this.getVolume > 75" name="volume-up" color="white"></icon>
-          <icon v-else-if="this.getVolume > 1" name="volume-down" color="white"></icon>
-          <icon v-else name="volume-off" color="white"></icon>
+          <icon v-if="this.getVolume > 75" name="volume-up" color="#F4F4F4"></icon>
+          <icon v-else-if="this.getVolume > 1" name="volume-down" color="#F4F4F4"></icon>
+          <icon v-else name="volume-off" color="#F4F4F4"></icon>
         </div>
         <vue-slider
           direction='horizontal'
@@ -97,10 +97,10 @@
     methods: {
       highlight: function (e) {
         e.target.style.backgroundColor = 'black'
-        e.target.style.fill = 'white'
+        e.target.style.fill = '#F4F4F4'
       },
       unhighlight: function (e) {
-        e.target.style.backgroundColor = 'white'
+        e.target.style.backgroundColor = '#F4F4F4'
         e.target.style.fill = 'black'
       },
       formatTime: function (second) {
