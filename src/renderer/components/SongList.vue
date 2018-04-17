@@ -45,24 +45,9 @@
 <script>
 import { ipcRenderer } from 'electron'
 import _ from 'lodash'
-import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
 import { mapGetters } from 'vuex'
-
-const audioCtx = new AudioContext()
-const getWaveform = (songData) => {
-  return new Promise((resolve, reject) => {
-    webAudioBuilder(audioCtx, songData.buffer.slice(0), (err, waveform) => {
-      if (err) reject(err)
-      try {
-        resolve(waveform.resample({width: 1024}))
-      } catch (e) {
-        if (e) resolve(waveform)
-      }
-    })
-  })
-}
 
 export default {
   components: {
@@ -81,26 +66,7 @@ export default {
     },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
-    },
-    refreshSongList: function () {
-      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
     }
-  },
-  beforeCreate () {
-    ipcRenderer.on('song:requestWaveform', (event, song) => {
-      let { songData, songMetadata } = song
-      getWaveform(songData)
-        .then(waveform => {
-          ipcRenderer.send('song:result', {
-            id: songMetadata.id,
-            waveMax: waveform.max,
-            waveMin: waveform.min
-          })
-        })
-    })
-    ipcRenderer.on('songList:refresh', () => {
-      this.refreshSongList()
-    })
   },
   destroyed () {
     ipcRenderer.removeAllListeners('song:requestWaveform')

@@ -20,6 +20,21 @@ import SongList from '@/components/SongList'
 import PlaybackController from './PlaybackController'
 import Playlist from '@/components/Playlist'
 import { mapActions, mapGetters } from 'vuex'
+import webAudioBuilder from 'waveform-data/webaudio'
+
+const audioCtx = new AudioContext()
+const getWaveform = (songData) => {
+  return new Promise((resolve, reject) => {
+    webAudioBuilder(audioCtx, songData.buffer.slice(0), (err, waveform) => {
+      if (err) reject(err)
+      try {
+        resolve(waveform.resample({width: 1024}))
+      } catch (e) {
+        if (e) resolve(waveform)
+      }
+    })
+  })
+}
 
 export default {
   name: 'music-player',
@@ -55,6 +70,22 @@ export default {
     ipcRenderer.on('play:song', (event, songInfo) => {
       this.initializePlayer(songInfo)
     })
+
+    ipcRenderer.on('songList:refresh', () => {
+      this.refreshSongList()
+    })
+
+    ipcRenderer.on('song:requestWaveform', (event, song) => {
+      let { songData, songMetadata } = song
+      getWaveform(songData)
+        .then(waveform => {
+          ipcRenderer.send('song:result', {
+            id: songMetadata.id,
+            waveMax: waveform.max,
+            waveMin: waveform.min
+          })
+        })
+    })
   },
   beforeDestroy () {
     this.stopSong()
@@ -73,6 +104,9 @@ export default {
           resolve()
         })
       }
+    },
+    refreshSongList: function () {
+      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
     },
     initializePlayer: async function (songInfo) {
       await this.stopSong()
