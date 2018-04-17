@@ -35,7 +35,7 @@
         <icon name="music" scale="2"></icon>
         <icon name="asterisk" scale="1"></icon>
       </el-button> -->
-      <button class="themed-btn" @click="setCurrentTab(0)">
+      <button class="themed-btn" @click="showAllPlaylists()">
         <icon name="list" scale="2" color="white"></icon>
       </button>
     </el-tooltip>
@@ -139,7 +139,8 @@ export default {
     width:80%;
     height: 12.5%;
     background-color:#F10707;
-    border:0.35rem solid white;
+    border:solid white;
+    border-width: medium thin medium 0.4em;
     margin:0.5rem 0 0.5rem 0;
     transform: rotate(-15deg);
   }
