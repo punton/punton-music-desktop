@@ -5,7 +5,9 @@
       :data="getSongs"
       empty-text="Drop song here!"
       height="85vh"
-      style="width: 100%">
+      :header-cell-style="{'background-color': '#272727', 'color': 'white'}"
+      :cell-style="{'background-color': '#303030', 'color': 'white'}"
+      style="width: 100%;">
         <el-table-column
           type="index"
           label="Play"
@@ -82,6 +84,7 @@ export default {
   /* border: 5px dashed rgb(0, 17, 255); */
   min-height: 100%;
   width: 100%;
+  background-color: #272727;
 }
 
 .scrollable {
@@ -93,5 +96,15 @@ export default {
   min-width: 100%;
   height: 30px;
   text-align: center;
+}
+
+.white-frame {
+  border:0.35rem solder white;
+}
+
+.themed-txt {
+  background-color: #272727;
+  border:0.35rem solid white;
+  color: white;
 }
 </style>
