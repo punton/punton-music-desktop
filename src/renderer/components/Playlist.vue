@@ -1,19 +1,14 @@
 <template>
   <div class="scrollable playlist-grid">
     <el-collapse accordion>
-      <el-collapse-item
+      <el-collapse-item 
         v-for="playlist in playlists"
         :name="playlist.id"
         :key="playlist.id">
         <template slot="title">
           {{playlist.name}}
         </template>
-        <song-list
-          :songs="songs"
-          :playingSongId="playingSongId"
-          :isPlaying="isPlaying"
-          :playlist="playlist.id"
-        ></song-list>
+        <song-list></song-list>
       </el-collapse-item>
       <el-button type="primary" class="add-btn" icon="el-icon-plus" @click="addPlaylist">Add new playlist</el-button>
     </el-collapse>
