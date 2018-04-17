@@ -98,6 +98,6 @@ export default {
 
 .themed-btn {
   background-color:#F10707;
-  border:0.2rem solid white;
+  border:0.2rem solid #F4F4F4;
 }
 </style>
