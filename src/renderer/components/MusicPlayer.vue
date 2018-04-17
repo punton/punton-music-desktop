@@ -174,6 +174,7 @@ export default {
     margin: 0;
     height: 100%;
     overflow-y: hidden;
+    background-color: #272727
   }
 </style>
 

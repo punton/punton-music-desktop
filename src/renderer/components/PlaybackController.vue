@@ -2,28 +2,28 @@
   <div class="playback-ctrl-grid">
     <div class="playback-left-cell">{{this.getSelectedSong.id ? this.getSelectedSong.data.title : ''}}</div>
     <div class="playback-ctrl-cell">
-      <el-button type="text" @click="toggleShuffle">
-        <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="lime"></icon>
-        <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="red"></icon>
-      </el-button>
-      <el-button type="text" @click="playPrevSong">
+      <button class="themed-btn" @click="toggleShuffle">
+        <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="black"></icon>
+        <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="white"></icon>
+      </button>
+      <button class="themed-btn" @click="playPrevSong">
         <icon class="backward-cell white-icon" scale=1 name="backward"></icon>
-      </el-button>
-      <div @click="switchContextState">
+      </button>
+      <button class="themed-btn" @click="switchContextState">
         <icon v-if="this.isPlaying" class="play-cell white-icon" scale=1 name="pause"></icon>
         <icon v-else class="play-cell white-icon" scale=1 name="play"></icon>
-      </div>
-      <el-button type="text" @click="playNextSong">
+      </button>
+      <button class="themed-btn" @click="playNextSong">
         <icon class="forward-cell white-icon" scale=1 name="forward"></icon>
-      </el-button>
-      <el-button type="text" @click="toggleRepeat">
-        <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="lime"></icon>
-        <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="lime"></icon>
+      </button>
+      <button class="themed-btn" @click="toggleRepeat">
+        <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="white"></icon>
+        <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="white"></icon>
         <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
-          <icon name="retweet" scale=1 color="red"></icon>
+          <icon name="retweet" scale=1 color="black"></icon>
         </icon>
-      </el-button>
-      <div class="time-cell">
+      </button>
+      <div class="time-cell themed-txt">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
       <div class="progressbar-cell">
@@ -37,11 +37,12 @@
           @callback='seek'
           :lazy='true'
           :disabled="!this.getPlayer.context"
-          :speed="0.1">
+          :speed="0.1"
+          :process-style="processStyle">
           <div slot="tooltip">{{formatTime(this.getCurrentTime).toFixed(2)}}</div>
         </vue-slider>
       </div>
-      <div class="duration-cell">
+      <div class="duration-cell themed-txt">
         {{formatTime(this.getSongDuration).toFixed(2)}}
       </div>
     </div>
@@ -58,6 +59,7 @@
         tooltip='hover'
         :width="'50%'"
         :disabled="!this.getPlayer.context"
+        :process-style="processStyle"
         @callback='changeVolume'>
       </vue-slider>
     </div>
@@ -74,7 +76,10 @@
     data () {
       return {
         playbackTime: -1,
-        volume: 30
+        volume: 30,
+        processStyle: {
+          'backgroundColor': '#F10707'
+        }
       }
     },
     components: { vueSlider },
@@ -93,7 +98,6 @@
         return (min + sec)
       },
       changeVolume: function (value) {
-        console.log(value)
         this.setVolume(value)
       },
       seek: function (time) {
@@ -104,8 +108,10 @@
       switchContextState: async function () {
         let player = await this.getPlayer
         if (await player.context.state === 'running') {
+          this.setContextState('suspended')
           this.suspend()
         } else if (await player.context.state === 'suspended') {
+          this.setContextState('running')
           this.resume()
         }
       },
@@ -136,7 +142,8 @@
         'toggleShuffle',
         'stopSong',
         'playSong',
-        'setSelectedSong'
+        'setSelectedSong',
+        'setContextState'
       ])
     },
     computed: {
@@ -162,7 +169,7 @@
     width: 100%;
     height: 100%;
     grid-area: pcc;
-    background-color: #afafaf;
+    background-color: #272727;
     display: grid;
     grid-template-areas:
     "rc bc pc fc tc"
@@ -173,7 +180,7 @@
 
   .playback-left-cell {
     grid-area: plc;
-    background-color: #afafaf;
+    background-color: #272727;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -181,7 +188,7 @@
 
   .playback-right-cell {
     grid-area: prc;
-    background-color: #afafaf;
+    background-color: #272727;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -236,5 +243,25 @@
 
   .white-icon {
     fill: white;
+  }
+
+  .themed-btn {
+    min-width: 75%;
+    width: 75%;
+    max-width: 75%;
+    min-height: 75%;
+    height: 75%;
+    max-height: 75%;
+    background-color:#F10707;
+    border:0.35rem solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .themed-txt {
+    background-color: #272727;
+    border:0.35rem solid white;
+    color: white;
   }
 </style>
