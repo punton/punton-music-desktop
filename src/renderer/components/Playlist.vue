@@ -72,7 +72,6 @@ export default {
 .playlist-grid {
   width: 100%;
   height: 100%;
-  display: grid;
 }
 
 .add-btn {
