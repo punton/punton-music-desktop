@@ -1,6 +1,6 @@
 <template>
   <div class="playing-status-icon" @mouseup="onMouseUp" @mousedown="onMouseDown" @mouseover="onMouseOver" @mouseleave="onMouseLeave" @click="onClick">
-    <img :src="playingStatusIcon" />
+    <img class="themed-btn" :src="playingStatusIcon" />
   </div>
 </template>
 
@@ -94,5 +94,10 @@ export default {
 .playing-status-icon {
   width: 100%;
   height: 100%;
+}
+
+.themed-btn {
+  background-color:#F10707;
+  border:0.2rem solid white;
 }
 </style>
