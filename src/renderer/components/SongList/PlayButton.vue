@@ -1,6 +1,6 @@
 <template>
   <div class="playing-status-icon" @mouseup="onMouseUp" @mousedown="onMouseDown" @mouseover="onMouseOver" @mouseleave="onMouseLeave" @click="onClick">
-    <img class="themed-btn" :src="playingStatusIcon" />
+    <img v-if="playingStatusIcon" class="themed-btn" :src="playingStatusIcon" />
   </div>
 </template>
 
