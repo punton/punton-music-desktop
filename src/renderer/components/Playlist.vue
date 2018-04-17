@@ -38,7 +38,6 @@ export default {
       const selectedPlaylist = this.getPlaylists.filter(playlist => playlist.id === playlistId)[0]
       this.setCurrentPlaylist(selectedPlaylist)
       if (selectedPlaylist !== undefined) ipcRenderer.send('songList:find', selectedPlaylist.id)
-      console.dir(selectedPlaylist)
     },
     addPlaylist: function () {
       this.$prompt('Please input your new playlist name', 'New Playlist', {
