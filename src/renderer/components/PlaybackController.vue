@@ -1,10 +1,14 @@
 <template>
   <div class="playback-ctrl-grid">
-    <div class="playback-left-cell">{{this.getSelectedSong.id ? this.getSelectedSong.data.title : ''}}</div>
+    <div class="playback-left-cell">
+      <div class="themed-txt" style="display: flex; align-items: center; justify-content: center; width:75%; height:50%; transform: rotate(-5deg);">
+        {{this.getSelectedSong.id ? this.getSelectedSong.data.title : ''}}
+      </div>
+    </div>
     <div class="playback-ctrl-cell">
       <button class="themed-btn btn-ctrl-size" @click="toggleShuffle">
-        <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="black"></icon>
-        <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="white"></icon>
+        <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="white"></icon>
+        <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#272727"></icon>
       </button>
       <button class="themed-btn btn-ctrl-size" @click="playPrevSong">
         <icon class="backward-cell white-icon" scale=1 name="backward"></icon>
@@ -20,7 +24,7 @@
         <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="white"></icon>
         <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="white"></icon>
         <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
-          <icon name="retweet" scale=1 color="black"></icon>
+          <icon name="retweet" scale=1 color="#272727"></icon>
         </icon>
       </button>
       <div class="time-cell themed-txt rotate-right">
@@ -261,23 +265,27 @@
 
   .themed-btn {
     background-color:#F10707;
-    border:0.35rem solid white;
+    border:0.2rem solid white;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
+  .volume-cell-border {
+    border-width: medium 0.4em medium thin;
+  }
+
   .rotate-left {
-    transform: rotate(10deg);
+    transform: rotate(5deg);
   }
 
   .rotate-right {
-    transform: rotate(-10deg);
+    transform: rotate(-5deg);
   }
 
   .themed-txt {
     background-color: #272727;
-    border:0.35rem solid white;
+    border:0.2rem solid white;
     color: white;
   }
 </style>
