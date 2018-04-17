@@ -1,8 +1,10 @@
 <template>
   <div class="playback-ctrl-grid">
     <div class="playback-left-cell">
-      <div class="themed-txt" style="display: flex; align-items: center; justify-content: center; width:75%; height:50%; transform: rotate(-5deg);">
-        {{this.getSelectedSong.id ? this.getSelectedSong.data.title : ''}}
+      <div class="themed-txt song-title-label">
+        <div class="slide-anim">
+          {{this.getSelectedSong.id ? this.getSelectedSong.data.title : ''}}
+        </div>
       </div>
     </div>
     <div class="playback-ctrl-cell">
@@ -287,5 +289,35 @@
     background-color: #272727;
     border:0.2rem solid white;
     color: white;
+  }
+
+  .song-title-label {
+    display: flex;
+    align-items:
+    center;
+    justify-content:
+    center;
+    width:75%;
+    height:50%;
+    transform: rotate(-5deg);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .slide-anim {
+    animation-duration: 10s;
+    animation-name: slide;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
+  @keyframes slide {
+    from {
+      margin-left: 250%
+    }
+
+    to {
+      margin-left: -250%
+    }
   }
 </style>
