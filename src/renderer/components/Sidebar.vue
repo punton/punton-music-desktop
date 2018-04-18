@@ -100,11 +100,11 @@ export default {
 
   .sidebar-grid {
     width: 100%;
-    height: 100%;
+    height: 60%;
     background-color: #272727;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-around;
     /* justify-items:  */
     align-items: center;
   }
@@ -114,12 +114,12 @@ export default {
   }
 
   .themed-btn {
-    width:80%;
-    height: 15%;
+    width: 80%;
+    height: 30%;
     background-color:#F10707;
     border:solid #F4F4F4;
     border-width: medium thin medium 1em;
-    margin:0.5rem 0 0.5rem 0;
+    margin:0.5rem 0 0 0;
     transition-property: border-width;
     transition-duration: 0.25s;
     border-radius: 0.15em;
@@ -127,20 +127,24 @@ export default {
 
   .themed-btn:hover {
     background-color: #FB5C5C;
-    animation-duration: 1s;
+    animation-duration: 0.4s;
     animation-name: bounce;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+    animation-iteration-count: 1;
   }
 
   @keyframes bounce {
-    from {
+    0% {
       width: 80%;
+      height: 30%;
+    }
+    50% {
+      margin-top: 2rem;
+      width: 90%;
       height: 15%;
     }
-    to {
-      width: 90%;
-      height: 12.5%;
+    100% {
+      width: 80%;
+      height: 30%;
     }
   }
 
