@@ -286,14 +286,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 0.15em;
   }
 
   .themed-btn:hover {
     background-color: #FB5C5C;
-    animation-duration: 1.5s;
-    animation-name: bounce;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
   }
 
   .volume-cell-border {
@@ -312,6 +309,7 @@
     background-color: #272727;
     border:0.2rem solid #F4F4F4;
     color: #F4F4F4;
+    border-radius: 0.15em;
   }
 
   .song-title-label {
