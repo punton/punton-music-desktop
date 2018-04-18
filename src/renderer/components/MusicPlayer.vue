@@ -143,6 +143,31 @@ export default {
     background-color: #272727;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
+
+  th.gutter {
+    background-color: #272727;
+  }
+
+  /* width */
+  ::-webkit-scrollbar {
+      width: 1rem;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #F4F4F4; 
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    width: 80%;
+    background: #F10707; 
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #FB5C5C; 
+  }
 </style>
 
 <style scoped>
@@ -157,6 +182,11 @@ export default {
 
   .playback-controller {
     grid-area: pc;
+  }
+
+  .title-bar {
+    color: #F4F4F4;
+    grid-area: tb;
   }
 
   .player-grid {
