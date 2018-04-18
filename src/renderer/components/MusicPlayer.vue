@@ -155,13 +155,16 @@ export default {
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: #F4F4F4; 
+    background: #474747; 
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
     width: 80%;
-    background: #F10707; 
+    background: #F10707;
+    border:solid #474747;
+    border-width: medium thin medium thin;
+    border-radius: 0.15em;
   }
 
   /* Handle on hover */
