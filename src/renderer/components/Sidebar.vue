@@ -115,17 +115,33 @@ export default {
 
   .themed-btn {
     width:80%;
-    height: 12.5%;
+    height: 15%;
     background-color:#F10707;
     border:solid #F4F4F4;
-    border-width: medium thin medium 0.6em;
+    border-width: medium thin medium 1em;
     margin:0.5rem 0 0.5rem 0;
     transition-property: border-width;
     transition-duration: 0.25s;
+    border-radius: 0.15em;
   }
 
   .themed-btn:hover {
     background-color: #FB5C5C;
+    animation-duration: 1s;
+    animation-name: bounce;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+
+  @keyframes bounce {
+    from {
+      width: 80%;
+      height: 15%;
+    }
+    to {
+      width: 90%;
+      height: 12.5%;
+    }
   }
 
   .themed-btn.down {
