@@ -10,14 +10,14 @@
     <div class="playback-ctrl-cell">
       <el-tooltip effect="light" placement="top">
         <div slot="content">Shuffle</div>
-        <button class="themed-btn btn-ctrl-size" @click="toggleShuffle">
+        <button class="themed-btn btn-ctrl-size rotate-right" @click="toggleShuffle">
           <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#F4F4F4"></icon>
           <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#272727"></icon>
         </button>
       </el-tooltip>
       <el-tooltip effect="light" placement="top">
         <div slot="content">Previous</div>
-        <button class="themed-btn btn-ctrl-size" @click="playPrevSong">
+        <button class="themed-btn btn-ctrl-size rotate-right" @click="playPrevSong">
           <icon class="backward-cell" scale=1 name="backward" color="#F4F4F4"></icon>
         </button>
       </el-tooltip>
@@ -30,13 +30,13 @@
       </el-tooltip>
       <el-tooltip effect="light" placement="top">
         <div slot="content">Next</div>
-        <button class="themed-btn btn-ctrl-size" @click="playNextSong">
+        <button class="themed-btn btn-ctrl-size  rotate-left" @click="playNextSong">
           <icon class="forward-celln" scale=1 name="forward" color="#F4F4F4"></icon>
         </button>
       </el-tooltip>
       <el-tooltip effect="light" placement="top">
         <div slot="content">Repeat / Repeat Playlist</div>
-        <button class="themed-btn btn-ctrl-size" @click="toggleRepeat">
+        <button class="themed-btn btn-ctrl-size  rotate-left" @click="toggleRepeat">
           <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="#F4F4F4"></icon>
           <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="#F4F4F4"></icon>
           <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
@@ -272,7 +272,7 @@
   }
 
   .btn-ctrl-size {
-        min-width: 75%;
+    min-width: 75%;
     width: 75%;
     max-width: 75%;
     min-height: 75%;
@@ -286,6 +286,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .themed-btn:hover {
+    background-color: #FB5C5C;
+    animation-duration: 1.5s;
+    animation-name: bounce;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
   }
 
   .volume-cell-border {
@@ -333,6 +341,17 @@
 
     to {
       margin-left: -250%
+    }
+  }
+
+  @keyframes bounce {
+    from {
+      width: 80%;
+      height: 15%;
+    }
+    to {
+      width: 90%;
+      height: 12.5%;
     }
   }
 </style>
