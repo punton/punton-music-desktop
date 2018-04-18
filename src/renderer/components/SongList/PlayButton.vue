@@ -1,15 +1,15 @@
 <template>
   <div class="playing-status-icon" @mouseup="onMouseUp" @mousedown="onMouseDown" @mouseover="onMouseOver" @mouseleave="onMouseLeave" @click="onClick">
-    <img v-if="playingStatusIcon" class="themed-btn" :src="playingStatusIcon" />
+    <icon
+      v-if="playingStatusIcon !== null"
+      :name="playingStatusIcon"
+      scale="1.1"
+      class="themed-btn">
+    </icon>
   </div>
 </template>
 
 <script>
-import playBtnIcon from '../../assets/icons/ic_play_circle_outline_black_24dp.png'
-import playBtnFillBlackIcon from '../../assets/icons/ic_play_circle_filled_black_24dp.png'
-import pauseBtnIcon from '../../assets/icons/ic_pause_circle_outline_black_24dp.png'
-import playIcon from '../../assets/icons/ic_play_arrow_black_24dp.png'
-import pauseBtnFillBlackIcon from '../../assets/icons/ic_pause_circle_filled_black_24dp.png'
 import { ipcRenderer } from 'electron'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -19,7 +19,7 @@ export default {
   ],
   data () {
     return {
-      playingStatusIcon: this.playingStatus ? playIcon : null
+      playingStatusIcon: this.playingStatus ? 'play' : null
     }
   },
   computed: {
@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     onMouseOver: function (e) {
-      this.setIcon(this.isThisSongPlaying === true ? pauseBtnIcon : playBtnIcon)
+      this.setIcon(this.isThisSongPlaying === true ? 'regular/pause-circle' : 'regular/play-circle')
     },
     onMouseLeave: function (e) {
       this.showPlayOrNull()
@@ -69,16 +69,16 @@ export default {
       }
     },
     onMouseDown: function (e) {
-      this.setIcon(this.isThisSongPlaying === true ? pauseBtnFillBlackIcon : playBtnFillBlackIcon)
+      this.setIcon(this.isThisSongPlaying === true ? 'pause-circle' : 'play-circle')
     },
     onMouseUp: function (e) {
-      this.setIcon(playBtnIcon)
+      this.setIcon('regular/play-circle')
     },
     setIcon: function (icon) {
       this.playingStatusIcon = icon
     },
     showPlayOrNull: function () {
-      this.setIcon(this.isThisSongPlaying === true ? playIcon : null)
+      this.setIcon(this.isThisSongPlaying === true ? 'play' : null)
     },
     ...mapActions([
       'resume',
@@ -98,6 +98,7 @@ export default {
 
 .themed-btn {
   background-color:#F10707;
-  border:0.2rem solid #F4F4F4;
+  padding: 0.1rem;
+  border: 0.2rem solid #F4F4F4;
 }
 </style>
