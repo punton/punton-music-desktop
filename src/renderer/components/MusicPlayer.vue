@@ -177,6 +177,37 @@ export default {
     background-color: #272727;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
+<<<<<<< HEAD
+=======
+
+  th.gutter {
+    background-color: #272727;
+  }
+
+  /* width */
+  ::-webkit-scrollbar {
+      width: 1rem;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #474747; 
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    width: 80%;
+    background: #F10707;
+    border:solid #474747;
+    border-width: medium thin medium thin;
+    border-radius: 0.15em;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #FB5C5C; 
+  }
+>>>>>>> Update scrollbar style
 </style>
 
 <style scoped>
