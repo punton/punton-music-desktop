@@ -1,7 +1,7 @@
 <template>
   <div class="scrollable playlist-grid">
     <el-collapse accordion>
-      <el-collapse-item 
+      <el-collapse-item
         v-for="playlist in playlists"
         :name="playlist.id"
         :key="playlist.id">
@@ -10,7 +10,12 @@
         </template>
         <song-list></song-list>
       </el-collapse-item>
-      <el-button type="primary" class="add-btn" icon="el-icon-plus" @click="addPlaylist">Add new playlist</el-button>
+      <div style="display:flex; align-items: center; justify-content: center;">
+        <button class="themed-btn themed-btn-font" @click="addPlaylist">
+          <icon name="plus" color="#F4F4F4"></icon>
+          New Playlist
+        </button>
+      </div>
     </el-collapse>
   </div>
 </template>
@@ -60,6 +65,18 @@ export default {
 }
 </script>
 
+<style>
+.el-collapse-item__header {
+  background-color: #272727;
+  color: #F4F4F4;
+}
+
+.el-collapse-item__content {
+  background-color: #272727;
+  color: #F4F4F4;
+}
+</style>
+
 <style scoped>
 .scrollable {
   width: 100%;
@@ -77,4 +94,20 @@ export default {
 .add-btn {
   width: 85%;
 }
+
+.themed-btn {
+  width: 80%;
+  height: 30%;
+  background-color:#F10707;
+  border:0.2rem solid #F4F4F4;
+  transition-property: border-width;
+  transition-duration: 0.25s;
+  border-radius: 0.15em;
+  color: #F4F4F4;
+}
+
+.themed-btn-font {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 </style>

@@ -115,9 +115,11 @@ export default {
 
   .themed-btn {
     width: 80%;
-    height: 30%;
+    height: 25%;
     background-color:#F10707;
-    border:solid #F4F4F4;
+    /* border:solid #F4F4F4; */
+    border-style: solid;
+    border-color: #F4F4F4 #272727 #F4F4F4 #F4F4F4;
     border-width: medium thin medium 1em;
     margin:0.5rem 0 0 0;
     transition-property: border-width;
