@@ -1,21 +1,21 @@
 <template>
   <div class="sidebar-grid">
-    <el-tooltip effect="dark" placement="right">
+    <el-tooltip effect="light" placement="right">
       <div slot="content">Recommend<br/>Songs</div>
-      <button class="themed-btn rotate-left" @click="setCurrentTab(0)">
+      <button class="themed-btn rotate-left" @click="setCurrentTab(0)" :class="{ down: this.getCurrentTab === 0 }">
         <icon name="thumbs-up" scale="2" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
-    <el-tooltip effect="dark" placement="right">
+    <el-tooltip effect="light" placement="right">
       <div slot="content">All<br/>Songs</div>
-      <button class="themed-btn rotate-left" @click="setCurrentTab(1)">
+      <button class="themed-btn rotate-left" @click="setCurrentTab(1)" :class="{ down: this.getCurrentTab === 1 }">
         <icon name="music" scale="2" color="#F4F4F4"></icon>
         <icon name="asterisk" scale="1" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
-    <el-tooltip effect="dark" placement="right">
+    <el-tooltip effect="light" placement="right">
       <div slot="content">Custom<br/>Playlists</div>
-      <button class="themed-btn rotate-left" @click="showAllPlaylists()">
+      <button class="themed-btn rotate-left" @click="showAllPlaylists()" :class="{ down: this.getCurrentTab === 2 }">
         <icon name="list" scale="2" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
@@ -48,21 +48,25 @@ export default {
       })
     },
     setCurrentTab: function (playlistIndex) {
+      this.setTab(playlistIndex)
       this.$emit('setShowPlaylists', false)
       this.setCurrentPlaylist(this.getPlaylistByIndex(playlistIndex))
       ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
     },
     showAllPlaylists: function () {
+      this.setTab(2)
       this.$emit('setShowPlaylists', true)
     },
     ...mapActions([
-      'setCurrentPlaylist'
+      'setCurrentPlaylist',
+      'setTab'
     ])
   },
   computed: {
     ...mapGetters([
       'getPlaylistByIndex',
-      'getCurrentPlaylist'
+      'getCurrentPlaylist',
+      'getCurrentTab'
     ])
   }
 }
@@ -98,12 +102,6 @@ export default {
     width: 100%;
     height: 100%;
     background-color: #272727;
-    /* display: grid;
-    grid-template: 
-    "rc" 3fr
-    "pc" 3fr
-    "ac" 3fr
-    "cc" 2fr / 1fr; */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -130,8 +128,8 @@ export default {
     background-color: #FB5C5C;
   }
 
-  .themed-btn:active {
-    background-color: #FB5C5C;
+  .themed-btn.down {
+    background-color: #F10707;
     border-width: medium thin medium thin;
   }
 
@@ -141,5 +139,9 @@ export default {
 
   .rotate-right {
     transform: rotate(15deg);
+  }
+
+  .themed-btn:first-child {
+    margin-top: 1.5rem;
   }
 </style>
