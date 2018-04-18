@@ -8,27 +8,42 @@
       </div>
     </div>
     <div class="playback-ctrl-cell">
-      <button class="themed-btn btn-ctrl-size" @click="toggleShuffle">
-        <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#F4F4F4"></icon>
-        <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#272727"></icon>
-      </button>
-      <button class="themed-btn btn-ctrl-size" @click="playPrevSong">
-        <icon class="backward-cell" scale=1 name="backward" color="#F4F4F4"></icon>
-      </button>
-      <button class="themed-btn btn-ctrl-size" @click="switchContextState">
-        <icon v-if="this.isPlaying" class="play-cell" scale=1 name="pause" color="#F4F4F4"></icon>
-        <icon v-else class="play-cell" scale=1 name="play" color="#F4F4F4"></icon>
-      </button>
-      <button class="themed-btn btn-ctrl-size" @click="playNextSong">
-        <icon class="forward-celln" scale=1 name="forward" color="#F4F4F4"></icon>
-      </button>
-      <button class="themed-btn btn-ctrl-size" @click="toggleRepeat">
-        <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="#F4F4F4"></icon>
-        <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="#F4F4F4"></icon>
-        <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
-          <icon name="retweet" scale=1 color="#272727"></icon>
-        </icon>
-      </button>
+      <el-tooltip effect="light" placement="top">
+        <div slot="content">Shuffle</div>
+        <button class="themed-btn btn-ctrl-size" @click="toggleShuffle">
+          <icon v-show="this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#F4F4F4"></icon>
+          <icon v-show="!this.isPlaylistShuffling" class="random-cell" scale=1 name="random" color="#272727"></icon>
+        </button>
+      </el-tooltip>
+      <el-tooltip effect="light" placement="top">
+        <div slot="content">Previous</div>
+        <button class="themed-btn btn-ctrl-size" @click="playPrevSong">
+          <icon class="backward-cell" scale=1 name="backward" color="#F4F4F4"></icon>
+        </button>
+      </el-tooltip>
+      <el-tooltip effect="light" placement="top">
+        <div slot="content">Resume / Pause</div>
+        <button class="themed-btn btn-ctrl-size" @click="switchContextState">
+          <icon v-if="this.isPlaying" class="play-cell" scale=1 name="pause" color="#F4F4F4"></icon>
+          <icon v-else class="play-cell" scale=1 name="play" color="#F4F4F4"></icon>
+        </button>
+      </el-tooltip>
+      <el-tooltip effect="light" placement="top">
+        <div slot="content">Next</div>
+        <button class="themed-btn btn-ctrl-size" @click="playNextSong">
+          <icon class="forward-celln" scale=1 name="forward" color="#F4F4F4"></icon>
+        </button>
+      </el-tooltip>
+      <el-tooltip effect="light" placement="top">
+        <div slot="content">Repeat / Repeat Playlist</div>
+        <button class="themed-btn btn-ctrl-size" @click="toggleRepeat">
+          <icon v-show="this.isSongRepeating & !this.isPlaylistRepeating" name="retweet" scale=1 color="#F4F4F4"></icon>
+          <icon v-show="!this.isSongRepeating & this.isPlaylistRepeating" name="asterisk" scale=1 color="#F4F4F4"></icon>
+          <icon v-show="!this.isSongRepeating & !this.isPlaylistRepeating" label="no-repeat">
+            <icon name="retweet" scale=1 color="#272727"></icon>
+          </icon>
+        </button>
+      </el-tooltip>
       <div class="time-cell themed-txt rotate-right">
         {{formatTime(this.getCurrentTime).toFixed(2)}}
       </div>
@@ -253,7 +268,7 @@
   }
 
   .white-icon {
-    fill: white;
+    fill: #F4F4F4;
   }
 
   .btn-ctrl-size {
@@ -267,7 +282,7 @@
 
   .themed-btn {
     background-color:#F10707;
-    border:0.2rem solid white;
+    border:0.2rem solid #F4F4F4;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -287,8 +302,8 @@
 
   .themed-txt {
     background-color: #272727;
-    border:0.2rem solid white;
-    color: white;
+    border:0.2rem solid #F4F4F4;
+    color: #F4F4F4;
   }
 
   .song-title-label {
