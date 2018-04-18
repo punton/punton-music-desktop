@@ -2,40 +2,20 @@
   <div class="sidebar-grid">
     <el-tooltip effect="dark" placement="right">
       <div slot="content">Recommend<br/>Songs</div>
-      <!-- <el-button
-      class="tab-box"
-      plain
-      @click="setCurrentTab(0)"
-      type="danger">
-        <icon name="thumbs-up" scale=2></icon>
-      </el-button> -->
-      <button class="themed-btn" @click="setCurrentTab(0)">
+      <button class="themed-btn rotate-left" @click="setCurrentTab(0)">
         <icon name="thumbs-up" scale="2" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
     <el-tooltip effect="dark" placement="right">
       <div slot="content">All<br/>Songs</div>
-      <!-- <el-button
-      class="tab-box"
-      @click="setCurrentTab(1)"
-      type="danger">
-        <icon name="list" scale="2"></icon>
-      </el-button> -->
-      <button class="themed-btn" @click="setCurrentTab(1)">
+      <button class="themed-btn rotate-left" @click="setCurrentTab(1)">
         <icon name="music" scale="2" color="#F4F4F4"></icon>
         <icon name="asterisk" scale="1" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
     <el-tooltip effect="dark" placement="right">
       <div slot="content">Custom<br/>Playlists</div>
-      <!-- <el-button
-      class="tab-box"
-      @click="showAllPlaylists()"
-      type="danger">
-        <icon name="music" scale="2"></icon>
-        <icon name="asterisk" scale="1"></icon>
-      </el-button> -->
-      <button class="themed-btn" @click="showAllPlaylists()">
+      <button class="themed-btn rotate-left" @click="showAllPlaylists()">
         <icon name="list" scale="2" color="#F4F4F4"></icon>
       </button>
     </el-tooltip>
@@ -140,8 +120,26 @@ export default {
     height: 12.5%;
     background-color:#F10707;
     border:solid #F4F4F4;
-    border-width: medium thin medium 0.4em;
+    border-width: medium thin medium 0.6em;
     margin:0.5rem 0 0.5rem 0;
+    transition-property: border-width;
+    transition-duration: 0.25s;
+  }
+
+  .themed-btn:hover {
+    background-color: #FB5C5C;
+  }
+
+  .themed-btn:active {
+    background-color: #FB5C5C;
+    border-width: medium thin medium thin;
+  }
+
+  .rotate-left {
     transform: rotate(-15deg);
+  }
+
+  .rotate-right {
+    transform: rotate(15deg);
   }
 </style>
