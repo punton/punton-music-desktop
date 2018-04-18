@@ -22,7 +22,8 @@ const state = {
   contextTime: 0,
   seekTime: 0,
   isContextRunning: false,
-  contextState: ''
+  contextState: '',
+  currentTab: 0
 }
 
 const mutations = {
@@ -119,6 +120,9 @@ const mutations = {
   SET_CONTEXT_STATE (state, contextState) {
     console.log(`[Player context state]: ${contextState}`)
     state.contextState = contextState
+  },
+  SET_TAB (state, tabIndex) {
+    state.currentTab = tabIndex
   }
 }
 
@@ -235,6 +239,9 @@ const actions = {
   },
   toggleShuffle ({ commit }) {
     commit('TOGGLE_SHUFFLE')
+  },
+  setTab ({ commit }, tabIndex) {
+    commit('SET_TAB', tabIndex)
   }
 }
 
@@ -297,6 +304,10 @@ const getters = {
   },
   getNextSong: () => {
     return utils.getNextSong()
+  },
+  getCurrentTab: state => {
+    console.log(`Current Tab: ${state.currentTab}`)
+    return state.currentTab
   }
 }
 

@@ -144,4 +144,5 @@ export default {
   border:0.35rem solid #F4F4F4;
   color: #F4F4F4;
 }
+
 </style>
