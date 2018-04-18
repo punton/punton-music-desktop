@@ -199,6 +199,6 @@ export default {
     "sb tc tc tc tc" 1fr
     "sb tc tc tc tc" 1fr
     "sb tc tc tc tc" 1fr
-    "pc pc pc pc pc" 1fr / 1fr 2fr 2fr 2fr 2fr;
+    "pc pc pc pc pc" 1fr / 2fr 3fr 3fr 3fr 3fr;
   }
 </style>
