@@ -1,5 +1,6 @@
 <template>
   <div class="scrollable playlist-grid">
+<<<<<<< HEAD
     <el-dialog
       title="Delete Playlist"
       :visible.sync="deletePlaylistDialogVisible"
@@ -21,6 +22,16 @@
         <template
           slot-scope="props">
           <song-list></song-list>
+=======
+    <el-collapse accordion>
+      <el-collapse-item
+        v-for="playlist in playlists"
+        :name="playlist.id"
+        :key="playlist.id"
+        @sort-change="">
+        <template slot="title">
+          {{playlist.name}}   
+>>>>>>> Fixed volume style .
         </template>
       </el-table-column>
       <el-table-column

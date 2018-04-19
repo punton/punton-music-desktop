@@ -68,8 +68,8 @@
       </div>
     </div>
     <div class="playback-right-cell">
-      <div style="width:80%; display:flex; justify-content:center; align-items:center;">
-        <div class="themed-btn" style="width:10%;">
+      <div style="width:80%; height:20%; display:flex; justify-content:center; align-items:center;">
+        <div class="themed-btn" style="width:15%; height:100%;">
           <icon v-if="this.getVolume > 75" name="volume-up" color="#F4F4F4"></icon>
           <icon v-else-if="this.getVolume > 1" name="volume-down" color="#F4F4F4"></icon>
           <icon v-else name="volume-off" color="#F4F4F4"></icon>
