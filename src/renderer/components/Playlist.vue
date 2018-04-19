@@ -4,9 +4,10 @@
       <el-collapse-item
         v-for="playlist in playlists"
         :name="playlist.id"
-        :key="playlist.id">
+        :key="playlist.id"
+        @sort-change="">
         <template slot="title">
-          {{playlist.name}}
+          {{playlist.name}}   
         </template>
         <song-list></song-list>
       </el-collapse-item>
