@@ -3,7 +3,7 @@
     <icon
       v-if="playingStatusIcon !== null"
       :name="playingStatusIcon"
-      scale="1.1"
+      scale="1"
       class="themed-btn">
     </icon>
   </div>
@@ -42,6 +42,9 @@ export default {
       this.showPlayOrNull()
     },
     isPlayerRunning: function () {
+      this.showPlayOrNull()
+    },
+    getPlayerContextState: function () {
       this.showPlayOrNull()
     }
   },
@@ -93,7 +96,7 @@ export default {
 <style scoped>
 .playing-status-icon {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
 }
 
 .themed-btn {

@@ -12,7 +12,7 @@
           type="index"
           label="Play"
           header-align="center"
-          width="140">
+          width="80">
             <template slot-scope="scope">
               <div class="playing-icon">
                 <play-button :song="scope.row"></play-button>
@@ -34,7 +34,7 @@
           header-align="center"
           align="center"
           prop="duration"
-          width="160"
+          width="120"
           label="Duration">
           <template slot-scope="scope">
             {{durationFormat(scope.row.duration)}}
