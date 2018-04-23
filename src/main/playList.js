@@ -2,10 +2,10 @@ import {
   ipcMain
 } from 'electron'
 import 'util'
-import { Playlist } from './models'
+import { Op } from 'Sequelize'
+import { Playlist, Song } from './models'
 
 ipcMain.on('playlist:requestName', async (event) => {
-  console.log('request playlist name')
   try {
     const playlists = await Playlist.findAll({
       attributes: ['id', 'name']
@@ -24,5 +24,44 @@ ipcMain.on('playlist:create', async (event, playlistName) => {
     event.sender.send('playlist:callRequest')
   } catch (e) {
     console.dir(e)
+  }
+})
+
+ipcMain.on('playlist:update', (event, {id, name}) => {
+  try {
+    Playlist.update({
+      name: name
+    }, {
+      where: {
+        id: {
+          [Op.eq]: id
+        }
+      }
+    })
+    event.sender.send('playlist:callRequest')
+  } catch (err) {
+    console.error(err)
+  }
+})
+
+ipcMain.on('playlist:delete', (event, playlistId) => {
+  try {
+    Song.destroy({
+      where: {
+        playlistId: {
+          [Op.eq]: playlistId
+        }
+      }
+    })
+    Playlist.destroy({
+      where: {
+        id: {
+          [Op.eq]: playlistId
+        }
+      }
+    })
+    event.sender.send('playlist:callRequest')
+  } catch (err) {
+    console.error(err)
   }
 })

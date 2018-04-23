@@ -54,6 +54,8 @@ ipcMain.on('songList:save', (event, { songs, playlist }) => {
           console.dir(q.length)
           readingSong({ song: q.pop(), event, current: count, total: q.length })
         }
+      } else {
+        event.sender.send('songList:refresh')
       }
     } catch (err) {
       console.error(err)
@@ -99,7 +101,11 @@ ipcMain.on('songList:find', async (event, playlistId) => {
 
 ipcMain.on('song:delete', (event, songId) => {
   try {
-    Song.destroy({ where: { id: songId } })
+    Song.destroy({
+      where: {
+        id: songId
+      }
+    })
     event.sender.send('songList:refresh')
   } catch (err) {
     console.error(err)

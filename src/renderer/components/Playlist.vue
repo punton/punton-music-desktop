@@ -1,17 +1,46 @@
 <template>
   <div class="scrollable playlist-grid">
-    <el-collapse accordion @change="selectPlaylist">
-      <el-collapse-item 
-        v-for="playlist in playlists"
-        :name="playlist.id"
-        :key="playlist.id">
-        <template slot="title">
-          {{playlist.name}}
+    <el-dialog
+      title="Delete Playlist"
+      :visible.sync="deletePlaylistDialogVisible"
+      width="40%"
+      center>
+      <span>Are you sure you want to delete this Playlist {{deletingPlaylistName}} ?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="deletePlaylistDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="deletePlaylist()">Delete</el-button>
+      </span>
+    </el-dialog>
+    <el-table
+      ref="playlistsTable"
+      @expand-change="expandChange"
+      height="75vh"
+      :data="playlists">
+      <el-table-column
+        type="expand">
+        <template
+          slot-scope="props">
+          <song-list></song-list>
         </template>
-        <song-list></song-list>
-      </el-collapse-item>
-      <el-button type="primary" class="add-btn" icon="el-icon-plus" @click="addPlaylist">Add new playlist</el-button>
-    </el-collapse>
+      </el-table-column>
+      <el-table-column
+        label="Name"
+        prop="name">
+      </el-table-column>
+      <el-table-column
+        label="Operations">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            @click="editPlaylist(scope.row.id)">Edit</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="callDeletePlaylistDialog(scope.row)">Delete</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-button type="primary" class="add-btn" icon="el-icon-plus" @click="addPlaylist">Add new playlist</el-button>
   </div>
 </template>
 
@@ -25,6 +54,14 @@ export default {
     songList
   },
   props: ['playingSongId', 'isPlaying', 'songs'],
+  data () {
+    return {
+      deletePlaylistDialogVisible: false,
+      deletingPlaylistName: '',
+      deletingPlaylistId: '',
+      expandedRows: []
+    }
+  },
   computed: {
     playlists: function () {
       return this.getPlaylists.slice(2)
@@ -33,14 +70,27 @@ export default {
       'getPlaylists'
     ])
   },
+  watch: {
+    expandedRows (newValue, oldValue) {
+      if (newValue.length === 1) {
+        this.selectPlaylist(newValue[0].id)
+      } else if (newValue.length > 1) {
+        this.selectPlaylist(newValue[1].id)
+        this.$refs.playlistsTable.toggleRowExpansion(newValue[0], false)
+      }
+    }
+  },
   methods: {
+    expandChange (row, expandedRows) {
+      this.expandedRows = expandedRows
+    },
     selectPlaylist: function (playlistId) {
       const selectedPlaylist = this.getPlaylists.filter(playlist => playlist.id === playlistId)[0]
       this.setCurrentPlaylist(selectedPlaylist)
       if (selectedPlaylist !== undefined) ipcRenderer.send('songList:find', selectedPlaylist.id)
     },
     addPlaylist: function () {
-      this.$prompt('Please input your new playlist name', 'New Playlist', {
+      this.$prompt('Please type your new playlist name', 'New Playlist', {
         confirmButtonText: 'Create',
         cancelButtonText: 'Cancel',
         inputPattern: /(.*[^\s])+/,
@@ -57,6 +107,34 @@ export default {
           message: 'Cancel create playlist.'
         })
       })
+    },
+    editPlaylist (playlistId) {
+      this.$prompt('Please type your new playlist name', 'Edit Playlist Name', {
+        confirmButtonText: 'Edit',
+        cancelButtonText: 'Cancel',
+        inputPattern: /(.*[^\s])+/,
+        inputErrorMessage: 'Invalid Name'
+      }).then(playlistName => {
+        ipcRenderer.send('playlist:update', { id: playlistId, name: playlistName.value })
+        this.$message({
+          type: 'success',
+          message: `Edit playlist ${playlistName.value} successfully.`
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Cancel create playlist.'
+        })
+      })
+    },
+    callDeletePlaylistDialog (row) {
+      this.deletingPlaylistName = row.name
+      this.deletingPlaylistId = row.id
+      this.deletePlaylistDialogVisible = true
+    },
+    deletePlaylist () {
+      this.deletePlaylistDialogVisible = false
+      ipcRenderer.send('playlist:delete', this.deletingPlaylistId)
     },
     ...mapActions([
       'setCurrentPlaylist'
@@ -77,6 +155,7 @@ export default {
 .playlist-grid {
   width: 100%;
   height: 100%;
+  background: #272727;
 }
 
 .add-btn {
@@ -90,6 +169,10 @@ export default {
 
 .playlist-control-panel-btn {
   flex: 1;
+}
+
+.song-table {
+  background-color: #272727;
 }
 </style>
 

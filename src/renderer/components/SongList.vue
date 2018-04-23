@@ -48,7 +48,7 @@
           </template>
         </el-table-column>
     </el-table>
-    <div style="margin-top: 20px">
+    <div class="delete-panel">
       <el-button
         type="info"
         class="playlist-control-panel-btn"
@@ -141,5 +141,10 @@ export default {
   background-color: #272727;
   border:0.35rem solid #F4F4F4;
   color: #F4F4F4;
+}
+
+.delete-panel {
+  margin-top: 20px;
+  background: #272727;
 }
 </style>
