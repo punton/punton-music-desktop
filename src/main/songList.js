@@ -5,11 +5,10 @@ import 'util'
 import { Op } from 'Sequelize'
 import {Song} from './models'
 import Promise from 'bluebird'
-import Queue from 'better-queue'
 const fs = Promise.promisifyAll(require('fs'))
 const mm = require('music-metadata')
 
-const readingSong = async ({ event, song }, cb) => {
+const readingSong = async ({ song, event, current, total }) => {
   const songData = await fs.readFileAsync(song.path)
   event.sender.send('song:requestWaveform', {
     songMetadata: {
@@ -19,15 +18,20 @@ const readingSong = async ({ event, song }, cb) => {
       duration: song.dataValues.duration,
       path: song.dataValues.path
     },
+    current,
+    total,
     songData: songData
   })
-  cb(null, true)
 }
 
+let q
+let count
+
 ipcMain.on('songList:save', (event, { songs, playlist }) => {
-  let q = new Queue(readingSong, {
-    concurrent: 1,
-    batchSize: 1 })
+  if (!q || q.length === 0) {
+    q = []
+    count = 1
+  }
   songs.forEach(async song => {
     try {
       const metadata = await mm.parseFile(song.path, {
@@ -44,9 +48,12 @@ ipcMain.on('songList:save', (event, { songs, playlist }) => {
         sampleRate: metadata.format.sampleRate,
         playlistId: playlist.id
       })
-      event.sender.send('songList:refresh')
       if (playlist.name === 'Machine Learning') {
-        q.push({ event, song: newSong })
+        q.push(newSong)
+        if (q.length === songs.length) {
+          console.dir(q.length)
+          readingSong({ song: q.pop(), event, current: count, total: q.length })
+        }
       }
     } catch (err) {
       console.error(err)
@@ -55,6 +62,7 @@ ipcMain.on('songList:save', (event, { songs, playlist }) => {
 })
 
 ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
+  count++
   Song.update({
     waveMax: waveMax,
     waveMin: waveMin
@@ -65,6 +73,12 @@ ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
       }
     }
   })
+  if (q.length > 0) {
+    readingSong({ song: q.pop(), event, current: count, total: q.length })
+  }
+  if (q.length === 0) {
+    event.sender.send('songList:refresh')
+  }
 })
 
 ipcMain.on('songList:find', async (event, playlistId) => {

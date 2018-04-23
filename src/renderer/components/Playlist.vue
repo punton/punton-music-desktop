@@ -13,11 +13,13 @@
             class="playlist-control-panel-btn"
             icon="el-icon-edit"
             @click="editPlaylist">
+            Edit
           </el-button>
           <el-button
             class="playlist-control-panel-btn"
             icon="el-icon-delete"
             @click="deletePlaylist">
+            Delete
           </el-button>
         </el-button-group>
         <song-list></song-list>

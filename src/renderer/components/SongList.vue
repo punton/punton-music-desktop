@@ -1,10 +1,10 @@
 <template>
-  <div @dragover.prevent @drop="onDrop">
+  <div class="dropzone" @dragover.prevent @drop="onDrop">
     <el-table
-      class="dropzone"
+      class="song-table"
       :data="getSongs"
-      empty-text="Drop song here!"
       height="85vh"
+      empty-text="Drop song here!"
       :header-cell-style="{'background-color': '#272727', 'color': '#F4F4F4'}"
       :cell-style="{'background-color': '#474747', 'color': '#F4F4F4'}"
       style="width: 100%;">
@@ -61,8 +61,9 @@ export default {
       e.stopPropagation()
       e.preventDefault()
       const songs = []
+      const regex = RegExp('audio/.+', 'i')
       _.values(e.dataTransfer.files).forEach(song => {
-        songs.push({ name: song.name, path: song.path })
+        if (regex.test(song.type)) songs.push({ name: song.name, path: song.path })
       })
       ipcRenderer.send('songList:save', { songs, playlist: this.getCurrentPlaylist })
     },
@@ -84,6 +85,9 @@ export default {
   /* border: 5px dashed rgb(0, 17, 255); */
   min-height: 100%;
   width: 100%;
+}
+
+.song-table {
   background-color: #272727;
 }
 
