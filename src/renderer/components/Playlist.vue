@@ -27,8 +27,7 @@
       <el-collapse-item
         v-for="playlist in playlists"
         :name="playlist.id"
-        :key="playlist.id"
-        @sort-change="">
+        :key="playlist.id">
         <template slot="title">
           {{playlist.name}}   
 >>>>>>> Fixed volume style .
@@ -198,7 +197,7 @@ export default {
   background-color: #272727;
 }
 .themed-btn {
-  width: 80%;
+  width: 100%;
   height: 30%;
   background-color:#F10707;
   border:0.2rem solid #F4F4F4;
