@@ -96,3 +96,12 @@ ipcMain.on('songList:find', async (event, playlistId) => {
     console.error(err)
   }
 })
+
+ipcMain.on('song:delete', (event, songId) => {
+  try {
+    Song.destroy({ where: { id: songId } })
+    event.sender.send('songList:refresh')
+  } catch (err) {
+    console.error(err)
+  }
+})

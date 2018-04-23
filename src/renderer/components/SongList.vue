@@ -1,13 +1,20 @@
 <template>
   <div class="dropzone" @dragover.prevent @drop="onDrop">
     <el-table
+      ref="songListTable"
       class="song-table"
       :data="getSongs"
-      height="85vh"
+      @selection-change="handleSelectionChange"
+      height="75vh"
       empty-text="Drop song here!"
       :header-cell-style="{'background-color': '#272727', 'color': '#F4F4F4'}"
       :cell-style="{'background-color': '#474747', 'color': '#F4F4F4'}"
       style="width: 100%;">
+        <el-table-column
+          type="selection"
+          label="Delete"
+          width="55">
+        </el-table-column>
         <el-table-column
           type="index"
           label="Play"
@@ -41,6 +48,16 @@
           </template>
         </el-table-column>
     </el-table>
+    <div style="margin-top: 20px">
+      <el-button
+        type="info"
+        class="playlist-control-panel-btn"
+        icon="el-icon-delete"
+        @click="deleteSong()">
+        Delete Song
+      </el-button>
+      <el-button @click="clearSelection()">Clear selection</el-button>
+    </div>
   </div>
 </template>
 
@@ -56,6 +73,11 @@ export default {
     draggable,
     PlayButton
   },
+  data () {
+    return {
+      multipleSelection: []
+    }
+  },
   methods: {
     onDrop: function (e) {
       e.stopPropagation()
@@ -69,6 +91,15 @@ export default {
     },
     durationFormat: function (duration) {
       return (parseInt(duration / 60) + parseInt(duration % 60) / 100).toFixed(2)
+    },
+    deleteSong () {
+      ipcRenderer.send('song:delete', this.multipleSelection.map(song => song.id))
+    },
+    clearSelection () {
+      this.$refs.songListTable.clearSelection()
+    },
+    handleSelectionChange (rows) {
+      this.multipleSelection = rows
     }
   },
   computed: {
@@ -83,7 +114,7 @@ export default {
 <style scoped>
 .dropzone {
   /* border: 5px dashed rgb(0, 17, 255); */
-  min-height: 100%;
+  min-height: 85vh;
   width: 100%;
 }
 

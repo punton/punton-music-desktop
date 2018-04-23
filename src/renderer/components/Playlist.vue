@@ -8,20 +8,6 @@
         <template slot="title">
           {{playlist.name}}
         </template>
-        <el-button-group class="playlist-control-panel">
-          <el-button
-            class="playlist-control-panel-btn"
-            icon="el-icon-edit"
-            @click="editPlaylist">
-            Edit
-          </el-button>
-          <el-button
-            class="playlist-control-panel-btn"
-            icon="el-icon-delete"
-            @click="deletePlaylist">
-            Delete
-          </el-button>
-        </el-button-group>
         <song-list></song-list>
       </el-collapse-item>
       <el-button type="primary" class="add-btn" icon="el-icon-plus" @click="addPlaylist">Add new playlist</el-button>
@@ -48,12 +34,6 @@ export default {
     ])
   },
   methods: {
-    editPlaylist: function () {
-      alert('Edit world')
-    },
-    deletePlaylist: function () {
-      alert('Delete World')
-    },
     selectPlaylist: function (playlistId) {
       const selectedPlaylist = this.getPlaylists.filter(playlist => playlist.id === playlistId)[0]
       this.setCurrentPlaylist(selectedPlaylist)
