@@ -123,6 +123,31 @@ const mutations = {
   },
   SET_TAB (state, tabIndex) {
     state.currentTab = tabIndex
+  },
+  SORT_BY (state, sortStyle) {
+    console.log(`Before sort by ${sortStyle.type}.`)
+    let temp = []
+    state.songs.forEach(function (song) {
+      temp.push(song.title)
+    })
+    console.log(temp)
+    let sortedSongs
+    if (sortStyle.type === 'title') {
+      sortedSongs = utils.sortByTitle(state.songs, sortStyle.order)
+    } else if (sortStyle.type === 'artist') {
+      sortedSongs = utils.sortByArtist(state.songs, sortStyle.order)
+    } else if (sortStyle.type === 'duration') {
+      sortedSongs = utils.sortByDuration(state.songs, sortStyle.order)
+    } else {
+      console.log('Default sort style.')
+      sortedSongs = utils.sortById(state.songs, sortStyle.order)
+    }
+    console.log('After sorted.')
+    temp = []
+    sortedSongs.forEach(function (song) {
+      temp.push(song.title)
+    })
+    console.log(temp)
   }
 }
 
@@ -154,6 +179,7 @@ const utils = {
     return prevSong
   },
   getSongIndex (song) {
+    // TODO: use Array.prototype function instead.
     let songIndex = -1
     state.songs.forEach(function (stateSong, index) {
       if (stateSong.id === song.id) {
@@ -162,6 +188,86 @@ const utils = {
       }
     })
     return songIndex
+  },
+  sortById (songs, order) {
+    let orderMod = 1
+    if (order === 'descending') {
+      orderMod = -1
+    }
+    return songs.sort(function (a, b) {
+      let aId = a.id.toLowerCase()
+      let bId = b.id.toLowerCase()
+      let diff
+      if (aId < bId) {
+        diff = -1 * orderMod
+      } else if (aId > bId) {
+        diff = 1 * orderMod
+      } else {
+        diff = 0
+      }
+      // console.log(`${a.id} - ${b.id} = ${diff}`)
+      return diff
+    })
+  },
+  sortByTitle (songs, order) {
+    let orderMod = 1
+    if (order === 'descending') {
+      orderMod = -1
+    }
+    return songs.sort(function (a, b) {
+      let aTitle = a.title.toLowerCase()
+      let bTitle = b.title.toLowerCase()
+      let diff
+      if (aTitle < bTitle) {
+        diff = -1 * orderMod
+      } else if (aTitle > bTitle) {
+        diff = 1 * orderMod
+      } else {
+        diff = 0
+      }
+      // console.log(`${a.title} - ${b.title} = ${diff}`)
+      return diff
+    })
+  },
+  sortByArtist (songs, order) {
+    let orderMod = 1
+    if (order === 'descending') {
+      orderMod = -1
+    }
+    return songs.sort(function (a, b) {
+      let aArtist = a.artist.toLowerCase()
+      let bArtist = b.artist.toLowerCase()
+      let diff
+      if (aArtist < bArtist) {
+        diff = -1 * orderMod
+      } else if (aArtist > bArtist) {
+        diff = 1 * orderMod
+      } else {
+        diff = 0
+      }
+      // console.log(`${aArtist} - ${bArtist} = ${diff}`)
+      return diff
+    })
+  },
+  sortByDuration (songs, order) {
+    let orderMod = 1
+    if (order === 'descending') {
+      orderMod = -1
+    }
+    return songs.sort(function (a, b) {
+      let aDuration = parseFloat(a.duration)
+      let bDuration = parseFloat(b.duration)
+      let diff
+      if (aDuration < bDuration) {
+        diff = -1 * orderMod
+      } else if (aDuration > bDuration) {
+        diff = 1 * orderMod
+      } else {
+        diff = 0
+      }
+      // console.log(`${aDuration} - ${bDuration} = ${diff}`)
+      return diff
+    })
   }
 }
 
@@ -242,6 +348,9 @@ const actions = {
   },
   setTab ({ commit }, tabIndex) {
     commit('SET_TAB', tabIndex)
+  },
+  sortBy ({ commit }, sortStyle) {
+    commit('SORT_BY', sortStyle)
   }
 }
 
@@ -306,7 +415,7 @@ const getters = {
     return utils.getNextSong()
   },
   getCurrentTab: state => {
-    console.log(`Current Tab: ${state.currentTab}`)
+    // console.log(`Current Tab: ${state.currentTab}`)
     return state.currentTab
   }
 }

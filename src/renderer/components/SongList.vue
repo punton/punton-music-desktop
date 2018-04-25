@@ -5,6 +5,7 @@
       :data="getSongs"
       empty-text="Drop song here!"
       height="85vh"
+      @sort-change="sortSongs"
       :header-cell-style="{'background-color': '#272727', 'color': '#F4F4F4'}"
       :cell-style="{'background-color': '#474747', 'color': '#F4F4F4'}"
       style="width: 100%;">
@@ -20,7 +21,7 @@
             </template>
         </el-table-column>
         <el-table-column
-          sortable
+          sortable="custom"
           prop="title"
           label="Title">
         </el-table-column>
@@ -50,7 +51,7 @@ import _ from 'lodash'
 import webAudioBuilder from 'waveform-data/webaudio'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 const audioCtx = new AudioContext()
 const getWaveform = (songData) => {
@@ -86,7 +87,14 @@ export default {
     },
     refreshSongList: function () {
       ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
-    }
+    },
+    sortSongs: function (sortStyle) {
+      console.log(sortStyle)
+      this.sortBy({type: sortStyle.prop, order: sortStyle.order})
+    },
+    ...mapActions([
+      'sortBy'
+    ])
   },
   beforeCreate () {
     ipcRenderer.on('song:requestWaveform', (event, song) => {
