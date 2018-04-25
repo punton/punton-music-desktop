@@ -160,6 +160,23 @@ export default {
 </script>
 
 <style>
+.el-table th, .el-table tr {
+  background-color: transparent;
+  color: #F4F4F4;
+}
+
+.el-table, .el-table__expanded-cell {
+  background-color: transparent;
+}
+
+.el-table__expanded-cell[class*=cell] {
+    padding: 0 0;
+}
+
+div.el-table {
+  background-color: transparent;
+}
+
 .el-collapse-item__header {
   background-color: #272727;
   color: #F4F4F4;
