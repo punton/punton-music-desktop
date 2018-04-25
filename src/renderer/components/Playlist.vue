@@ -166,6 +166,10 @@ div.el-table {
   background-color: transparent;
 }
 
+.el-table__row {
+  fill:  #F4F4F4;
+}
+
 .el-collapse-item__header {
   background-color: #272727;
   color: #F4F4F4;
