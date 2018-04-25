@@ -85,6 +85,8 @@ export default {
         this.selectPlaylist(newValue[1].id)
         this.setExpandedRow(newValue[1])
         this.$refs.playlistsTable.toggleRowExpansion(newValue[0], false)
+      } else if (newValue.length === 0) {
+        this.setExpandedRow(null)
       }
     }
   },
