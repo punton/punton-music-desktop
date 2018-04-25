@@ -15,6 +15,12 @@
         ["env", {
           "targets": { "node": 7 }
         }],
+        [
+          "es2015",
+          {
+            "modules": false
+          }
+        ],
         "stage-0"
       ]
     },
@@ -23,6 +29,12 @@
         ["env", {
           "modules": false
         }],
+        [
+          "es2015",
+          {
+            "modules": false
+          }
+        ],
         "stage-0"
       ]
     },
@@ -31,9 +43,24 @@
         ["env", {
           "modules": false
         }],
+        [
+          "es2015",
+          {
+            "modules": false
+          }
+        ],
         "stage-0"
       ]
     }
   },
-  "plugins": ["transform-runtime"]
+  "plugins": [
+    "transform-runtime",
+    [
+      "component",
+      {
+        "libraryName": "element-ui",
+        "styleLibraryName": "theme-chalk"
+      }
+    ]
+  ]
 }

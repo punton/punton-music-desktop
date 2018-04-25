@@ -13,7 +13,8 @@ let mainConfig = {
     main: path.join(__dirname, '../src/main/index.js')
   },
   externals: [
-    ...Object.keys(dependencies || {})
+    ...Object.keys(dependencies || {}),
+    'pg', 'sqlite3', 'tedious', 'pg-hstore'
   ],
   module: {
     rules: [

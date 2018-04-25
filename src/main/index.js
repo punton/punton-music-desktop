@@ -1,16 +1,24 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
+import path from 'path'
+require('dotenv').config()
+require('./player')
+const db = require('./datastore')
+global.db = db.default
+global.db.sync()
+require('./models/playlist')
+require('./songList')
+require('./playList')
 
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -19,16 +27,19 @@ function createWindow () {
   /**
    * Initial window options
    */
-  mainWindow = new BrowserWindow({
-    height: 563,
+  global.mainWindow = new BrowserWindow({
+    minWidth: 1024,
+    minHeight: 768,
+    height: 768,
     useContentSize: true,
-    width: 1000
+    width: 1024,
+    backgroundThrottling: false
   })
 
-  mainWindow.loadURL(winURL)
+  global.mainWindow.loadURL(winURL)
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  global.mainWindow.on('closed', () => {
+    global.mainWindow = null
   })
 }
 
@@ -41,7 +52,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  if (mainWindow === null) {
+  if (global.mainWindow === null) {
     createWindow()
   }
 })
@@ -64,4 +75,4 @@ autoUpdater.on('update-downloaded', () => {
 app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
- */
+*/
