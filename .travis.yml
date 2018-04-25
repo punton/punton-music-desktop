@@ -38,9 +38,7 @@ script:
 #- xvfb-maybe node_modules/.bin/karma start test/unit/karma.conf.js
 #- yarn run pack && xvfb-maybe node_modules/.bin/mocha test/e2e
   # yarn test
-  if [[ $TRAVIS_BRANCH == 'master']]
-    - yarn build
-  fi
+- yarn build
 branches:
   only:
   - master
