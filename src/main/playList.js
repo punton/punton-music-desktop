@@ -2,7 +2,7 @@ import {
   ipcMain
 } from 'electron'
 import 'util'
-import { Op } from 'Sequelize'
+import { Op } from 'sequelize'
 import { Playlist, Song } from './models'
 
 ipcMain.on('playlist:requestName', async (event) => {

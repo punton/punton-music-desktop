@@ -2,7 +2,7 @@ import {
   ipcMain
 } from 'electron'
 import 'util'
-import { Op } from 'Sequelize'
+import { Op } from 'sequelize'
 import {Song} from './models'
 import Promise from 'bluebird'
 const fs = Promise.promisifyAll(require('fs'))
