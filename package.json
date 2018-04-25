@@ -1,6 +1,6 @@
 {
-  "name": "punton-music-player-desktop",
-  "version": "1.0.0-beta",
+  "name": "Punton Music",
+  "version": "1.0.27-beta",
   "author": "PNNutkung <pipatpol.t@ku.th>",
   "description": "A music player with Machine Learning techniques.",
   "license": "MIT",
@@ -54,7 +54,12 @@
       "icon": "build/icons/icon.ico"
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons",
+      "target": "deb",
+      "executableName": "Punton Music",
+      "synopsis": "A Music Player.",
+      "category": "Audio",
+      "desktop": "Punton Music"
     }
   },
   "dependencies": {
