@@ -177,8 +177,6 @@ export default {
     background-color: #272727;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
-<<<<<<< HEAD
-=======
 
   th.gutter {
     background-color: #272727;
@@ -207,7 +205,6 @@ export default {
   ::-webkit-scrollbar-thumb:hover {
     background: #FB5C5C; 
   }
->>>>>>> Update scrollbar style
 </style>
 
 <style scoped>

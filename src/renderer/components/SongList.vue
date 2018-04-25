@@ -7,6 +7,7 @@
       @selection-change="handleSelectionChange"
       height="75vh"
       empty-text="Drop song here!"
+      @sort-change="sortSongs"
       :header-cell-style="{'background-color': '#272727', 'color': '#F4F4F4'}"
       :cell-style="{'background-color': '#474747', 'color': '#F4F4F4'}"
       style="width: 100%;">
@@ -27,7 +28,7 @@
             </template>
         </el-table-column>
         <el-table-column
-          sortable
+          sortable="custom"
           prop="title"
           label="Title">
         </el-table-column>
@@ -66,7 +67,7 @@ import { ipcRenderer } from 'electron'
 import _ from 'lodash'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -100,7 +101,17 @@ export default {
     },
     handleSelectionChange (rows) {
       this.multipleSelection = rows
-    }
+    },
+    refreshSongList: function () {
+      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+    },
+    sortSongs: function (sortStyle) {
+      console.log(sortStyle)
+      this.sortBy({type: sortStyle.prop, order: sortStyle.order})
+    },
+    ...mapActions([
+      'sortBy'
+    ])
   },
   computed: {
     ...mapGetters([
