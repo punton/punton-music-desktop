@@ -1,12 +1,12 @@
 {
   "name": "punton-music-player-desktop",
-  "version": "1.0.0-beta",
+  "version": "1.0.27-beta",
   "author": "PNNutkung <pipatpol.t@ku.th>",
   "description": "A music player with Machine Learning techniques.",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
-    "build": "node .electron-vue/build.js && electron-builder --publish onTag",
+    "build": "node .electron-vue/build.js && electron-builder --publish always",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -19,7 +19,7 @@
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
-    "postinstall": "npm run lint:fix",
+    "postinstall": "npm run lint:fix && electron-builder install-app-deps",
     "rebuild:windows": "./node_modules/.bin/electron-rebuild.cmd"
   },
   "build": {
@@ -54,7 +54,12 @@
       "icon": "build/icons/icon.ico"
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons",
+      "target": "deb",
+      "executableName": "Punton Music",
+      "synopsis": "A Music Player.",
+      "category": "Audio",
+      "desktop": "Punton Music"
     }
   },
   "dependencies": {
