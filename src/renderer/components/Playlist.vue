@@ -72,17 +72,25 @@ export default {
       return this.getPlaylists.slice(2)
     },
     ...mapGetters([
-      'getPlaylists'
+      'getPlaylists',
+      'getExpandedRow'
     ])
   },
   watch: {
     expandedRows (newValue, oldValue) {
       if (newValue.length === 1) {
         this.selectPlaylist(newValue[0].id)
+        this.setExpandedRow(newValue[0])
       } else if (newValue.length > 1) {
         this.selectPlaylist(newValue[1].id)
+        this.setExpandedRow(newValue[1])
         this.$refs.playlistsTable.toggleRowExpansion(newValue[0], false)
       }
+    }
+  },
+  mounted () {
+    if (this.getExpandedRow !== null) {
+      this.$refs.playlistsTable.toggleRowExpansion(this.getExpandedRow, true)
     }
   },
   methods: {
@@ -142,7 +150,8 @@ export default {
       ipcRenderer.send('playlist:delete', this.deletingPlaylistId)
     },
     ...mapActions([
-      'setCurrentPlaylist'
+      'setCurrentPlaylist',
+      'setExpandedRow'
     ])
   }
 }

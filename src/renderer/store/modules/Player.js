@@ -24,7 +24,8 @@ const state = {
   seekTime: 0,
   isContextRunning: false,
   contextState: '',
-  currentTab: 0
+  currentTab: 0,
+  expandedRow: null
 }
 
 const mutations = {
@@ -145,6 +146,9 @@ const mutations = {
       utils.sortById(state.songs, sortStyle.order)
       utils.sortById(state.showingSongs, sortStyle.order)
     }
+  },
+  SET_EXPANDED_ROW (state, expandedRow) {
+    state.expandedRow = expandedRow
   }
 }
 
@@ -292,6 +296,9 @@ const actions = {
       resolve()
     })
   },
+  setExpandedRow ({ commit }, expandedRow) {
+    commit('SET_EXPANDED_ROW', expandedRow)
+  },
   stopPlayer ({ commit }) {
     commit('STOP_PLAYER')
   },
@@ -415,6 +422,9 @@ const getters = {
   },
   getShowingSongs: state => {
     return state.showingSongs
+  },
+  getExpandedRow: state => {
+    return state.expandedRow
   }
 }
 
