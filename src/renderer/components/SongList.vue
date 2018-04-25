@@ -3,7 +3,7 @@
     <el-table
       ref="songListTable"
       class="song-table"
-      :data="getSongs"
+      :data="getShowingSongs"
       @selection-change="handleSelectionChange"
       height="75vh"
       empty-text="Drop song here!"
@@ -119,8 +119,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'getSongs',
-      'getCurrentPlaylist'
+      'getCurrentPlaylist',
+      'getShowingSongs'
     ])
   }
 }

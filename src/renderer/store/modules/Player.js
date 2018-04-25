@@ -19,6 +19,7 @@ const state = {
   playlists: [],
   currentPlaylist: null,
   songs: [],
+  showingSongs: [],
   contextTime: 0,
   seekTime: 0,
   isContextRunning: false,
@@ -39,7 +40,13 @@ const mutations = {
   SET_SONGS (state, songs) {
     state.songs = []
     songs.forEach(song => {
-      state.songs.push(song.dataValues)
+      state.songs.push(song)
+    })
+  },
+  SET_SHOWING_SONG (state, songs) {
+    state.showingSongs = []
+    songs.forEach(song => {
+      state.showingSongs.push(song.dataValues)
     })
   },
   SET_PLAYLISTS (state, playlists) {
@@ -125,29 +132,19 @@ const mutations = {
     state.currentTab = tabIndex
   },
   SORT_BY (state, sortStyle) {
-    console.log(`Before sort by ${sortStyle.type}.`)
-    let temp = []
-    state.songs.forEach(function (song) {
-      temp.push(song.title)
-    })
-    console.log(temp)
-    let sortedSongs
     if (sortStyle.type === 'title') {
-      sortedSongs = utils.sortByTitle(state.songs, sortStyle.order)
+      utils.sortByTitle(state.songs, sortStyle.order)
+      utils.sortByTitle(state.showingSongs, sortStyle.order)
     } else if (sortStyle.type === 'artist') {
-      sortedSongs = utils.sortByArtist(state.songs, sortStyle.order)
+      utils.sortByArtist(state.songs, sortStyle.order)
+      utils.sortByArtist(state.showingSongs, sortStyle.order)
     } else if (sortStyle.type === 'duration') {
-      sortedSongs = utils.sortByDuration(state.songs, sortStyle.order)
+      utils.sortByDuration(state.songs, sortStyle.order)
+      utils.sortByDuration(state.showingSongs, sortStyle.order)
     } else {
-      console.log('Default sort style.')
-      sortedSongs = utils.sortById(state.songs, sortStyle.order)
+      utils.sortById(state.songs, sortStyle.order)
+      utils.sortById(state.showingSongs, sortStyle.order)
     }
-    console.log('After sorted.')
-    temp = []
-    sortedSongs.forEach(function (song) {
-      temp.push(song.title)
-    })
-    console.log(temp)
   }
 }
 
@@ -179,9 +176,9 @@ const utils = {
     return prevSong
   },
   getSongIndex (song) {
-    // TODO: use Array.prototype function instead.
     let songIndex = -1
     state.songs.forEach(function (stateSong, index) {
+      console.dir(stateSong)
       if (stateSong.id === song.id) {
         console.log(`Current song index: ${index}`)
         songIndex = index
@@ -205,7 +202,6 @@ const utils = {
       } else {
         diff = 0
       }
-      // console.log(`${a.id} - ${b.id} = ${diff}`)
       return diff
     })
   },
@@ -225,7 +221,6 @@ const utils = {
       } else {
         diff = 0
       }
-      // console.log(`${a.title} - ${b.title} = ${diff}`)
       return diff
     })
   },
@@ -245,7 +240,6 @@ const utils = {
       } else {
         diff = 0
       }
-      // console.log(`${aArtist} - ${bArtist} = ${diff}`)
       return diff
     })
   },
@@ -265,7 +259,6 @@ const utils = {
       } else {
         diff = 0
       }
-      // console.log(`${aDuration} - ${bDuration} = ${diff}`)
       return diff
     })
   }
@@ -277,6 +270,9 @@ const actions = {
   },
   setSongs ({ commit }, songs) {
     commit('SET_SONGS', songs)
+  },
+  setShowingSongs ({ commit }, songs) {
+    commit('SET_SHOWING_SONG', songs)
   },
   setSeekTime ({ commit }, seekTime) {
     commit('SET_SEEK_TIME', seekTime)
@@ -415,8 +411,10 @@ const getters = {
     return utils.getNextSong()
   },
   getCurrentTab: state => {
-    // console.log(`Current Tab: ${state.currentTab}`)
     return state.currentTab
+  },
+  getShowingSongs: state => {
+    return state.showingSongs
   }
 }
 

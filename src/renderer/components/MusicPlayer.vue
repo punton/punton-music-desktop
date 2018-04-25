@@ -64,7 +64,7 @@ export default {
     })
 
     ipcRenderer.on('songList:retrieve', (event, songs) => {
-      this.setSongs(songs)
+      this.setShowingSongs(songs)
     })
 
     ipcRenderer.on('play:song', (event, songInfo) => {
@@ -145,6 +145,7 @@ export default {
       }
     },
     ...mapActions([
+      'setShowingSongs',
       'setSongs',
       'setSeekTIme',
       'setContextTime',

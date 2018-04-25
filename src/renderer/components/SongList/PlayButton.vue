@@ -25,7 +25,8 @@ export default {
   computed: {
     ...mapGetters([
       'getSelectedSong',
-      'getPlayerContextState'
+      'getPlayerContextState',
+      'getShowingSongs'
     ]),
     isThisSongPlaying: function () {
       return (this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
@@ -65,6 +66,7 @@ export default {
           this.setContextState('running')
           this.resume()
         } else {
+          this.setSongs(this.getShowingSongs)
           this.setSelectedSong(this.song)
           this.setContextState('running')
           ipcRenderer.send('select:song', this.song)
@@ -86,9 +88,13 @@ export default {
     ...mapActions([
       'resume',
       'suspend',
+      'setSongs',
       'setSelectedSong',
       'setContextState'
     ])
+  },
+  mounted () {
+    this.showPlayOrNull()
   }
 }
 </script>
