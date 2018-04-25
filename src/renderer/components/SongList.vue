@@ -50,14 +50,18 @@
         </el-table-column>
     </el-table>
     <div class="delete-panel">
-      <el-button
-        type="info"
-        class="playlist-control-panel-btn"
-        icon="el-icon-delete"
-        @click="deleteSong()">
-        Delete Song
-      </el-button>
-      <el-button @click="clearSelection()">Clear selection</el-button>
+       <button class="themed-btn themed-btn-font" @click="deleteSong">
+        <div class="btn-text-and-icon">
+          <icon name="regular/trash-alt" color="#F4F4F4"></icon>
+          <label class="btn-text">Delete Song</label>
+        </div>
+      </button>
+      <button class="clear-btn themed-btn-font" @click="clearSelection">
+        <div class="btn-text-and-icon">
+          <icon name="regular/square" color="#F4F4F4"></icon>
+          <label class="btn-text">Clear Selection</label>
+        </div>
+      </button>
     </div>
   </div>
 </template>
@@ -127,6 +131,7 @@ export default {
   /* border: 5px dashed rgb(0, 17, 255); */
   min-height: 85vh;
   width: 100%;
+  background-color: #272727;
 }
 
 .song-table {
@@ -155,7 +160,50 @@ export default {
 }
 
 .delete-panel {
-  margin-top: 20px;
+  margin-top: 8px;
   background: #272727;
+}
+
+.themed-btn {
+  padding: 14px;
+  background-color:#F10707;
+  border:0.2rem solid #F4F4F4;
+  transition-property: background-color;
+  transition-duration: 0.25s;
+  border-radius: 0.15em;
+  color: #F4F4F4;
+}
+
+.themed-btn:hover {
+    background-color: #FB5C5C;
+  }
+
+.themed-btn-font {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+}
+
+.clear-btn {
+  padding: 14px;
+  background-color: #272727;
+  border: 0.2rem solid #F4F4F4;
+  transition-property: background-color;
+  transition-duration: 0.25s;
+  border-radius: 0.15em;
+  color: #F4F4F4;
+}
+
+.clear-btn:hover {
+  background-color: #353535;
+}
+
+.btn-text-and-icon {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.btn-text {
+  padding-left: 8px;
 }
 </style>

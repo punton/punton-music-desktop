@@ -1,6 +1,5 @@
 <template>
   <div class="scrollable playlist-grid">
-<<<<<<< HEAD
     <el-dialog
       title="Delete Playlist"
       :visible.sync="deletePlaylistDialogVisible"
@@ -16,21 +15,12 @@
       ref="playlistsTable"
       @expand-change="expandChange"
       height="75vh"
+      :cell-style="{backgroundColor: '#272727', color: '#F4F4F4'}"
       :data="playlists">
       <el-table-column
         type="expand">
-        <template
-          slot-scope="props">
+        <template class="song-table" slot-scope="props">
           <song-list></song-list>
-=======
-    <el-collapse accordion>
-      <el-collapse-item
-        v-for="playlist in playlists"
-        :name="playlist.id"
-        :key="playlist.id">
-        <template slot="title">
-          {{playlist.name}}   
->>>>>>> Fixed volume style .
         </template>
       </el-table-column>
       <el-table-column
@@ -50,7 +40,12 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-button type="primary" class="add-btn" icon="el-icon-plus" @click="addPlaylist">Add new playlist</el-button>
+    <div style="display:flex; align-items: center; justify-content: center;">
+        <button class="themed-btn themed-btn-font" @click="addPlaylist">
+          <icon name="plus" color="#F4F4F4"></icon>
+          New Playlist
+        </button>
+      </div>
   </div>
 </template>
 
@@ -196,6 +191,7 @@ export default {
 .song-table {
   background-color: #272727;
 }
+
 .themed-btn {
   width: 100%;
   height: 30%;
@@ -209,6 +205,11 @@ export default {
 
 .themed-btn-font {
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+td {
+  padding: 0 0 0 0 !important;
+  background-color: #272727;
 }
 </style>
 
