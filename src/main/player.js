@@ -10,12 +10,10 @@ const tabs = {
 
 const readFile = promisify(fs.readFile)
 async function readFileAsync (path) {
-  console.log(`Reading ${path}`)
   return readFile(path)
 }
 
 async function sendIpc (event, channel, data) {
-  console.log(`Sending IPC to ${channel}`)
   return new Promise((resolve, reject) => {
     let content = event.sender.send(channel, data)
     resolve(content)
@@ -25,7 +23,6 @@ async function sendIpc (event, channel, data) {
 async function playSong (event, path, seekTime) {
   let bin = await readFileAsync(path)
   cachedSongBin = Buffer.from(bin)
-  console.log(`Comparison of OG and CP buffers: ${bin.equals(cachedSongBin)}`)
   await sendIpc(event, 'state:update', currentState)
   await sendIpc(event, 'play:song', {bin: bin, seekTime: seekTime})
 }
@@ -45,25 +42,19 @@ let cachedSongBin = null
 // Set current tab
 ipcMain.on('set:tab', (event, arg) => {
   currentState.tab = arg
-  console.log('Set tab to : ' + arg)
-  // event.sender.send('state:reply', cloneState())
   event.sender.send('state:reply', currentState)
 })
 // Get current tab
 ipcMain.on('get:tab', (event, arg) => {
-  // event.sender.send('state:reply', cloneState())
   event.sender.send('state:reply', currentState)
 })
 
 ipcMain.on('get:state', (event, arg) => {
-  // event.sender.send('state:reply', cloneState())
   event.sender.send('state:reply', currentState)
 })
 
 // select current song
 ipcMain.on('select:song', (event, song) => {
-  console.log(`[Main Process] Selected song ${JSON.stringify(song)}`)
-
   currentState.song = {
     id: song.id,
     data: song
@@ -75,7 +66,6 @@ ipcMain.on('select:song', (event, song) => {
 
 // Set player
 ipcMain.on('set:player', (event, player) => {
-  console.log(player)
   currentState.player = player
   event.sender.send('state:reply', currentState)
 })
@@ -88,13 +78,9 @@ ipcMain.on('set:time', (event, time) => {
 // Set playing state
 ipcMain.on('set:state-isPlaying', (event, isPlaying) => {
   currentState.isPlaying = isPlaying
-  console.log(JSON.stringify(currentState))
   event.sender.send('player:switchState', isPlaying)
 })
 
 ipcMain.on('set:seek-time', (event, time) => {
-  console.log(`[Main process] Seek time = ${time}`)
-  // let seekTime = parseFloat(time) * 60
-  // playSong(event, currentState.song.data.path, seekTime)
   event.sender.send('play:song', {bin: cachedSongBin, seekTime: time})
 })

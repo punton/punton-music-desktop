@@ -46,7 +46,6 @@ export default {
   },
   mounted () {
     ipcRenderer.on('playlist:receiveName', (event, playlists) => {
-      console.log('receiveName')
       let tempPlaylists = []
       playlists.forEach(playlist => {
         tempPlaylists.push(playlist.dataValues)
@@ -97,7 +96,6 @@ export default {
   beforeDestroy () {
     this.stopSong()
     audioCtx.close()
-    console.log('[BeforeDestroying]: Context closed.')
   },
   methods: {
     setShowPlaylists: function (showPlaylists) {

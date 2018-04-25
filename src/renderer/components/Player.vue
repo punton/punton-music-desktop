@@ -61,12 +61,10 @@
     components: { ShuffleIcon, StepBackwardIcon, StepForwardIcon, PlayIcon, RepeatIcon, PauseIcon },
     methods: {
       highlight: function (e) {
-        // console.log('Highlighted.')
         e.target.style.backgroundColor = 'black'
         e.target.style.fill = 'white'
       },
       unhighlight: function (e) {
-        // console.log('Unhighlighted.')
         e.target.style.backgroundColor = 'white'
         e.target.style.fill = 'black'
       },

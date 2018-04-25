@@ -23,7 +23,7 @@ ipcMain.on('playlist:create', async (event, playlistName) => {
     })
     event.sender.send('playlist:callRequest')
   } catch (e) {
-    console.dir(e)
+    console.error(e)
   }
 })
 

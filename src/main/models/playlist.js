@@ -14,8 +14,7 @@ global.db.sync().then(() => {
     if (count === 0) {
       Playlist.bulkCreate([
         { name: 'Machine Learning' },
-        { name: 'Custom' },
-        { name: 'All' }
+        { name: 'Custom' }
       ])
     }
   })

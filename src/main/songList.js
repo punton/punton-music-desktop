@@ -51,7 +51,6 @@ ipcMain.on('songList:save', (event, { songs, playlist }) => {
       if (playlist.name === 'Machine Learning') {
         q.push(newSong)
         if (q.length === songs.length) {
-          console.dir(q.length)
           readingSong({ song: q.pop(), event, current: count, total: q.length })
         }
       } else {

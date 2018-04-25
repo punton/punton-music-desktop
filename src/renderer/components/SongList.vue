@@ -110,7 +110,6 @@ export default {
       ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
     },
     sortSongs: function (sortStyle) {
-      console.log(sortStyle)
       this.sortBy({type: sortStyle.prop, order: sortStyle.order})
     },
     ...mapActions([

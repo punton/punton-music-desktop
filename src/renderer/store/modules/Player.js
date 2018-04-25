@@ -52,7 +52,6 @@ const mutations = {
   },
   SET_PLAYLISTS (state, playlists) {
     state.playlists = playlists
-    console.log(`[Playlists state] Add all playlists to store.`)
   },
   SET_CURRENT_PLAYLIST (state, playlist) {
     state.currentPlaylist = playlist
@@ -77,22 +76,17 @@ const mutations = {
     state.player.source.connect(state.player.gainNode)
     state.player.gainNode.connect(state.player.context.destination)
     state.isSongPlaying = true
-    console.log(`(CREATED) [Player state] ${state.player.context.state}`)
     state.isContextRunning = state.player.context.state === 'running'
   },
   RESUME_PLAYER (state) {
-    console.log(`[Player state] Before: ${state.player.context.state}`)
     state.player.context.resume()
     state.isSongPlaying = true
     state.isContextRunning = state.player.context.state === 'running'
-    console.log(`[Player state] After: ${state.player.context.state}`)
   },
   SUSPEND_PLAYER (state) {
-    console.log(`[Player state] Before: ${state.player.context.state}`)
     state.player.context.suspend()
     state.isSongPlaying = false
     state.isContextRunning = state.player.context.state === 'running'
-    console.log(`[Player state] After: ${state.player.context.state}`)
   },
   STOP_PLAYER (state) {
     if (state.player.context && state.player.source) {
@@ -101,9 +95,8 @@ const mutations = {
         state.player.context.close(0)
         state.isSongPlaying = false
         state.isContextRunning = state.player.context.state === 'running'
-        console.log(`[Player state] ${state.player.context.state}`)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
   },
@@ -114,19 +107,15 @@ const mutations = {
     }
   },
   TOGGLE_REPEAT (State) {
-    console.log(`Before > Song repeat ${state.isSongRepeat}, Playlist repeat ${state.isPlaylistRepeat}`)
     let isSongRepeat = state.isSongRepeat
     let isPlaylistRepeat = state.isPlaylistRepeat
     state.isSongRepeat = (isPlaylistRepeat) ? isSongRepeat : !isSongRepeat
     state.isPlaylistRepeat = (isSongRepeat || isPlaylistRepeat) ? !isPlaylistRepeat : isSongRepeat
-    console.log(`After > Song repeat ${state.isSongRepeat}, Playlist repeat ${state.isPlaylistRepeat}`)
   },
   TOGGLE_SHUFFLE (state) {
     state.isShuffling = !state.isShuffling
-    console.log(`Shuffle: ${state.isShuffling ? 'ON' : 'OFF'}`)
   },
   SET_CONTEXT_STATE (state, contextState) {
-    console.log(`[Player context state]: ${contextState}`)
     state.contextState = contextState
   },
   SET_TAB (state, tabIndex) {
@@ -154,15 +143,11 @@ const mutations = {
 
 const utils = {
   getNextSong () {
-    console.log(`Shuffle: ${state.isShuffling ? 'ON' : 'OFF'}`)
-    console.log(`Repeat Song: ${state.isSongRepeat ? 'ON' : 'OFF'}`)
-    console.log(`Repeat Playlist: ${state.isPlaylistRepeat ? 'ON' : 'OFF'}`)
     let nextSong
     if (state.isSongRepeat) {
       nextSong = state.selectedSong.data
     } else if (state.isShuffling) {
       let index = Math.floor(Math.random() * state.songs.length)
-      console.log(`Random index: ${index}`)
       nextSong = state.songs[index]
     } else {
       let songIndex = utils.getSongIndex(state.selectedSong.data)
@@ -170,7 +155,6 @@ const utils = {
       nextSong = state.songs[nextSongIndex]
       return nextSong
     }
-    console.log(`Next song: ${JSON.stringify(nextSong)}`)
     return nextSong
   },
   getPrevSong () {
@@ -182,9 +166,7 @@ const utils = {
   getSongIndex (song) {
     let songIndex = -1
     state.songs.forEach(function (stateSong, index) {
-      console.dir(stateSong)
       if (stateSong.id === song.id) {
-        console.log(`Current song index: ${index}`)
         songIndex = index
       }
     })
@@ -308,12 +290,10 @@ const actions = {
     await dispatch('setSeekTime', songInfo.seekTime)
     await dispatch('setPlayerVolume', state.volume / 100)
     await new Promise((resolve, reject) => {
-      console.log('[Vuex] Successfully decoded. Start playing ...')
       state.player.source.start(0, songInfo.seekTime, state.selectedSong.data.duration)
       state.player.source.onended = function (event) {
         state.player.source.stop(0)
         state.player.context.close()
-        console.log('[Context] song ended.')
         let nextSong = utils.getNextSong()
         commit('SET_SELECTED_SONG', nextSong)
         ipcRenderer.send('select:song', nextSong)
@@ -389,11 +369,9 @@ const getters = {
     return state.player
   },
   getSelectedSong: state => {
-    // console.table(state.selectedSong)
     return state.selectedSong
   },
   isPlayerRunning: state => {
-    console.log(state.player.context ? state.player.context.state === 'running' : false)
     return state.player.context ? state.player.context.state === 'running' : false
   },
   isSongRepeating: state => {

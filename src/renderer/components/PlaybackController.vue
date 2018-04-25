@@ -128,7 +128,6 @@
       },
       seek: function (time) {
         let seekTime = (time / 100) * this.getSongDuration
-        console.log(`[PlaybackCtrl] Seek time = ${seekTime}`)
         ipcRenderer.send('set:seek-time', seekTime)
       },
       switchContextState: async function () {
@@ -142,7 +141,6 @@
         }
       },
       toggleRepeat: function (value) {
-        // console.log(`Toggle repeat ${value}`)
         this.togglePlayerRepeat()
       },
       toPercentage: function (value, max) {
@@ -150,13 +148,11 @@
       },
       playPrevSong: function () {
         let prevSong = this.getPrevSong
-        console.log(`Start playing previous song: ${JSON.stringify(prevSong)} ...`)
         this.setSelectedSong(prevSong)
         ipcRenderer.send('select:song', prevSong)
       },
       playNextSong: function () {
         let nextSong = this.getNextSong
-        console.log(`Start playing next song ${JSON.stringify(nextSong)} ...`)
         this.setSelectedSong(nextSong)
         ipcRenderer.send('select:song', nextSong)
       },
