@@ -70,10 +70,14 @@
     },
     "mac": {
       "category": "public.app-category.music",
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/icon.icns",
+      "type": "distribution"
+
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "publisherName": "Punton",
+      "icon": "build/icons/icon.ico",
+      "requestedExecutionLevel": "requireAdministrator"
     },
     "linux": {
       "icon": "build/icons",
