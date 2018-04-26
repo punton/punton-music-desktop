@@ -3,6 +3,7 @@
     <el-dialog
       title="Delete Playlist"
       :visible.sync="deletePlaylistDialogVisible"
+      empty-text="Please create a playlist."
       width="40%"
       center>
       <span>Are you sure you want to delete this Playlist {{deletingPlaylistName}} ?</span>
