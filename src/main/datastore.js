@@ -2,8 +2,8 @@ import Sequelize from 'sequelize'
 import path from 'path'
 import { app } from 'electron'
 
-export default new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
-  host: process.env.DB_HOST,
+export default new Sequelize('punton', 'punton_music_desktop', '', {
+  host: 'localhost',
   dialect: 'sqlite',
   pool: {
     max: 5,
@@ -11,6 +11,6 @@ export default new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.e
     acquire: 30000,
     idle: 10000
   },
-  storage: path.join(app.getPath('userData'), `${process.env.DB_NAME}.db`),
+  storage: path.join(app.getPath('userData'), 'punton.db'),
   logging: false
 })
