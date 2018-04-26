@@ -44,7 +44,7 @@
     "rebuild:windows": "./node_modules/.bin/electron-rebuild.cmd"
   },
   "build": {
-    "productName": "Punton Music",
+    "productName": "punton-music-player-desktop",
     "copyright": "Copyright © 2018 Punton",
     "appId": "media.punton.desktop",
     "directories": {
