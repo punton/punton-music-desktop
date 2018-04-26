@@ -1,7 +1,12 @@
 {
   "name": "punton-music-player-desktop",
-  "version": "1.0.27-beta",
-  "author": "PNNutkung <pipatpol.t@ku.th>",
+  "version": "1.0.0-beta",
+  "author": "punton",
+  "contributors": [
+    "PNNutkung <pipatpol.t@ku.th> (https://github.com/PNNutkung)", 
+    "pakponj <pakpon.j@ku.th> (https://github.com/pakponj)",
+    "carymono <thanawit.g@ku.th> (https://github.com/carymono)"
+  ],
   "description": "A music player with Machine Learning techniques.",
   "license": "MIT",
   "main": "./dist/electron/main.js",
@@ -23,7 +28,7 @@
     "rebuild:windows": "./node_modules/.bin/electron-rebuild.cmd"
   },
   "build": {
-    "productName": "punton-music-player-desktop",
+    "productName": "Punton Music",
     "appId": "media.punton.desktop",
     "directories": {
       "output": "build"
