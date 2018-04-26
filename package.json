@@ -7,6 +7,10 @@
     "pakponj <pakpon.j@ku.th> (https://github.com/pakponj)",
     "carymono <thanawit.g@ku.th> (https://github.com/carymono)"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/punton/punton-music-desktop.git"
+  },
   "description": "A music player with Machine Learning techniques.",
   "license": "MIT",
   "main": "./dist/electron/main.js",
@@ -29,6 +33,7 @@
   },
   "build": {
     "productName": "Punton Music",
+    "copyright": "Copyright © 2018 Punton",
     "appId": "media.punton.desktop",
     "directories": {
       "output": "build"
@@ -65,7 +70,13 @@
       "synopsis": "A Music Player.",
       "category": "Audio",
       "desktop": "Punton Music"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "punton"
+      }
+    ]
   },
   "dependencies": {
     "@tensorflow/tfjs": "^0.7.0",
