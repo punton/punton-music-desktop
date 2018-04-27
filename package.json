@@ -1,6 +1,6 @@
 {
-  "name": "punton-music-player-desktop",
-  "version": "1.0.4-beta",
+  "name": "PuntonMusic",
+  "version": "1.0.5-beta",
   "author": "punton <punton.music@punton.media>",
   "contributors": [
     {
@@ -44,8 +44,8 @@
     "rebuild:windows": "./node_modules/.bin/electron-rebuild.cmd"
   },
   "build": {
-    "productName": "punton-music-player-desktop",
-    "copyright": "Copyright © 2018 Punton",
+    "productName": "PuntonMusic",
+    "copyright": "Copyright © 2018 Punton Music",
     "appId": "media.punton.desktop",
     "directories": {
       "output": "build"
@@ -76,8 +76,8 @@
     },
     "win": {
       "publisherName": "Punton",
-      "icon": "build/icons/icon.ico",
-      "requestedExecutionLevel": "requireAdministrator"
+      "legalTrademarks": "Punton Music",
+      "icon": "build/icons/icon.ico"
     },
     "linux": {
       "icon": "build/icons",
