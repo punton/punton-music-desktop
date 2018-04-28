@@ -74,6 +74,11 @@ export default {
       this.refreshSongList()
     })
 
+    ipcRenderer.on('retrieveRecommended:playlist', (event, recommendedPlaylist) => {
+      this.setShowingSongs(recommendedPlaylist)
+      this.setSongs(this.getShowingSongs)
+    })
+
     ipcRenderer.on('song:requestWaveform', (event, song) => {
       let { songData, songMetadata } = song
       getWaveform(songData)
@@ -162,7 +167,8 @@ export default {
       'getPlayer',
       'getSelectedSong',
       'getPlaylistByIndex',
-      'getCurrentPlaylist'
+      'getCurrentPlaylist',
+      'getShowingSongs'
     ])
   }
 }

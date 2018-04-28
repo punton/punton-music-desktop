@@ -72,7 +72,6 @@
       "category": "public.app-category.music",
       "icon": "build/icons/icon.icns",
       "type": "distribution"
-
     },
     "win": {
       "publisherName": "Punton",
@@ -100,6 +99,7 @@
     "better-queue": "^3.8.6",
     "bluebird": "^3.5.1",
     "dotenv": "^5.0.0",
+    "dynamic-time-warping": "^1.0.0",
     "element-ui": "^2.3.2",
     "keras-js": "^1.0.3",
     "lodash": "^4.17.4",

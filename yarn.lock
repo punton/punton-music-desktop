@@ -3029,6 +3029,10 @@ duplexify@^3.4.2, duplexify@^3.5.3:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
+dynamic-time-warping@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/dynamic-time-warping/-/dynamic-time-warping-1.0.0.tgz#6922d47c620f725d64783be97c6fef660d7ddca6"
+
 ecc-jsbn@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.1.tgz#0fc73a9ed5f0d53c38193398523ef7e543777505"

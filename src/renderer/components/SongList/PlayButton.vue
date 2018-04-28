@@ -69,6 +69,7 @@ export default {
           this.setSongs(this.getShowingSongs)
           this.setSelectedSong(this.song)
           this.setContextState('running')
+          ipcRenderer.send('recommend:song', this.song)
           ipcRenderer.send('select:song', this.song)
         }
       }
