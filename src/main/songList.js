@@ -85,7 +85,7 @@ ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
 ipcMain.on('songList:find', async (event, playlistId) => {
   try {
     const songs = await Song.findAll({
-      attributes: ['id', 'title', 'path', 'duration', 'artist'],
+      attributes: ['id', 'title', 'path', 'duration', 'artist', 'playlistId'],
       where: {
         playlistId: {
           [Op.eq]: playlistId
