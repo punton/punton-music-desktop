@@ -23,7 +23,7 @@
           width="80">
             <template slot-scope="scope">
               <div class="playing-icon">
-                <play-button :song="scope.row"></play-button>
+                <play-button :song="scope.row" :selectedAlgorithm="selectedAlgorithm"></play-button>
               </div>
             </template>
         </el-table-column>
@@ -50,18 +50,31 @@
         </el-table-column>
     </el-table>
     <div class="delete-panel">
-       <button class="themed-btn themed-btn-font" @click="deleteSong">
-        <div class="btn-text-and-icon">
-          <icon name="regular/trash-alt" color="#F4F4F4"></icon>
-          <label class="btn-text">Delete Song</label>
-        </div>
-      </button>
-      <button class="clear-btn themed-btn-font" @click="clearSelection">
-        <div class="btn-text-and-icon">
-          <icon name="regular/square" color="#F4F4F4"></icon>
-          <label class="btn-text">Clear Selection</label>
-        </div>
-      </button>
+      <div>
+        <button class="themed-btn themed-btn-font" @click="deleteSong">
+          <div class="btn-text-and-icon">
+            <icon name="regular/trash-alt" color="#F4F4F4"></icon>
+            <label class="btn-text">Delete Song</label>
+          </div>
+        </button>
+        <button class="clear-btn themed-btn-font" @click="clearSelection">
+          <div class="btn-text-and-icon">
+            <icon name="regular/square" color="#F4F4F4"></icon>
+            <label class="btn-text">Clear Selection</label>
+          </div>
+        </button>
+      </div>
+      <div v-if="this.isMLPlaylist">
+        <label class="select-text">Select algorithm: </label>
+        <el-select v-model="selectedAlgorithm" placeholder="Select Algorithm">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      </div>
     </div>
   </div>
 </template>
@@ -80,7 +93,24 @@ export default {
   },
   data () {
     return {
-      multipleSelection: []
+      multipleSelection: [],
+      options: [{
+        value: 'kdt',
+        label: '1 Ton'
+      },
+      {
+        value: 'deep',
+        label: '10 Ton'
+      },
+      {
+        value: 'DTW',
+        label: '100 Ton'
+      },
+      {
+        value: 'seriesDTW',
+        label: '1K Ton'
+      }],
+      selectedAlgorithm: 'kdt'
     }
   },
   methods: {
@@ -107,7 +137,7 @@ export default {
       this.multipleSelection = rows
     },
     refreshSongList: function () {
-      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+      ipcRenderer.send('songList:find', { playlistId: this.getCurrentPlaylist.id, isDeleteSong: false })
     },
     sortSongs: function (sortStyle) {
       this.sortBy({type: sortStyle.prop, order: sortStyle.order})
@@ -120,7 +150,10 @@ export default {
     ...mapGetters([
       'getCurrentPlaylist',
       'getShowingSongs'
-    ])
+    ]),
+    isMLPlaylist: function () {
+      return (this.getCurrentPlaylist || {}).name === 'Machine Learning'
+    }
   }
 }
 </script>
@@ -158,7 +191,16 @@ export default {
   color: #F4F4F4;
 }
 
+.select-text {
+  font-size: 18px;
+  color: #F4F4F4;
+}
+
 .delete-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 8px;
   margin-top: 8px;
   background: #272727;
 }

@@ -195,18 +195,23 @@ ipcMain.on('recommend:kdt', async (event, song) => {
   })
   waveMean(currentSong)
 
-  var points = []
+  let points = []
   playlist.forEach(element => {
     points.push(element.dataValues.waveMean)
   })
 
-  var tree = createKDTree(points)
+  const tree = createKDTree(points)
 
-  var result = tree.knn(currentSong.waveMean)
+  let result = tree.knn(currentSong.waveMean)
 
+  let recommendedPlaylist = []
   result.forEach(element => {
-    console.log(playlist[element].title)
+    playlist[element].dataValues.waveDeep = null
+    playlist[element].dataValues.waveMin = null
+    playlist[element].dataValues.waveMax = null
+    recommendedPlaylist.push(playlist[element])
   })
 
+  event.sender.send('retrieveRecommended:playlist', recommendedPlaylist)
   tree.dispose()
 })

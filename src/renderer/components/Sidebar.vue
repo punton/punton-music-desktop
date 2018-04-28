@@ -51,7 +51,7 @@ export default {
       this.setTab(playlistIndex)
       this.$emit('setShowPlaylists', false)
       this.setCurrentPlaylist(this.getPlaylistByIndex(playlistIndex))
-      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+      ipcRenderer.send('songList:find', { playlistId: this.getCurrentPlaylist.id, isDeleteSong: false })
     },
     showAllPlaylists: function () {
       this.setTab(2)

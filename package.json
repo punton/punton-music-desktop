@@ -1,6 +1,6 @@
 {
   "name": "PuntonMusic",
-  "version": "1.1.1-beta",
+  "version": "1.2.0-beta",
   "author": "punton <punton.music@punton.media>",
   "contributors": [
     {
@@ -74,7 +74,7 @@
       "type": "distribution"
     },
     "win": {
-      "publisherName": "Punton",
+      "publisherName": "Punton Music",
       "legalTrademarks": "Punton Music",
       "icon": "build/icons/icon.ico"
     },

@@ -54,7 +54,7 @@ ipcMain.on('songList:save', (event, { songs, playlist }) => {
           readingSong({ song: q.pop(), event, current: count, total: q.length })
         }
       } else {
-        event.sender.send('songList:refresh')
+        event.sender.send('songList:refresh', false)
       }
     } catch (err) {
       console.error(err)
@@ -78,11 +78,11 @@ ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
     readingSong({ song: q.pop(), event, current: count, total: q.length })
   }
   if (q.length === 0) {
-    event.sender.send('songList:refresh')
+    event.sender.send('songList:refresh', false)
   }
 })
 
-ipcMain.on('songList:find', async (event, playlistId) => {
+ipcMain.on('songList:find', async (event, {playlistId, isDeleteSong}) => {
   try {
     const songs = await Song.findAll({
       attributes: ['id', 'title', 'path', 'duration', 'artist', 'playlistId'],
@@ -92,7 +92,11 @@ ipcMain.on('songList:find', async (event, playlistId) => {
         }
       }
     })
-    event.sender.send('songList:retrieve', songs)
+    if (isDeleteSong === true) {
+      event.sender.send('songList:retrieveAfterDelete', songs)
+    } else {
+      event.sender.send('songList:retrieve', songs)
+    }
   } catch (err) {
     console.error(err)
   }
@@ -105,7 +109,7 @@ ipcMain.on('song:delete', (event, songId) => {
         id: songId
       }
     })
-    event.sender.send('songList:refresh')
+    event.sender.send('songList:refresh', true)
   } catch (err) {
     console.error(err)
   }
