@@ -52,7 +52,7 @@ export default {
       })
       this.setPlaylists(tempPlaylists)
       this.setCurrentPlaylist(this.getPlaylistByIndex(0))
-      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+      ipcRenderer.send('songList:find', { playlistId: this.getCurrentPlaylist.id, isDeleteSong: false })
     })
   },
   created () {
@@ -66,12 +66,16 @@ export default {
       this.setShowingSongs(songs)
     })
 
+    ipcRenderer.on('songList:retrieveAfterDelete', (event, songs) => {
+      this.setShowingSongs(songs)
+      this.setSongs(this.getShowingSongs)
+    })
     ipcRenderer.on('play:song', (event, songInfo) => {
       this.initializePlayer(songInfo)
     })
 
-    ipcRenderer.on('songList:refresh', () => {
-      this.refreshSongList()
+    ipcRenderer.on('songList:refresh', (event, isDeleteSong) => {
+      this.refreshSongList(isDeleteSong)
     })
 
     ipcRenderer.on('retrieveRecommended:playlist', (event, recommendedPlaylist) => {
@@ -116,8 +120,8 @@ export default {
         })
       }
     },
-    refreshSongList: function () {
-      ipcRenderer.send('songList:find', this.getCurrentPlaylist.id)
+    refreshSongList: function (isDeleteSong) {
+      ipcRenderer.send('songList:find', { playlistId: this.getCurrentPlaylist.id, isDeleteSong })
     },
     initializePlayer: async function (songInfo) {
       await this.stopSong()

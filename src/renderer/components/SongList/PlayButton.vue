@@ -15,7 +15,8 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   props: [
-    'song'
+    'song',
+    'selectedAlgorithm'
   ],
   data () {
     return {
@@ -26,7 +27,9 @@ export default {
     ...mapGetters([
       'getSelectedSong',
       'getPlayerContextState',
-      'getShowingSongs'
+      'getShowingSongs',
+      'getCurrentPlaylist',
+      'getPlaylists'
     ]),
     isThisSongPlaying: function () {
       return (this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
@@ -69,10 +72,9 @@ export default {
           this.setSongs(this.getShowingSongs)
           this.setSelectedSong(this.song)
           this.setContextState('running')
-          // ipcRenderer.send('recommend:DTW', this.song)
-          // ipcRenderer.send('recommend:deep', this.song)
-          // ipcRenderer.send('recommend:kdt', this.song)
-          ipcRenderer.send('recommend:seriesDTW', this.song)
+          if (this.getPlaylists[0].id === this.getCurrentPlaylist.id) {
+            ipcRenderer.send(`recommend:${this.selectedAlgorithm}`, this.song)
+          }
           ipcRenderer.send('select:song', this.song)
         }
       }
