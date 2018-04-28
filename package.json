@@ -89,7 +89,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "Punton Team"
+        "owner": "punton"
       }
     ]
   },
