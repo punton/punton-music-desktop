@@ -34,7 +34,10 @@ function createWindow () {
     height: 768,
     useContentSize: true,
     width: 1024,
-    backgroundThrottling: false
+    backgroundThrottling: false,
+    webPreferences: {
+      nodeIntegrationInWorker: true
+    }
   })
 
   global.mainWindow.loadURL(winURL)
