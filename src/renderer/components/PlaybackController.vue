@@ -148,13 +148,17 @@
       },
       playPrevSong: function () {
         let prevSong = this.getPrevSong
-        this.setSelectedSong(prevSong)
-        ipcRenderer.send('select:song', prevSong)
+        if (prevSong) {
+          this.setSelectedSong(prevSong)
+          ipcRenderer.send('select:song', prevSong)
+        }
       },
       playNextSong: function () {
         let nextSong = this.getNextSong
-        this.setSelectedSong(nextSong)
-        ipcRenderer.send('select:song', nextSong)
+        if (nextSong) {
+          this.setSelectedSong(nextSong)
+          ipcRenderer.send('select:song', nextSong)
+        }
       },
       ...mapActions([
         'resume',
