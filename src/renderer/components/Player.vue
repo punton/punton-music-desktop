@@ -4,7 +4,6 @@
       <div class="col">
         <p>Playing: {{this.state.song.title}}</p>
         <p>{{this.player.context ? this.player.context.currentTime : 0}}</p>
-        <!-- {{this.state.isPlaying}} {{this.player.volume}} {{this.player.context ? this.player.context.currentTime : 0 }} {{this.state.song ? this.state.song.duration : -1}} -->
       </div>
       <div class="col" id="panel">
         <div class="row" id="icons">
@@ -16,10 +15,8 @@
           </div>
           <div class="col" v-on:mouseenter="highlight" v-on:mouseleave="unhighlight" v-b-tooltip.hover.top="this.state.isPlaying ? 'Resume' : 'Play'" v-on:click="switchState">
             <play-icon v-if="!state.isPlaying"></play-icon>
-            <!-- <div v-else>Stop</div> -->
             <pause-icon v-else></pause-icon>
           </div>
-          <!-- TODO: Add Pause -->
           <div class="col" v-on:mouseenter="highlight" v-on:mouseleave="unhighlight" v-b-tooltip.hover.top="'Next'">
             <step-forward-icon></step-forward-icon>
           </div>

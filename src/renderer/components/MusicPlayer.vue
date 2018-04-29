@@ -41,7 +41,8 @@ export default {
   components: { Sidebar, SongList, PlaybackController, Playlist },
   data () {
     return {
-      isShowPlaylists: false
+      isShowPlaylists: false,
+      loading: false
     }
   },
   mounted () {
@@ -64,12 +65,15 @@ export default {
 
     ipcRenderer.on('songList:retrieve', (event, songs) => {
       this.setShowingSongs(songs)
+      this.setSonglistLoading(false)
     })
 
     ipcRenderer.on('songList:retrieveAfterDelete', (event, songs) => {
       this.setShowingSongs(songs)
       this.setSongs(this.getShowingSongs)
+      this.setSonglistLoading(false)
     })
+
     ipcRenderer.on('play:song', (event, songInfo) => {
       this.initializePlayer(songInfo)
     })
@@ -81,6 +85,7 @@ export default {
     ipcRenderer.on('retrieveRecommended:playlist', (event, recommendedPlaylist) => {
       this.setShowingSongs(recommendedPlaylist)
       this.setSongs(this.getShowingSongs)
+      this.setSonglistLoading(false)
     })
 
     ipcRenderer.on('song:requestWaveform', (event, song) => {
@@ -153,7 +158,8 @@ export default {
       'playSong',
       'stopSong',
       'setPlaylists',
-      'setCurrentPlaylist'
+      'setCurrentPlaylist',
+      'setSonglistLoading'
     ])
   },
   computed: {
