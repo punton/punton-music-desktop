@@ -144,23 +144,29 @@ const mutations = {
 const utils = {
   getNextSong () {
     let nextSong
-    if (state.isSongRepeat) {
-      nextSong = state.selectedSong.data
-    } else if (state.isShuffling) {
-      let index = Math.floor(Math.random() * state.songs.length)
-      nextSong = state.songs[index]
-    } else {
-      let songIndex = utils.getSongIndex(state.selectedSong.data)
-      let nextSongIndex = songIndex === state.songs.length - 1 ? 0 : songIndex + 1
-      nextSong = state.songs[nextSongIndex]
-      return nextSong
+    let totalSongs = state.songs.length
+    if (totalSongs > 0) {
+      if (state.isSongRepeat) {
+        nextSong = state.selectedSong.data
+      } else if (state.isShuffling) {
+        let index = Math.floor(Math.random() * totalSongs)
+        nextSong = state.songs[index]
+      } else {
+        let songIndex = utils.getSongIndex(state.selectedSong.data)
+        let nextSongIndex = songIndex === totalSongs - 1 ? 0 : songIndex + 1
+        nextSong = state.songs[nextSongIndex]
+      }
     }
     return nextSong
   },
   getPrevSong () {
-    let songIndex = this.getSongIndex(state.selectedSong.data)
-    let prevSongIndex = songIndex === 0 ? 0 : songIndex - 1
-    let prevSong = state.songs[prevSongIndex]
+    let totalSongs = state.songs.length
+    let prevSong
+    if (totalSongs > 0) {
+      let songIndex = this.getSongIndex(state.selectedSong.data)
+      let prevSongIndex = songIndex === 0 ? 0 : songIndex - 1
+      prevSong = state.songs[prevSongIndex]
+    }
     return prevSong
   },
   getSongIndex (song) {
@@ -295,8 +301,10 @@ const actions = {
         state.player.source.stop(0)
         state.player.context.close()
         let nextSong = utils.getNextSong()
-        commit('SET_SELECTED_SONG', nextSong)
-        ipcRenderer.send('select:song', nextSong)
+        if (nextSong) {
+          commit('SET_SELECTED_SONG', nextSong)
+          ipcRenderer.send('select:song', nextSong)
+        }
       }
       resolve()
     })
