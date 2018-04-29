@@ -94,13 +94,6 @@ export default {
           })
         })
     })
-    if (this.storageAvailable('localStorage')) {
-      // Yippee! We can use localStorage awesomeness
-      console.log(`LocalStorage is available.`)
-    } else {
-      // Too bad, no localStorage for us
-      console.log(`LocalStorage isn't available.`)
-    }
   },
   beforeDestroy () {
     this.stopSong()

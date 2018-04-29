@@ -95,11 +95,11 @@ export default {
     return {
       multipleSelection: [],
       options: [{
-        value: 'kdt',
+        value: 'deep',
         label: '1 Ton'
       },
       {
-        value: 'deep',
+        value: 'kdt',
         label: '10 Ton'
       },
       {
@@ -110,7 +110,7 @@ export default {
         value: 'seriesDTW',
         label: '1K Ton'
       }],
-      selectedAlgorithm: 'kdt'
+      selectedAlgorithm: 'deep'
     }
   },
   methods: {
