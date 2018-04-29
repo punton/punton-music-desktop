@@ -162,9 +162,13 @@ const utils = {
     return nextSong
   },
   getPrevSong () {
-    let songIndex = this.getSongIndex(state.selectedSong.data)
-    let prevSongIndex = songIndex === 0 ? 0 : songIndex - 1
-    let prevSong = state.songs[prevSongIndex]
+    let totalSongs = state.songs.length
+    let prevSong
+    if (totalSongs > 0) {
+      let songIndex = this.getSongIndex(state.selectedSong.data)
+      let prevSongIndex = songIndex === 0 ? 0 : songIndex - 1
+      prevSong = state.songs[prevSongIndex]
+    }
     return prevSong
   },
   getSongIndex (song) {
