@@ -145,7 +145,6 @@ const utils = {
   getNextSong () {
     let nextSong
     let totalSongs = state.songs.length
-    // console.log(`Total songs is ${totalSongs}.`)
     if (totalSongs > 0) {
       if (state.isSongRepeat) {
         nextSong = state.selectedSong.data
@@ -158,7 +157,6 @@ const utils = {
         nextSong = state.songs[nextSongIndex]
       }
     }
-    console.log(`Next song is ${JSON.stringify(nextSong)}`)
     return nextSong
   },
   getPrevSong () {
