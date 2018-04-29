@@ -1,5 +1,5 @@
 import { Op } from 'sequelize'
-import {Song} from './models'
+import { Song } from './models'
 import { ipcMain } from 'electron'
 import convnetjs from 'convnetjs'
 import DynamicTimeWarping from 'dynamic-time-warping'

@@ -1,6 +1,10 @@
 <template>
   <div class="dropzone" @dragover.prevent @drop="onDrop">
     <el-table
+      v-loading="this.getSonglistLoading"
+      element-loading-text="Loading..."
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
       ref="songListTable"
       class="song-table"
       :data="getShowingSongs"
@@ -95,11 +99,11 @@ export default {
     return {
       multipleSelection: [],
       options: [{
-        value: 'kdt',
+        value: 'deep',
         label: '1 Ton'
       },
       {
-        value: 'deep',
+        value: 'kdt',
         label: '10 Ton'
       },
       {
@@ -110,13 +114,14 @@ export default {
         value: 'seriesDTW',
         label: '1K Ton'
       }],
-      selectedAlgorithm: 'kdt'
+      selectedAlgorithm: 'deep'
     }
   },
   methods: {
     onDrop: function (e) {
       e.stopPropagation()
       e.preventDefault()
+      this.setSonglistLoading(true)
       const songs = []
       const regex = RegExp('audio/.+', 'i')
       _.values(e.dataTransfer.files).forEach(song => {
@@ -143,14 +148,20 @@ export default {
       this.sortBy({type: sortStyle.prop, order: sortStyle.order})
     },
     ...mapActions([
-      'sortBy'
+      'sortBy',
+      'setSonglistLoading'
     ])
   },
   computed: {
     ...mapGetters([
       'getCurrentPlaylist',
-      'getShowingSongs'
+      'getShowingSongs',
+      'getSonglistLoading'
     ]),
+    isLoading: function () {
+      console.log(this.getSonglistLoading)
+      return this.getSonglistLoading
+    },
     isMLPlaylist: function () {
       return (this.getCurrentPlaylist || {}).name === 'Machine Learning'
     }

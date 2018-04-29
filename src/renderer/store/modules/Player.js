@@ -25,10 +25,14 @@ const state = {
   isContextRunning: false,
   contextState: '',
   currentTab: 0,
-  expandedRow: null
+  expandedRow: null,
+  songListLoading: false
 }
 
 const mutations = {
+  SET_SONGLIST_LOADING (state, loading) {
+    state.songListLoading = loading
+  },
   SET_PLAYING_SONG (state, newSong) {
     state.selectedSong = newSong
   },
@@ -342,6 +346,9 @@ const actions = {
   },
   sortBy ({ commit }, sortStyle) {
     commit('SORT_BY', sortStyle)
+  },
+  setSonglistLoading ({ commit }, loading) {
+    commit('SET_SONGLIST_LOADING', loading)
   }
 }
 
@@ -411,6 +418,9 @@ const getters = {
   },
   getExpandedRow: state => {
     return state.expandedRow
+  },
+  getSonglistLoading: state => {
+    return state.songListLoading
   }
 }
 

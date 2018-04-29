@@ -69,12 +69,13 @@ export default {
           this.setContextState('running')
           this.resume()
         } else {
-          this.setSongs(this.getShowingSongs)
-          this.setSelectedSong(this.song)
-          this.setContextState('running')
+          this.setSonglistLoading(true)
           if (this.getPlaylists[0].id === this.getCurrentPlaylist.id) {
             ipcRenderer.send(`recommend:${this.selectedAlgorithm}`, this.song)
           }
+          this.setSongs(this.getShowingSongs)
+          this.setSelectedSong(this.song)
+          this.setContextState('running')
           ipcRenderer.send('select:song', this.song)
         }
       }
@@ -96,7 +97,8 @@ export default {
       'suspend',
       'setSongs',
       'setSelectedSong',
-      'setContextState'
+      'setContextState',
+      'setSonglistLoading'
     ])
   },
   mounted () {
