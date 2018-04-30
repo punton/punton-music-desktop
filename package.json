@@ -31,6 +31,7 @@
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
+    "build:win": "node .electron-vue/build.js && electron-builder --win",
     "dev": "node .electron-vue/dev-runner.js",
     "e2e": "npm run pack && mocha test/e2e",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src test",
@@ -50,7 +51,8 @@
       "output": "build"
     },
     "files": [
-      "dist/electron/**/*"
+      "dist/electron/**/*",
+      "build/icon.*"
     ],
     "dmg": {
       "contents": [
@@ -69,13 +71,13 @@
     },
     "mac": {
       "category": "public.app-category.music",
-      "icon": "build/icons/icon.icns",
+      "icon": "build/icons/icon.png",
       "type": "distribution"
     },
     "win": {
       "publisherName": "Punton Music",
       "legalTrademarks": "Punton Music",
-      "icon": "build/icons/icon.ico",
+      "icon": "build/icons/icon.png",
       "target": [
         {
           "target": "nsis",
@@ -87,7 +89,7 @@
       ]
     },
     "linux": {
-      "icon": "build/icons",
+      "icon": "build/icons/icon.png",
       "target": [
         {
           "target": "deb",
