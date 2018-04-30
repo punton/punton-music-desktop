@@ -10,7 +10,6 @@ global.db.sync()
 require('./models/playlist')
 require('./songList')
 require('./playList')
-require('./machineLearning')
 
 /**
  * Set `__static` path to static files in production

@@ -21,6 +21,7 @@ import PlaybackController from './PlaybackController'
 import Playlist from '@/components/Playlist'
 import { mapActions, mapGetters } from 'vuex'
 import webAudioBuilder from 'waveform-data/webaudio'
+import { deep, DTW, kdt, seriesDTW } from '@/backend/machineLearning'
 
 const audioCtx = new AudioContext()
 const getWaveform = (songData) => {
@@ -102,11 +103,27 @@ export default {
         })
     })
 
-    ipcRenderer.on('ml-drop:refresh', (event) => {
-      ipcRenderer.send(`recommend:${this.getSelectedAlgorithm}`, {
+    ipcRenderer.on('ml-drop:refresh', async (event) => {
+      const currentSong = {
         id: this.getSelectedSong.id,
         playlistId: this.getCurrentPlaylist.id
-      })
+      }
+      switch (this.getSelectedAlgorithm) {
+        case 'deep':
+          this.setShowingSongs(await deep(currentSong))
+          break
+        case 'kdt':
+          this.setShowingSongs(await kdt(currentSong))
+          break
+        case 'DTW':
+          this.setShowingSongs(await DTW(currentSong))
+          break
+        case 'seriesDTW':
+          this.setShowingSongs(await seriesDTW(currentSong))
+          break
+      }
+      this.setSongs(this.getShowingSongs)
+      this.setSonglistLoading(false)
     })
   },
   beforeDestroy () {
