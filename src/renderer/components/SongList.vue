@@ -149,6 +149,7 @@ export default {
       this.sortBy({type: sortStyle.prop, order: sortStyle.order})
     },
     onAlgoChange: function (currentAlgo) {
+      this.setSelectedAlgorithm(currentAlgo)
       if (this.getSelectedSong.id) {
         ipcRenderer.send(`recommend:${this.selectedAlgorithm}`, {
           id: this.getSelectedSong.id,
@@ -158,7 +159,8 @@ export default {
     },
     ...mapActions([
       'sortBy',
-      'setSonglistLoading'
+      'setSonglistLoading',
+      'setSelectedAlgorithm'
     ])
   },
   computed: {

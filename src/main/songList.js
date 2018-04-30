@@ -25,12 +25,10 @@ const readingSong = async ({ song, event, current, total }) => {
 }
 
 let q
-let count
 
 ipcMain.on('songList:save', (event, { songs, playlist }) => {
   if (!q || q.length === 0) {
     q = []
-    count = 1
   }
   songs.forEach(async song => {
     try {
@@ -51,7 +49,7 @@ ipcMain.on('songList:save', (event, { songs, playlist }) => {
       if (playlist.name === 'Machine Learning') {
         q.push(newSong)
         if (q.length === songs.length) {
-          readingSong({ song: q.pop(), event, current: count, total: q.length })
+          readingSong({ song: q.pop(), event, total: q.length })
         }
       } else {
         event.sender.send('songList:refresh', false)
@@ -62,8 +60,7 @@ ipcMain.on('songList:save', (event, { songs, playlist }) => {
   })
 })
 
-ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
-  count++
+ipcMain.on('song:result', (event, { id, waveMax, waveMin, playlist, isPlaying }) => {
   Song.update({
     waveMax: waveMax,
     waveMin: waveMin
@@ -75,10 +72,13 @@ ipcMain.on('song:result', (event, { id, waveMax, waveMin }) => {
     }
   })
   if (q.length > 0) {
-    readingSong({ song: q.pop(), event, current: count, total: q.length })
-  }
-  if (q.length === 0) {
-    event.sender.send('songList:refresh', false)
+    readingSong({ song: q.pop(), event })
+  } else if (q.length === 0) {
+    if (isPlaying && playlist.name === 'Machine Learning') {
+      event.sender.send('ml-drop:refresh')
+    } else {
+      event.sender.send('songList:refresh', false)
+    }
   }
 })
 

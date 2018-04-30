@@ -26,7 +26,8 @@ const state = {
   contextState: '',
   currentTab: 0,
   expandedRow: null,
-  songListLoading: false
+  songListLoading: false,
+  selectedAlgorithm: 'deep'
 }
 
 const mutations = {
@@ -142,6 +143,9 @@ const mutations = {
   },
   SET_EXPANDED_ROW (state, expandedRow) {
     state.expandedRow = expandedRow
+  },
+  SET_SELECTED_ALGORITHM (state, algorithm) {
+    state.selectedAlgorithm = algorithm
   }
 }
 
@@ -349,6 +353,9 @@ const actions = {
   },
   setSonglistLoading ({ commit }, loading) {
     commit('SET_SONGLIST_LOADING', loading)
+  },
+  setSelectedAlgorithm ({ commit }, algorithm) {
+    commit('SET_SELECTED_ALGORITHM', algorithm)
   }
 }
 
@@ -421,6 +428,9 @@ const getters = {
   },
   getSonglistLoading: state => {
     return state.songListLoading
+  },
+  getSelectedAlgorithm: state => {
+    return state.selectedAlgorithm
   }
 }
 

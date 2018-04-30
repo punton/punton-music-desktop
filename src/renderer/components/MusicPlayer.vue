@@ -78,7 +78,7 @@ export default {
       this.initializePlayer(songInfo)
     })
 
-    ipcRenderer.on('songList:refresh', (event, isDeleteSong) => {
+    ipcRenderer.on('songList:refresh', (event, { isDeleteSong, isDropSong }) => {
       this.refreshSongList(isDeleteSong)
     })
 
@@ -95,9 +95,18 @@ export default {
           ipcRenderer.send('song:result', {
             id: songMetadata.id,
             waveMax: waveform.max,
-            waveMin: waveform.min
+            waveMin: waveform.min,
+            playlist: this.getCurrentPlaylist,
+            isPlaying: this.isPlaying
           })
         })
+    })
+
+    ipcRenderer.on('ml-drop:refresh', (event) => {
+      ipcRenderer.send(`recommend:${this.getSelectedAlgorithm}`, {
+        id: this.getSelectedSong.id,
+        playlistId: this.getCurrentPlaylist.id
+      })
     })
   },
   beforeDestroy () {
@@ -171,7 +180,9 @@ export default {
       'getSelectedSong',
       'getPlaylistByIndex',
       'getCurrentPlaylist',
-      'getShowingSongs'
+      'getShowingSongs',
+      'getSelectedAlgorithm',
+      'isPlaying'
     ])
   }
 }
