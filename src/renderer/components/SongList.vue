@@ -70,12 +70,13 @@
       </div>
       <div v-if="this.isMLPlaylist">
         <label class="select-text">Select algorithm: </label>
-        <el-select v-model="selectedAlgorithm" placeholder="Select Algorithm">
+        <el-select v-model="selectedAlgorithm" placeholder="Select Algorithm"
+          @change="onAlgoChange">
         <el-option
           v-for="item in options"
           :key="item.value"
           :label="item.label"
-          :value="item.value">
+          :value="item.value" >
         </el-option>
       </el-select>
       </div>
@@ -147,6 +148,14 @@ export default {
     sortSongs: function (sortStyle) {
       this.sortBy({type: sortStyle.prop, order: sortStyle.order})
     },
+    onAlgoChange: function (currentAlgo) {
+      if (this.getSelectedSong.id) {
+        ipcRenderer.send(`recommend:${this.selectedAlgorithm}`, {
+          id: this.getSelectedSong.id,
+          playlistId: this.getCurrentPlaylist.id
+        })
+      }
+    },
     ...mapActions([
       'sortBy',
       'setSonglistLoading'
@@ -156,7 +165,9 @@ export default {
     ...mapGetters([
       'getCurrentPlaylist',
       'getShowingSongs',
-      'getSonglistLoading'
+      'getSonglistLoading',
+      'getSelectedSong',
+      'getCurrentPlaylist'
     ]),
     isLoading: function () {
       console.log(this.getSonglistLoading)
