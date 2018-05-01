@@ -1,7 +1,7 @@
 {
   "name": "PuntonMusic",
-  "version": "1.2.3-beta",
-  "author": "punton <punton.music@punton.media>",
+  "version": "1.2.4-beta",
+  "author": "Punton Music <punton.music@punton.media>",
   "contributors": [
     {
       "name": "PNNutkung",
@@ -40,8 +40,7 @@
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
-    "postinstall": "npm run lint:fix && electron-builder install-app-deps",
-    "rebuild:windows": "./node_modules/.bin/electron-rebuild.cmd"
+    "postinstall": "npm run lint:fix && electron-builder install-app-deps"
   },
   "build": {
     "productName": "PuntonMusic",
@@ -76,11 +75,35 @@
     "win": {
       "publisherName": "Punton Music",
       "legalTrademarks": "Punton Music",
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
     },
     "linux": {
       "icon": "build/icons",
-      "target": "deb",
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
       "executableName": "Punton Music",
       "synopsis": "A Music Player.",
       "category": "Audio",
