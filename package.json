@@ -1,7 +1,7 @@
 {
   "name": "PuntonMusic",
-  "version": "1.2.3-beta",
-  "author": "punton <punton.music@punton.media>",
+  "version": "1.2.4-beta",
+  "author": "Punton Music <punton.music@punton.media>",
   "contributors": [
     {
       "name": "PNNutkung",
@@ -31,6 +31,7 @@
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
+    "build:win": "node .electron-vue/build.js && electron-builder --win",
     "dev": "node .electron-vue/dev-runner.js",
     "e2e": "npm run pack && mocha test/e2e",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src test",
@@ -40,8 +41,7 @@
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
-    "postinstall": "npm run lint:fix && electron-builder install-app-deps",
-    "rebuild:windows": "./node_modules/.bin/electron-rebuild.cmd"
+    "postinstall": "npm run lint:fix && electron-builder install-app-deps"
   },
   "build": {
     "productName": "PuntonMusic",
@@ -51,7 +51,8 @@
       "output": "build"
     },
     "files": [
-      "dist/electron/**/*"
+      "dist/electron/**/*",
+      "build/icon.*"
     ],
     "dmg": {
       "contents": [
@@ -70,17 +71,41 @@
     },
     "mac": {
       "category": "public.app-category.music",
-      "icon": "build/icons/icon.icns",
+      "icon": "build/icons/icon.png",
       "type": "distribution"
     },
     "win": {
       "publisherName": "Punton Music",
       "legalTrademarks": "Punton Music",
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
     },
     "linux": {
-      "icon": "build/icons",
-      "target": "deb",
+      "icon": "build/icons/icon.png",
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
       "executableName": "Punton Music",
       "synopsis": "A Music Player.",
       "category": "Audio",

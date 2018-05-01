@@ -90,6 +90,7 @@ import _ from 'lodash'
 import draggable from 'vuedraggable'
 import PlayButton from './SongList/PlayButton'
 import { mapGetters, mapActions } from 'vuex'
+import { deep, DTW, kdt, seriesDTW } from '@/backend/machineLearning'
 
 export default {
   components: {
@@ -148,17 +149,38 @@ export default {
     sortSongs: function (sortStyle) {
       this.sortBy({type: sortStyle.prop, order: sortStyle.order})
     },
-    onAlgoChange: function (currentAlgo) {
-      if (this.getSelectedSong.id) {
-        ipcRenderer.send(`recommend:${this.selectedAlgorithm}`, {
+    onAlgoChange: async function (currentAlgo) {
+      this.setSelectedAlgorithm(currentAlgo)
+      if (this.getSelectedSong.id && this.getSelectedSong.data.playlistId === this.getPlaylists[0].id) {
+        this.setSonglistLoading(true)
+        const currentSong = {
           id: this.getSelectedSong.id,
           playlistId: this.getCurrentPlaylist.id
-        })
+        }
+        switch (this.getSelectedAlgorithm) {
+          case 'deep':
+            this.setShowingSongs(await deep(currentSong))
+            break
+          case 'kdt':
+            this.setShowingSongs(await kdt(currentSong))
+            break
+          case 'DTW':
+            this.setShowingSongs(await DTW(currentSong))
+            break
+          case 'seriesDTW':
+            this.setShowingSongs(await seriesDTW(currentSong))
+            break
+        }
+        this.setSongs(this.getShowingSongs)
+        this.setSonglistLoading(false)
       }
     },
     ...mapActions([
       'sortBy',
-      'setSonglistLoading'
+      'setSonglistLoading',
+      'setSelectedAlgorithm',
+      'setShowingSongs',
+      'setSongs'
     ])
   },
   computed: {
@@ -167,7 +189,9 @@ export default {
       'getShowingSongs',
       'getSonglistLoading',
       'getSelectedSong',
-      'getCurrentPlaylist'
+      'getCurrentPlaylist',
+      'getSelectedAlgorithm',
+      'getPlaylists'
     ]),
     isLoading: function () {
       console.log(this.getSonglistLoading)

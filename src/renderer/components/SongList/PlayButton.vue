@@ -12,6 +12,7 @@
 <script>
 import { ipcRenderer } from 'electron'
 import { mapGetters, mapActions } from 'vuex'
+import { deep, DTW, kdt, seriesDTW } from '@/backend/machineLearning'
 
 export default {
   props: [
@@ -29,7 +30,8 @@ export default {
       'getPlayerContextState',
       'getShowingSongs',
       'getCurrentPlaylist',
-      'getPlaylists'
+      'getPlaylists',
+      'getSelectedAlgorithm'
     ]),
     isThisSongPlaying: function () {
       return (this.getSelectedSong.id === this.song.id) && this.getPlayerContextState === 'running'
@@ -59,20 +61,36 @@ export default {
     onMouseLeave: function (e) {
       this.showPlayOrNull()
     },
-    onClick: function (e) {
+    onClick: async function (e) {
       e.preventDefault()
+      this.setSonglistLoading(true)
       if (this.isThisSongPlaying === true) {
+        this.setSonglistLoading(false)
         this.setContextState('suspended')
         this.suspend()
       } else {
         if (this.getSelectedSong.id === this.song.id && this.getPlayerContextState === 'suspended') {
+          this.setSonglistLoading(false)
           this.setContextState('running')
           this.resume()
         } else {
-          this.setSonglistLoading(true)
           if (this.getPlaylists[0].id === this.getCurrentPlaylist.id) {
-            ipcRenderer.send(`recommend:${this.selectedAlgorithm}`, this.song)
+            switch (this.getSelectedAlgorithm) {
+              case 'deep':
+                this.setShowingSongs(await deep(this.song))
+                break
+              case 'kdt':
+                this.setShowingSongs(await kdt(this.song))
+                break
+              case 'DTW':
+                this.setShowingSongs(await DTW(this.song))
+                break
+              case 'seriesDTW':
+                this.setShowingSongs(await seriesDTW(this.song))
+                break
+            }
           }
+          this.setSonglistLoading(false)
           this.setSongs(this.getShowingSongs)
           this.setSelectedSong(this.song)
           this.setContextState('running')
@@ -98,7 +116,8 @@ export default {
       'setSongs',
       'setSelectedSong',
       'setContextState',
-      'setSonglistLoading'
+      'setSonglistLoading',
+      'setShowingSongs'
     ])
   },
   mounted () {
