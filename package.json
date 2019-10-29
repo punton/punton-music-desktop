@@ -128,7 +128,7 @@
     "lodash": "^4.17.4",
     "music-metadata": "^0.8.8",
     "node-gyp": "^3.6.2",
-    "sequelize": "^4.33.1",
+    "sequelize": "^5.15.1",
     "sqlite3": "^3.1.13",
     "static-kdtree": "^1.0.2",
     "vue": "^2.3.3",
