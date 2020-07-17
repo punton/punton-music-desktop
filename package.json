@@ -125,7 +125,7 @@
     "dotenv": "^5.0.0",
     "dynamic-time-warping": "^1.0.0",
     "element-ui": "^2.3.2",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.19",
     "music-metadata": "^0.8.8",
     "node-gyp": "^3.6.2",
     "sequelize": "^5.15.1",
